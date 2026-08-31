@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens. Utilities read the CSS variables below, so a direction is a token set on
+ * the <html data-direction> attribute: "field-guide" is v1 (BAM, 2026-08-31); the A/B/C test
+ * in plans/future/01 adds "marquee" and "on-air" sets here and flips the attribute, nothing else.
+ */
+@theme inline {
+  --color-paper: var(--paper);
+  --color-card: var(--card);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-rule: var(--rule);
+  --color-moss: var(--moss);
+  --color-on-moss: var(--on-moss);
+  --color-ochre: var(--ochre);
+  --font-display: var(--font-instrument-serif), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+}
+
+:root,
+[data-direction="field-guide"] {
+  color-scheme: light dark;
+  --paper: #f7f3ea;
+  --card: #fffdf8;
+  --ink: #0f172a;
+  --muted: #475569;
+  --rule: #d9d4c7;
+  --moss: #3f6212;
+  --on-moss: #ffffff;
+  --ochre: #b45309;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  [data-direction="field-guide"] {
+    --paper: #0f172a;
+    --card: #1e293b;
+    --ink: #f1f5f9;
+    --muted: #cbd5e1;
+    --rule: #334155;
+    --moss: #a3e635;
+    --on-moss: #0f172a;
+    --ochre: #fbbf24;
+  }
+}
