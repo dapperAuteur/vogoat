@@ -15,3 +15,10 @@ plans/
 # os / editor
 .DS_Store
 *.log
+
+# local embedded database + local blob store (dev only)
+.data/
+
+# typescript build info
+*.tsbuildinfo
+next-env.d.ts
