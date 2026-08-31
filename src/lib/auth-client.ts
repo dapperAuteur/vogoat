@@ -8,14 +8,15 @@ export const authClient = createAuthClient({
 });
 
 /**
- * Starts the "Sign in with WitUS" OAuth flow. This better-auth version ships no
- * genericOAuth client plugin, so the endpoint is called directly; the server-side
- * genericOAuth plugin serves /sign-in/oauth2 and returns the IdP redirect URL.
+ * Starts the "Sign in with WitUS" OAuth flow. In better-auth 1.7 the genericOAuth plugin
+ * registers providers as first-class social providers ("no plugin-specific endpoints"), so
+ * the core /sign-in/social endpoint is called with the provider id; it returns the IdP
+ * authorize URL to navigate to.
  */
 export async function signInWithWitus(callbackURL: string): Promise<void> {
-  const { data, error } = await authClient.$fetch<{ url: string; redirect: boolean }>("/sign-in/oauth2", {
+  const { data, error } = await authClient.$fetch<{ url: string; redirect: boolean }>("/sign-in/social", {
     method: "POST",
-    body: { providerId: "witus", callbackURL },
+    body: { provider: "witus", callbackURL },
   });
   if (error || !data?.url) throw new Error("sso_start_failed");
   window.location.href = data.url;
