@@ -24,3 +24,4 @@ Activate the guard hook once per clone:
 ```
 git config core.hooksPath .githooks
 ```
+# vo-goat
