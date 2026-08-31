@@ -40,7 +40,7 @@ pnpm dev                     # http://localhost:3050
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
 Environment variables are documented in [`.env.example`](.env.example). Deploy, Neon, the
-WitUS OIDC client, Blob, Stripe, Resend, Turnstile and PostHog are operator steps in
+WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).
 
 ## Contributing / working in this repo
