@@ -40,6 +40,11 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
+**Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
+appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offers a magic
+link whose URL prints to the dev server console (development never sends real email, even
+with Mailgun configured). The account matching `ADMIN_EMAIL` becomes admin at first sign-in.
+
 Environment variables are documented in [`.env.example`](.env.example). Deploy, Neon, the
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).

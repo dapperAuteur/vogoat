@@ -15,13 +15,16 @@ interface SendEmailInput {
  * end to end in local dev; in production a missing config is reported, never silently dropped.
  */
 export async function sendEmail({ to, subject, text, html }: SendEmailInput): Promise<void> {
-  if (!hasMailgun) {
+  // Development never sends real mail, even with Mailgun configured in .env.local: the
+  // message logs to the console instead (a dev magic-link once emailed a real address,
+  // 2026-08-31). Deployed preview/production environments send normally.
+  if (!hasMailgun || !isProduction) {
     if (isProduction) {
       // Log no addresses or bodies in production (shared logging/PII rule).
       console.error("[mailer] Mailgun is not configured; message not sent");
       return;
     }
-    console.log(`\n[mailer:dev] (Mailgun not configured, logging instead)\n  To: ${to}\n  Subject: ${subject}\n  ${text}\n`);
+    console.log(`\n[mailer:dev] (${hasMailgun ? "dev never sends real mail" : "Mailgun not configured"}, logging instead)\n  To: ${to}\n  Subject: ${subject}\n  ${text}\n`);
     return;
   }
 
