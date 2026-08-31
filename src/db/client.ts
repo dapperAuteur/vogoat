@@ -1,10 +1,7 @@
-import { PGlite } from "@electric-sql/pglite";
-import { neonConfig, Pool } from "@neondatabase/serverless";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
+import { neonConfig, Pool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
-import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
-import { migrate as migratePglite } from "drizzle-orm/pglite/migrator";
 import ws from "ws";
 import { env, hasDatabaseUrl, isProduction } from "@/lib/env";
 import * as schema from "./schema";
@@ -14,46 +11,44 @@ export type Schema = typeof schema;
 export type Db = PgDatabase<PgQueryResultHKT, Schema, ExtractTablesWithRelations<Schema>>;
 export type DbDriver = "neon" | "pglite";
 
-type Handle = { db: Db; driver: DbDriver; ready: Promise<void> };
-
 declare global {
   // Survives Next.js dev HMR: a second PGlite on the same directory would fight for its lock.
-  var __vogoatDb: Handle | undefined;
+  var __vogoatDb: Promise<Db> | undefined;
 }
 
-function create(): Handle {
+async function create(): Promise<Db> {
   if (hasDatabaseUrl) {
     // Neon's websocket driver needs a Node WebSocket implementation; one connection per
     // serverless instance, Vercel scales by instance count.
     neonConfig.webSocketConstructor = ws;
     const pool = new Pool({ connectionString: env.DATABASE_URL, max: 1 });
-    return { db: drizzleNeon(pool, { schema }) as unknown as Db, driver: "neon", ready: Promise.resolve() };
+    return drizzleNeon(pool, { schema }) as unknown as Db;
   }
   if (isProduction) {
     throw new Error("DATABASE_URL is required in production (plans/user-tasks/01-provision-infrastructure.md).");
   }
-  // Zero-setup local database (BAM, 2026-08-31: nothing provisioned yet). Migrations apply
-  // themselves on first use; `getDb()` awaits that.
+  // Zero-setup local database (dev/test only). Imported dynamically so the deployed function
+  // never loads PGlite or reads the migrations folder: those exist for local development, and
+  // a static import made Vercel's function crash at module load (observed on /api/health).
+  const [{ PGlite }, { drizzle: drizzlePglite }, { migrate }] = await Promise.all([
+    import("@electric-sql/pglite"),
+    import("drizzle-orm/pglite"),
+    import("drizzle-orm/pglite/migrator"),
+  ]);
   const client = new PGlite(process.env.PGLITE_DIR ?? "./.data/pglite");
   const pg = drizzlePglite(client, { schema });
-  const ready = migratePglite(pg, { migrationsFolder: "./src/db/migrations" });
-  return { db: pg as unknown as Db, driver: "pglite", ready };
+  await migrate(pg, { migrationsFolder: "./src/db/migrations" });
+  return pg as unknown as Db;
 }
 
-function handle(): Handle {
+/** The one way to a database handle; resolves after PGlite has applied migrations locally. */
+export function getDb(): Promise<Db> {
   globalThis.__vogoatDb ??= create();
   return globalThis.__vogoatDb;
 }
 
-/** Await this before the first query in a request; it resolves immediately on Neon. */
-export async function getDb(): Promise<Db> {
-  const h = handle();
-  await h.ready;
-  return h.db;
-}
-
 export function dbDriver(): DbDriver {
-  return handle().driver;
+  return hasDatabaseUrl ? "neon" : "pglite";
 }
 
 export { schema };
