@@ -56,7 +56,7 @@ the Redundancy Test in `gemini/witus/plans/ecosystem/README.md`.
 
 Next.js App Router on Vercel · Neon Postgres (own instance, never shared) + Drizzle · Better
 Auth as OIDC client of `accounts.witus.online` (no local password store) · Vercel Blob
-(private) for audio · Stripe (lifetime = one-time Checkout) · Resend from
+(private) for audio · Stripe (lifetime = one-time Checkout) · Mailgun (BAM switched from Resend, 2026-08-31) sending as
 `noreply@vogoat.witus.online` · Turnstile · PostHog + Vercel Analytics.
 
 ---

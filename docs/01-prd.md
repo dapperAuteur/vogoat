@@ -148,7 +148,7 @@ ahead of time and human-approved. Operationally:
 4. **Review** — the admin console lists the upcoming batch; BAM swaps scripts, rerolls
    recipes/creatures, vetoes pairings. Approving flips `status: draft → approved`. Only
    `approved` rows ever publish.
-5. **Runway rule** — keep **≥14 approved days** queued. Console shows the runway; Resend email
+5. **Runway rule** — keep **≥14 approved days** queued. Console shows the runway; email (Mailgun)
    to the admin when it drops below 7.
 6. **Never-dark fallback** — if a date arrives with no approved row (it shouldn't), the app
    deterministically assembles one from an unused recipe + a backlog script, marks it `auto`,
@@ -307,7 +307,7 @@ A Vercel cron job deletes expired free-tier blobs daily and nulls `blob_url`.
 
 Ecosystem standard: Next.js App Router on Vercel · Neon + Drizzle · Better Auth as OIDC client
 of `accounts.witus.online` · **Vercel Blob (private)** for audio with tokenized playback URLs ·
-**Stripe** (own account/keys per ecosystem pattern; lifetime = one-time Checkout) · Resend from
+**Stripe** (own account/keys per ecosystem pattern; lifetime = one-time Checkout) · Mailgun (BAM, 2026-08-31; was Resend) from
 `noreply@vogoat.witus.online` · Turnstile · PostHog + Vercel Analytics.
 
 Recording notes: MediaRecorder yields `audio/webm` (Opus) on Chrome/Firefox and `audio/mp4`

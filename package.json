@@ -26,6 +26,8 @@
     "clsx": "^2.1.1",
     "csv-parse": "^6.2.1",
     "drizzle-orm": "^0.45.2",
+    "form-data": "^4.0.5",
+    "mailgun.js": "^12.7.1",
     "next": "16.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",

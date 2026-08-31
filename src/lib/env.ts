@@ -32,7 +32,11 @@ const schema = z.object({
   LAUNCH_DATE: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).default("2026-09-01"),
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
   CRON_SECRET: z.string().optional(),
-  RESEND_API_KEY: z.string().optional(),
+  // Email: Mailgun (BAM, 2026-08-31: Mailgun, not Resend). Missing = dev-log fallback.
+  MAILGUN_API_KEY: z.string().optional(),
+  MAILGUN_DOMAIN: z.string().optional(),
+  MAILGUN_REGION: z.enum(["us", "eu"]).default("us"),
+  MAIL_FROM: z.string().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
@@ -67,7 +71,10 @@ const input = {
   LAUNCH_DATE: blank(process.env.LAUNCH_DATE),
   BLOB_READ_WRITE_TOKEN: blank(process.env.BLOB_READ_WRITE_TOKEN),
   CRON_SECRET: blank(process.env.CRON_SECRET),
-  RESEND_API_KEY: blank(process.env.RESEND_API_KEY),
+  MAILGUN_API_KEY: blank(process.env.MAILGUN_API_KEY),
+  MAILGUN_DOMAIN: blank(process.env.MAILGUN_DOMAIN),
+  MAILGUN_REGION: blank(process.env.MAILGUN_REGION),
+  MAIL_FROM: blank(process.env.MAIL_FROM),
   STRIPE_SECRET_KEY: blank(process.env.STRIPE_SECRET_KEY),
   STRIPE_WEBHOOK_SECRET: blank(process.env.STRIPE_WEBHOOK_SECRET),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: blank(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY),
@@ -94,5 +101,5 @@ export const hasWitusSso = Boolean(env.WITUS_OIDC_CLIENT_ID);
 /** Development-only sign-in when SSO is not provisioned (BAM, 2026-08-31). Never in production. */
 export const hasDevMagicLink = !isProd;
 export const hasBlobStore = Boolean(env.BLOB_READ_WRITE_TOKEN);
-export const hasResend = Boolean(env.RESEND_API_KEY);
+export const hasMailgun = Boolean(env.MAILGUN_API_KEY && env.MAILGUN_DOMAIN);
 export const hasPostHog = Boolean(env.NEXT_PUBLIC_POSTHOG_KEY);

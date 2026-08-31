@@ -17,8 +17,9 @@ export default function HomePage() {
         </p>
       </section>
       <p className="text-xs leading-relaxed text-muted">
-        Audio stays on your device until you keep a take. No voice-print analysis, no training
-        data, ever.
+        Audio stays on your device until you keep a take. On free accounts, kept recordings are
+        deleted after 30 days; your creatures and streaks stay. No voice-print analysis, no
+        training data, ever.
       </p>
     </main>
   );
