@@ -39,6 +39,9 @@ export const account = pgTable("account", {
     .references(() => user.id, { onDelete: "cascade" }),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
+  // better-auth 1.7 core field: the token issuer for OAuth/OIDC accounts (required by the model;
+  // the adapter refuses to query when a model field is missing from the schema).
+  issuer: text("issuer").notNull(),
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
