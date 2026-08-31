@@ -5,7 +5,7 @@ Phases from the v1 build plan (PRD: `docs/01-prd.md`). Status as of 2026-08-31.
 | # | Phase | Status |
 |---|---|---|
 | 1 | App scaffold: Next.js 16, Tailwind v4, Drizzle schema, embedded local Postgres, health route, tests | In progress (schema, client, shell, tests done; deploy waits on provisioning) |
-| 2 | Auth: Sign in with WitUS (OIDC), `ADMIN_EMAIL` bootstrap, dev-only console magic link | Not started |
+| 2 | Auth: Sign in with WitUS (OIDC), `ADMIN_EMAIL` bootstrap, dev-only console magic link | Code done 2026-08-31 (magic-link flow + admin bootstrap verified end to end); SSO lights up when witus task 80 provisions the client |
 | 3 | Daily engine: seeds, date-keyed fetch (00:00 UTC), never-dark fallback, the reveal page | Not started |
 | 4 | Recorder + takes: MediaRecorder, 30s cap, keep/discard, 3/day free, private Blob upload, submit | Not started |
 | 5 | Payoff + Menagerie: plate fills in, streaks, silhouettes for missed days, 30-day expiry cron | Not started |
