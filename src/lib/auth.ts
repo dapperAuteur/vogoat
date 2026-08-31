@@ -60,6 +60,11 @@ async function createAuth() {
                   clientSecret: env.WITUS_OIDC_CLIENT_SECRET ?? "",
                   scopes: ["openid", "email", "profile"],
                   pkce: true,
+                  // The IdP registers /api/auth/oauth2/callback/witus (the ecosystem-wide
+                  // better-auth path, exact-match validated). better-auth 1.7 serves the core
+                  // /api/auth/callback/:id instead, so the authorize/token redirect_uri is
+                  // pinned to the registered form and a route 307s it to the core handler.
+                  redirectURI: `${env.BETTER_AUTH_URL}/api/auth/oauth2/callback/witus`,
                 },
               ],
             }),
