@@ -1,0 +1,17 @@
+# deps / build
+node_modules/
+.next/
+out/
+.vercel/
+
+# env — never commit secrets
+.env
+.env.*
+!.env.example
+
+# local working notes (ecosystem convention: plans/ is not committed)
+plans/
+
+# os / editor
+.DS_Store
+*.log
