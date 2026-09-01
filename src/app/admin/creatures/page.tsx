@@ -32,10 +32,10 @@ export default async function CreatureVettingPage() {
       <header className="flex items-baseline justify-between">
         <span className="font-display text-3xl italic">Creature vetting</span>
         <Link
-          href="/"
+          href="/admin"
           className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
         >
-          Today
+          Admin
         </Link>
       </header>
       <p className="text-sm leading-relaxed text-muted">

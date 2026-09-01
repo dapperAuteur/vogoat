@@ -66,18 +66,10 @@ export default async function HomePage() {
             </Link>
             {user.role === "admin" ? (
               <Link
-                href="/admin/scripts"
+                href="/admin"
                 className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
               >
-                Scripts
-              </Link>
-            ) : null}
-            {user.role === "admin" ? (
-              <Link
-                href="/admin/creatures"
-                className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-              >
-                Creatures
+                Admin
               </Link>
             ) : null}
             <span className="text-sm font-semibold text-muted">{user.name}</span>
