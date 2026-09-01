@@ -28,7 +28,7 @@ export default async function SignInPage() {
         {hasDevMagicLink ? <DevMagicLinkForm /> : null}
         {!hasWitusSso && !hasDevMagicLink ? (
           <p className="text-sm leading-relaxed text-muted">
-            Sign-in is not available yet: VoGoat uses Sign in with WitUS and the connection is
+            Sign-in is not available yet: VO GOAT uses Sign in with WitUS and the connection is
             still being set up. Today&apos;s recipe works without an account.
           </p>
         ) : null}
