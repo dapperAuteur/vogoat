@@ -54,3 +54,19 @@ describe("creature derivation", () => {
     expect(headlineTraits(mouseDay)).toEqual(["tiny", "menacing", "elder", "hushed", "float"]);
   });
 });
+
+describe("vetting-aware derivation", () => {
+  const tinyDay: Recipe = {
+    effort: "glide", placement: "balanced", air: "dry", age: "adult",
+    size: "tiny", tempo: "steady", volume: "medium", attitude: "friendly",
+  };
+
+  it("skips excluded animals and falls back to the full class when emptied", () => {
+    const excluded = new Set(["mouse", "frog", "hummingbird"]);
+    for (let id = 1; id <= 40; id++) {
+      expect(deriveCreature(tinyDay, id, undefined, excluded).baseAnimal).toBe("hamster");
+    }
+    const all = new Set(["mouse", "frog", "hummingbird", "hamster"]);
+    expect(ANIMALS_BY_SIZE.tiny).toContain(deriveCreature(tinyDay, 5, undefined, all).baseAnimal);
+  });
+});

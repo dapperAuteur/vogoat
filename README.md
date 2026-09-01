@@ -47,7 +47,7 @@ pnpm dev                     # http://localhost:3050
 
 **Sharing:** after submitting, copy the spoiler-free text card or mint an unguessable, revocable audio link; `/s/[slug]` (noindex) plays the take with the script as its transcript, keeps the card alive after audio expiry, and carries a report form on every page.
 
-**Admin:** the `ADMIN_EMAIL` account sees a Scripts link in the header; `/admin/scripts` is the §8 triage ritual in-app (use / backlog / never per candidate), 404 for everyone else.
+**Admin:** the `ADMIN_EMAIL` account sees a Scripts link in the header; `/admin/scripts` is the §8 triage ritual in-app and `/admin/creatures` vets the placeholder animal art (use / backlog / never; animals stay live unless marked never so the daily cannot go dark), 404 for everyone else.
 
 **Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
 appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offers a magic

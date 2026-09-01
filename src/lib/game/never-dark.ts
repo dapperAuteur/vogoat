@@ -21,13 +21,15 @@ export type FallbackInput = {
   recentRecipes: readonly Recipe[];
   /** Scripts eligible for pairing: status `backlog` first, then unused `use` (invariant 3). */
   scripts: readonly FallbackScript[];
+  /** Animals BAM marked `never`; skipped by derivation (class falls back if emptied). */
+  excludedAnimals?: ReadonlySet<string>;
 };
 
 /** Same inputs, same daily, on every instance. Returns null when no approved script exists. */
-export function assembleFallback({ dayKey, usedRecipeIds, recentRecipes, scripts }: FallbackInput): FallbackDaily | null {
+export function assembleFallback({ dayKey, usedRecipeIds, recentRecipes, scripts, excludedAnimals }: FallbackInput): FallbackDaily | null {
   if (scripts.length === 0) return null;
   const recipeId = pickRecipeId({ seed: dayKey, usedIds: usedRecipeIds, recent: recentRecipes });
   const recipe = recipeFromId(recipeId);
   const script = scripts[randomInt(seededRandom(`script:${dayKey}`), scripts.length)];
-  return { recipeId, recipe, scriptId: script.id, creature: deriveCreature(recipe, recipeId) };
+  return { recipeId, recipe, scriptId: script.id, creature: deriveCreature(recipe, recipeId, undefined, excludedAnimals) };
 }

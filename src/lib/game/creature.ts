@@ -30,8 +30,16 @@ function cap(s: string): string {
  * the same daily always yields the same creature; admin may pass an override to reroll within
  * the class (PRD §6.3). The goat is reserved for milestones and never derived here.
  */
-export function deriveCreature(recipe: Recipe, recipeId: number, animalOverride?: BaseAnimal): DerivedCreature {
-  const pool = ANIMALS_BY_SIZE[recipe.size];
+export function deriveCreature(
+  recipe: Recipe,
+  recipeId: number,
+  animalOverride?: BaseAnimal,
+  excludedAnimals?: ReadonlySet<string>,
+): DerivedCreature {
+  const full = ANIMALS_BY_SIZE[recipe.size];
+  const filtered = excludedAnimals ? full.filter((a) => !excludedAnimals.has(a)) : [...full];
+  // A size class emptied by vetting falls back to the full class: the daily never goes dark.
+  const pool = filtered.length > 0 ? filtered : [...full];
   const baseAnimal: BaseAnimal = animalOverride ?? pool[recipeId % pool.length];
   const layers: CreatureLayers = {
     baseAnimal,
