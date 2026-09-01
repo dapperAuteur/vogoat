@@ -20,7 +20,7 @@ import { sendEmail } from "./mailer";
 async function createAuth() {
   const db = await getDb();
   return betterAuth({
-    appName: "VoGoat",
+    appName: "VO GOAT",
     baseURL: env.BETTER_AUTH_URL,
     secret: env.BETTER_AUTH_SECRET,
     database: drizzleAdapter(db, { provider: "pg" }),
@@ -38,8 +38,8 @@ async function createAuth() {
               sendMagicLink: async ({ email, url }) => {
                 await sendEmail({
                   to: email,
-                  subject: "Your VoGoat sign-in link (development)",
-                  text: `Sign in to VoGoat:\n${url}\n\nThis link expires in 10 minutes.`,
+                  subject: "Your VO GOAT sign-in link (development)",
+                  text: `Sign in to VO GOAT:\n${url}\n\nThis link expires in 10 minutes.`,
                 });
               },
             }),

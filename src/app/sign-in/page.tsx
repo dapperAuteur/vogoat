@@ -14,7 +14,7 @@ export default async function SignInPage() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-6 px-5 py-8">
       <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl italic">VoGoat</span>
+        <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
       </header>
       <section className="flex flex-col gap-4 rounded-md border border-rule bg-card p-5">
         <div>

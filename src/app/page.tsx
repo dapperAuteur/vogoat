@@ -24,7 +24,7 @@ export default async function HomePage() {
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 pt-6">
       <header className="flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl italic">VoGoat</span>
+          <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
           {daily ? <span className="text-sm font-semibold text-muted">No. {daily.dayNumber}</span> : null}
         </div>
         {session ? (

@@ -15,7 +15,7 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.APP_URL),
-  title: { default: "VoGoat", template: "%s · VoGoat" },
+  title: { default: "VO GOAT", template: "%s · VO GOAT" },
   description:
     "The daily voiceover game. One shared voice recipe a day: record your take, collect the creature, share the card.",
 };
