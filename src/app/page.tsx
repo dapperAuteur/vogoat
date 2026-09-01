@@ -146,7 +146,7 @@ export default async function HomePage() {
                     <span className="text-xs text-muted">{t.durationMs ? `${(t.durationMs / 1000).toFixed(1)}s` : ""}</span>
                   </div>
                   <audio controls preload="none" src={`/api/takes/${t.id}/audio`} className="w-full" />
-                  <KeptTakeControls takeId={t.id} canSubmit={!submitted} />
+                  <KeptTakeControls takeId={t.id} canSubmit={!submitted} isLastOption={kept.length === 1 && limit !== null && takes.length >= limit} />
                 </div>
               ))}
             </section>
@@ -186,7 +186,7 @@ export default async function HomePage() {
 
       <div className="sticky bottom-0 mt-auto flex flex-col gap-2 bg-paper pt-2 pb-5">
         {daily && !submitted ? (
-          <TakeRecorder dailyId={daily.id} isSignedIn={Boolean(user)} attemptCount={takes.length} limit={limit} />
+          <TakeRecorder dailyId={daily.id} isSignedIn={Boolean(user)} attemptCount={takes.length} limit={limit} keptCount={kept.length} />
         ) : null}
         {!daily ? (
           <p className="text-center text-xs leading-relaxed text-muted">
