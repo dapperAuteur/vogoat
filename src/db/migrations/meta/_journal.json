@@ -36,6 +36,13 @@
       "when": 1788301720813,
       "tag": "0004_oval_freak",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788302485657,
+      "tag": "0005_mature_gabe_jones",
+      "breakpoints": true
     }
   ]
 }
