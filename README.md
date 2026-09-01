@@ -45,6 +45,8 @@ pnpm dev                     # http://localhost:3050
 
 **Menagerie:** `/menagerie` (signed in) shows every plate you have performed, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
 
+**Sharing:** after submitting, copy the spoiler-free text card or mint an unguessable, revocable audio link; `/s/[slug]` (noindex) plays the take with the script as its transcript, keeps the card alive after audio expiry, and carries a report form on every page.
+
 **Admin:** the `ADMIN_EMAIL` account sees a Scripts link in the header; `/admin/scripts` is the §8 triage ritual in-app (use / backlog / never per candidate), 404 for everyone else.
 
 **Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
