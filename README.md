@@ -58,6 +58,9 @@ Environment variables are documented in [`.env.example`](.env.example). Deploy, 
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).
 
+Every page carries the WitUS ecosystem footer (sibling products, the Rise Wellness callout
+verbatim per `gemini/witus/public/brand/footer-recipe.md`, terms/privacy/contact).
+
 ## Contributing / working in this repo
 
 Process rules live in [`CLAUDE.md`](CLAUDE.md) (identity, invariants, and the shared WitUS
