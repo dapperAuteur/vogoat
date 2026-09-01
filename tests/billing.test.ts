@@ -100,3 +100,15 @@ describe("cash app claims (manual $100 flow)", () => {
     expect((await listClaims(db)).length).toBe(1);
   });
 });
+
+describe("error log", () => {
+  it("persists trimmed events and lists newest first", async () => {
+    const { logAppError, recentErrors } = await import("@/lib/errors/log");
+    await logAppError(db, { source: "server", message: "TypeError: boom", digest: "abc123", path: "/api/health" });
+    await logAppError(db, { source: "client", message: "x".repeat(900), path: "/" });
+    const rows = await recentErrors(db, 10);
+    expect(rows[0].source).toBe("client");
+    expect(rows[0].message.length).toBe(500);
+    expect(rows[1].digest).toBe("abc123");
+  });
+});

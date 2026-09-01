@@ -24,6 +24,7 @@ export const dailyStatusEnum = pgEnum("daily_status", ["draft", "approved", "pub
 export const takeStatusEnum = pgEnum("take_status", ["recorded", "kept", "submitted", "discarded"]);
 export const purchaseKindEnum = pgEnum("purchase_kind", ["lifetime"]);
 export const claimStatusEnum = pgEnum("claim_status", ["pending", "verified", "rejected"]);
+export const errorSourceEnum = pgEnum("error_source", ["server", "client"]);
 
 /** Micro-scripts. Only `use`/`backlog` may ever be paired into a daily (invariant 3). */
 export const script = pgTable(
@@ -159,6 +160,22 @@ export const purchase = pgTable("purchase", {
   currency: text("currency").notNull().default("usd"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/** Graceful-failure visibility (BAM 2026-09-01): every 500 lands here with its digest so the
+ * admin can match what a user saw to why it happened. Messages are trimmed and never carry
+ * payloads (shared logging rule). */
+export const errorLog = pgTable(
+  "error_log",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    source: errorSourceEnum("source").notNull(),
+    digest: text("digest"),
+    message: text("message").notNull(),
+    path: text("path"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("error_log_created_idx").on(t.createdAt)],
+);
 
 /** Manual $100 Cash App lifetime flow (BAM 2026-09-01, mirroring FlashLearnAI): pay the QR,
  * submit your Cash App name, BAM verifies in /admin/cashapp. */

@@ -15,5 +15,5 @@ Phases from the v1 build plan (PRD: `docs/01-prd.md`). Status as of 2026-08-31.
 | 9 | Paid tiers: Stripe checkout (lifetime $103.29 / $100 Cash App, monthly $10.60, annual gated at 100 founders), plan sync + lapse policy, practice room, downloads, founder badge | Done 2026-09-01 (practice-take saving is a fast-follow); needs Stripe keys + webhook (task 09) |
 | 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done 2026-09-01: rate limits on hot actions (per-instance), Turnstile on reports (inert until keys), PostHog §15 events behind /ingest proxy, /voice-data + /about, root OG + favicon, robots + sitemap. Remaining: Playwright/axe E2E sweep, McStay channel URL confirmation |
 
-Backlog (not v1): A/B/C test of the three design directions once there is traffic
+Backlog (not v1): users download all their attempts (plans/future/05, needs the §5 downloads-are-paid question answered) · A/B/C test of the three design directions once there is traffic
 (`plans/future/01-ab-test-ui-directions.md`); everything in PRD §16.
