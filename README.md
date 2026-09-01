@@ -58,6 +58,8 @@ Environment variables are documented in [`.env.example`](.env.example). Deploy, 
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).
 
+`/voice-data` states the voice-data promise in plain language and `/about` credits the method (Laban; popularized by Darren McStay). Report submissions are rate-limited and Turnstile-guarded once keys exist; PostHog (when keyed) tracks the PRD §15 funnel through a first-party `/ingest` proxy.
+
 Every page carries the WitUS ecosystem footer (sibling products, the Rise Wellness callout
 verbatim per `gemini/witus/public/brand/footer-recipe.md`, terms/privacy/contact).
 

@@ -7,6 +7,7 @@ import { err, type ActionResult } from "@/lib/action-result";
 import { getTakeAudioStore } from "@/lib/blob-store";
 import { dayKey } from "@/lib/game/day";
 import { env } from "@/lib/env";
+import { isRateLimited } from "@/lib/rate-limit";
 import { getSession, type SessionUser } from "@/lib/session";
 import { discardTake, keepTake, registerTake, submitTake, type TakeView } from "@/lib/takes/core";
 
@@ -21,6 +22,7 @@ export async function registerTakeAction(dailyId: string): Promise<ActionResult<
   const user = await currentUser();
   if (!user) return err("unauthenticated", "Sign in to record counted takes.");
   if (!uuid.safeParse(dailyId).success) return err("bad_input", "Invalid daily.");
+  if (isRateLimited(`register:${user.id}`, 10, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
   return registerTake(db, { userId: user.id, plan: user.plan as "free", dailyId });
 }
@@ -34,6 +36,7 @@ export async function keepTakeAction(formData: FormData): Promise<ActionResult<T
   if (typeof takeId !== "string" || !uuid.safeParse(takeId).success || !(audio instanceof File) || !Number.isFinite(durationMs)) {
     return err("bad_input", "Invalid keep request.");
   }
+  if (isRateLimited(`keep:${user.id}`, 10, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
   const result = await keepTake(db, getTakeAudioStore(), {
     userId: user.id,
@@ -61,6 +64,7 @@ export async function submitTakeAction(takeId: string): Promise<ActionResult<Tak
   const user = await currentUser();
   if (!user) return err("unauthenticated", "Sign in to submit.");
   if (!uuid.safeParse(takeId).success) return err("bad_input", "Invalid take.");
+  if (isRateLimited(`submit:${user.id}`, 5, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
   const result = await submitTake(db, { userId: user.id, takeId, todayKey: dayKey(new Date(), env.DAILY_TIMEZONE) });
   if (result.ok) revalidatePath("/");

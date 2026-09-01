@@ -1,5 +1,6 @@
 "use client";
 
+import Script from "next/script";
 import { useState } from "react";
 import { reportShareAction } from "@/app/actions/share";
 import { REPORT_REASONS } from "@/lib/share/core";
@@ -63,6 +64,12 @@ export function ReportForm({ slug }: { slug: string }) {
         Anything else (optional)
       </label>
       <textarea id="report-detail" name="detail" rows={2} maxLength={2000} className="rounded-md border border-rule bg-paper p-2 text-sm" />
+      {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? (
+        <>
+          <Script src="https://challenges.cloudflare.com/turnstile/v0/api.js" strategy="lazyOnload" />
+          <div className="cf-turnstile" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} data-theme="auto" />
+        </>
+      ) : null}
       <button
         type="submit"
         disabled={status === "sending"}

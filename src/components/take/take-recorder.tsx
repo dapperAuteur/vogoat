@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { discardTakeAction, keepTakeAction, registerTakeAction } from "@/app/actions/takes";
+import { track } from "@/lib/analytics";
 
 const MAX_MS = 30_000;
 
@@ -80,6 +81,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
         return;
       }
       takeIdRef.current = registered.data.takeId;
+      track("take_registered", { takeNumber: registered.data.takeNumber });
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -148,6 +150,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
       setPhase("review");
       return;
     }
+    track("take_kept", { durationMs: Math.round(review.durationMs) });
     URL.revokeObjectURL(review.url);
     setReview(null);
     setPhase("idle");

@@ -77,6 +77,16 @@ export function SiteFooter() {
                   Sign in
                 </Link>
               </li>
+              <li>
+                <Link href="/about" className={linkClasses}>
+                  About the method
+                </Link>
+              </li>
+              <li>
+                <Link href="/voice-data" className={linkClasses}>
+                  Your voice data
+                </Link>
+              </li>
             </ul>
           </div>
 
