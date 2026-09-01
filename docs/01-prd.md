@@ -201,10 +201,10 @@ BAM's ask (idea file + `witus-learn/plans/future-courses/2026-08-30-literary-dev
 *"a feature for me only at the moment that has me write something using a different literary
 device each day, chosen randomly"* — explicitly paired with the VoGoat daily.
 
-- **One literary device per day**, drawn from the 88 devices in
+- **One literary device per day**, drawn from the 251 devices in
   [`data/literary-devices.csv`](../data/literary-devices.csv) (device list per
   literary-devices.com — BAM's pointed source; definitions and examples are original). Devices
-  are assigned by shuffled cycle: **no repeats until all 88 are used** (~3 months), then
+  are assigned by shuffled cycle: **no repeats until all 251 are used** (~8 months), then
   reshuffle. The assignment is recorded per date, same shared-daily philosophy.
 - **The Workshop page shows:** the device (name + definition + 3 examples), and — this is the
   pairing — **today's voice recipe and script as optional creative constraints.** Write a

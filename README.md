@@ -12,7 +12,7 @@ The mascot is a goat.
   "Field Guide" chosen 2026-08-31. Tokens live in `src/app/globals.css` behind
   `<html data-direction>` so other directions can be A/B tested later.
 - **Seed data:** [`data/voice-recipes.csv`](data/voice-recipes.csv) (all 11,664 voice recipes),
-  [`data/literary-devices.csv`](data/literary-devices.csv) (88 devices for the admin Workshop).
+  [`data/literary-devices.csv`](data/literary-devices.csv) (251 devices for the admin Workshop).
 - **Domain:** `vogoat.witus.online`, a WitUS ecosystem product; sign-in via
   `accounts.witus.online`.
 
@@ -36,7 +36,7 @@ pnpm dev                     # http://localhost:3050
 | `pnpm check` | typecheck + lint + unit tests |
 | `pnpm test` | Vitest: recipe id mapping against the CSV, schema invariants on an in-memory Postgres |
 | `pnpm db:generate` | Drizzle migration from `src/db/schema/*` into `src/db/migrations/` |
-| `pnpm db:seed` | Idempotent seed: 88 literary devices + script batch 01 as `candidate` (safe on Neon) |
+| `pnpm db:seed` | Idempotent seed: 251 literary devices + script batch 01 as `candidate` (safe on Neon) |
 | `pnpm db:seed:dev` | Local only: marks candidates `backlog` on the embedded database so dailies can be assembled before triage; refuses to run against Neon |
 | `pnpm db:migrate` | Apply migrations to the Neon URL in `.env.local` (PGlite migrates itself) |
 | `pnpm db:migrate:prod:file` / `pnpm db:migrate:prod` | Same against `.env.prod` (node parses the file) / against the shell's `DATABASE_URL` |
