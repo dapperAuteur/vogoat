@@ -6,7 +6,7 @@ import { WheelTable } from "@/components/daily/wheel-table";
 import { getTodaysDaily, NoScriptAvailableError, type DailyView } from "@/lib/daily";
 import { nextDayBoundary } from "@/lib/game/day";
 import { env } from "@/lib/env";
-import { getSession } from "@/lib/session";
+import { getSession, type SessionUser } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +29,14 @@ export default async function HomePage() {
         </div>
         {session ? (
           <div className="flex items-center gap-1">
+            {(session.user as SessionUser).role === "admin" ? (
+              <Link
+                href="/admin/scripts"
+                className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+              >
+                Scripts
+              </Link>
+            ) : null}
             <span className="text-sm font-semibold text-muted">{session.user.name}</span>
             <SignOutButton />
           </div>

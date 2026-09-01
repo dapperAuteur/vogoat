@@ -42,6 +42,8 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
+**Admin:** the `ADMIN_EMAIL` account sees a Scripts link in the header; `/admin/scripts` is the §8 triage ritual in-app (use / backlog / never per candidate), 404 for everyone else.
+
 **Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
 appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offers a magic
 link whose URL prints to the dev server console (development never sends real email, even
