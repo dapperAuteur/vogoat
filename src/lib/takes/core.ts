@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm";
 import type { Db } from "@/db/client";
-import { daily, take, type Plan } from "@/db/schema";
+import { daily, take, type Plan, type Role } from "@/db/schema";
 import { err, ok, type ActionResult } from "@/lib/action-result";
 import type { TakeAudioStore } from "@/lib/blob-store";
 
@@ -25,16 +25,17 @@ function view(row: typeof take.$inferSelect): TakeView {
   return { id: row.id, takeNumber: row.takeNumber, status: row.status, durationMs: row.durationMs, hasAudio: row.blobUrl != null };
 }
 
-export function takeLimitFor(plan: Plan): number | null {
+export function takeLimitFor(plan: Plan, role: Role = "player"): number | null {
+  if (role === "admin") return null; // PRD §5: admin gets unlimited takes
   return plan === "free" ? FREE_TAKE_LIMIT : null;
 }
 
 /** Registers an attempt at record-start; counts are server-tracked, audio is not (invariant 2). */
 export async function registerTake(
   db: Db,
-  args: { userId: string; plan: Plan; dailyId: string },
+  args: { userId: string; plan: Plan; dailyId: string; role?: Role },
 ): Promise<ActionResult<{ takeId: string; takeNumber: number; limit: number | null }>> {
-  const limit = takeLimitFor(args.plan);
+  const limit = takeLimitFor(args.plan, args.role ?? "player");
   for (let attempt = 0; attempt < 3; attempt++) {
     const rows = await db.select({ n: take.takeNumber }).from(take).where(and(eq(take.userId, args.userId), eq(take.dailyId, args.dailyId)));
     if (limit !== null && rows.length >= limit) {
@@ -95,7 +96,7 @@ export async function discardTake(
 /** One submission per day per account, every tier; the schema enforces it (invariant 1). */
 export async function submitTake(
   db: Db,
-  args: { userId: string; takeId: string; todayKey: string },
+  args: { userId: string; takeId: string; todayKey: string; allowResubmit?: boolean },
 ): Promise<ActionResult<TakeView>> {
   const rows = await db
     .select({ t: take, dayDate: daily.dayDate })
@@ -110,8 +111,20 @@ export async function submitTake(
     const [updated] = await db.update(take).set({ status: "submitted" }).where(eq(take.id, row.t.id)).returning();
     return ok(view(updated));
   } catch (error: unknown) {
-    if (isUniqueViolation(error)) return err("already_submitted", "You already submitted a take today. One entry per day, every tier.");
-    throw error;
+    if (!isUniqueViolation(error)) throw error;
+    if (!args.allowResubmit) {
+      return err("already_submitted", "You already submitted a take today. One entry per day, every tier.");
+    }
+    // Admin replace-resubmit (BAM 2026-09-01): the schema's one-submission index stays; the
+    // previous entry is demoted to kept, then this one becomes the single submitted take.
+    const [replaced] = await db.transaction(async (tx) => {
+      await tx
+        .update(take)
+        .set({ status: "kept" })
+        .where(and(eq(take.userId, args.userId), eq(take.dailyId, row.t.dailyId), eq(take.status, "submitted")));
+      return tx.update(take).set({ status: "submitted" }).where(eq(take.id, row.t.id)).returning();
+    });
+    return ok(view(replaced));
   }
 }
 

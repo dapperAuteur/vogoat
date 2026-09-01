@@ -34,7 +34,7 @@ export default async function HomePage() {
   if (user && daily) {
     const db = await getDb();
     takes = await listTakes(db, { userId: user.id, dailyId: daily.id });
-    limit = takeLimitFor(user.plan as Plan);
+    limit = takeLimitFor(user.plan as Plan, user.role);
   }
   const submitted = takes.find((t) => t.status === "submitted");
   const kept = takes.filter((t) => t.status === "kept");
@@ -154,7 +154,7 @@ export default async function HomePage() {
                       Download
                     </a>
                   ) : null}
-                  <KeptTakeControls takeId={t.id} canSubmit={!submitted} isLastOption={kept.length === 1 && limit !== null && takes.length >= limit} />
+                  <KeptTakeControls takeId={t.id} canSubmit={!submitted || user?.role === "admin"} isLastOption={kept.length === 1 && limit !== null && takes.length >= limit} />
                 </div>
               ))}
             </section>
@@ -193,7 +193,7 @@ export default async function HomePage() {
       )}
 
       <div className="sticky bottom-0 mt-auto flex flex-col gap-2 bg-paper pt-2 pb-5">
-        {daily && !submitted ? (
+        {daily && (!submitted || user?.role === "admin") ? (
           <TakeRecorder dailyId={daily.id} isSignedIn={Boolean(user)} attemptCount={takes.length} limit={limit} keptCount={kept.length} />
         ) : null}
         {!daily ? (
