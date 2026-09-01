@@ -44,6 +44,12 @@ export default async function HomePage() {
         </div>
         {session && user ? (
           <div className="flex items-center gap-1">
+            <Link
+              href="/menagerie"
+              className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+            >
+              Menagerie
+            </Link>
             {user.role === "admin" ? (
               <Link
                 href="/admin/scripts"
@@ -95,9 +101,17 @@ export default async function HomePage() {
               </span>
             </div>
             <p className="self-center text-sm leading-relaxed text-muted">
-              {submitted
-                ? "Added to your Menagerie. Come back for tomorrow's specimen."
-                : "The plate fills in when you submit a take. Spinning and rehearsing never need an account."}
+              {submitted ? (
+                <>
+                  Added to{" "}
+                  <Link href="/menagerie" className="font-semibold text-moss underline-offset-4 hover:underline">
+                    your Menagerie
+                  </Link>
+                  . Come back for tomorrow&apos;s specimen.
+                </>
+              ) : (
+                "The plate fills in when you submit a take. Spinning and rehearsing never need an account."
+              )}
             </p>
           </section>
 
