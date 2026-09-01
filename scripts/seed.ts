@@ -5,6 +5,29 @@ import { literaryDevice, script } from "../src/db/schema";
 
 // Idempotent seed, safe for any environment: literary devices (PRD §9) and script batch 01 as
 // `candidate` (invariant 3: nothing is approved here; BAM's verdicts flip status later).
+
+/** Prints the full cause chain; PGlite failures usually bury the real reason one level down. */
+function explain(error: unknown): string {
+  const parts: string[] = [];
+  let current: unknown = error;
+  while (current instanceof Error) {
+    parts.push(`${current.constructor.name}: ${current.message}`);
+    current = current.cause;
+  }
+  return parts.join("\n  caused by ") || "unknown error";
+}
+
+function hint(text: string): string {
+  if (/CREATE SCHEMA|lock|access handle|NoModificationAllowed|corrupt/i.test(text)) {
+    return (
+      "\nHint: the embedded database (./.data/pglite) supports ONE process at a time and is disposable dev data." +
+      "\n  - If `pnpm dev` is running against it, stop the dev server first (or triage in-app at /admin/scripts instead)." +
+      "\n  - If it persists, delete the directory (`rm -rf .data/pglite`); it reseeds in seconds."
+    );
+  }
+  return "";
+}
+
 async function main() {
   const db = await getDb();
   console.log(`Seeding via ${dbDriver()}`);
@@ -37,6 +60,7 @@ async function main() {
 main()
   .then(() => process.exit(0))
   .catch((error: unknown) => {
-    console.error("Seed failed:", error instanceof Error ? `${error.constructor.name}: ${error.message}` : "unknown error");
+    const text = explain(error);
+    console.error(`Seed failed: ${text}${hint(text)}`);
     process.exit(1);
   });
