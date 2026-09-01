@@ -103,3 +103,5 @@ export const hasDevMagicLink = !isProd;
 export const hasBlobStore = Boolean(env.BLOB_READ_WRITE_TOKEN);
 export const hasMailgun = Boolean(env.MAILGUN_API_KEY && env.MAILGUN_DOMAIN);
 export const hasPostHog = Boolean(env.NEXT_PUBLIC_POSTHOG_KEY);
+/** Payments are live once the Stripe secret exists; the upgrade page degrades until then. */
+export const hasStripe = Boolean(env.STRIPE_SECRET_KEY);

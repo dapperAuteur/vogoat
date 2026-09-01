@@ -5,6 +5,7 @@ import { getDb } from "@/db/client";
 import { dayKey } from "@/lib/game/day";
 import { GOAT_MILESTONES, nextGoat } from "@/lib/game/streak";
 import { env } from "@/lib/env";
+import { isFounder } from "@/lib/billing/core";
 import { getMenagerie } from "@/lib/menagerie";
 import { requireUser } from "@/lib/session";
 
@@ -17,13 +18,21 @@ export default async function MenageriePage() {
   const db = await getDb();
   const today = dayKey(new Date(), env.DAILY_TIMEZONE);
   const view = await getMenagerie(db, { userId: user.id, today });
+  const founder = await isFounder(db, user.id);
   const upcoming = nextGoat(view.streaks.current);
   const collectedGoats = GOAT_MILESTONES.filter((m) => view.streaks.best >= m).length;
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
       <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl italic">The Menagerie</span>
+        <span className="font-display text-3xl italic">
+          The Menagerie
+          {founder ? (
+            <span className="ml-2 align-middle rounded-sm border border-ochre px-2 py-0.5 font-sans text-[10px] font-semibold tracking-[0.1em] text-ochre uppercase not-italic">
+              founder
+            </span>
+          ) : null}
+        </span>
         <Link
           href="/"
           className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"

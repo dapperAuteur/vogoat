@@ -12,7 +12,7 @@ Phases from the v1 build plan (PRD: `docs/01-prd.md`). Status as of 2026-08-31.
 | 6 | Share: spoiler-free text card, plate image, unguessable audio page (noindex, revoke, report) | Done 2026-09-01: copy-card + revocable audio link on the payoff, /s/[slug] page with transcript, expired-audio state, report form, OG image |
 | 7 | Admin console: daily authoring queue, script triage, runway alert | Done 2026-09-01: `/admin` hub, `/admin/dailies` (runway, extend, approve/revert, rerolls, script swap), triage, creature vetting, runway alert email on the daily cron |
 | 8 | The Workshop (admin-only daily literary device) | Done 2026-09-01: shuffled no-repeat cycle, write/save/archive, streaks, script-candidate loop-closer into triage |
-| 9 | Lifetime tier: Stripe checkout, practice mode, downloads, founder badge | Waits on price (witus task 79) |
+| 9 | Paid tiers: Stripe checkout (lifetime $103.29 / $100 Cash App, monthly $10.60, annual gated at 100 founders), plan sync + lapse policy, practice room, downloads, founder badge | Done 2026-09-01 (practice-take saving is a fast-follow); needs Stripe keys + webhook (task 09) |
 | 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done 2026-09-01: rate limits on hot actions (per-instance), Turnstile on reports (inert until keys), PostHog §15 events behind /ingest proxy, /voice-data + /about, root OG + favicon, robots + sitemap. Remaining: Playwright/axe E2E sweep, McStay channel URL confirmation |
 
 Backlog (not v1): A/B/C test of the three design directions once there is traffic

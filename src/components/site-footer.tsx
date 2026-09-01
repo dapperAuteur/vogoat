@@ -78,6 +78,16 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/upgrade" className={linkClasses}>
+                  Upgrade
+                </Link>
+              </li>
+              <li>
+                <Link href="/practice" className={linkClasses}>
+                  Practice room
+                </Link>
+              </li>
+              <li>
                 <Link href="/about" className={linkClasses}>
                   About the method
                 </Link>
