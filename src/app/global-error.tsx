@@ -29,6 +29,8 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
           >
             Try again
           </button>
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- the root layout
+              (and with it the router context Link needs) just crashed; a hard navigation is the point */}
           <a
             href="/"
             style={{ minHeight: 48, borderRadius: 8, border: "1px solid #0f172a", color: "#0f172a", fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}
