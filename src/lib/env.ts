@@ -39,6 +39,8 @@ const schema = z.object({
   MAIL_FROM: z.string().optional(),
   STRIPE_SECRET_KEY: z.string().optional(),
   STRIPE_WEBHOOK_SECRET: z.string().optional(),
+  // Accepted now, used when an embedded Payment Element ships; Checkout redirect needs none.
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().optional(),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
   TURNSTILE_SECRET_KEY: z.string().optional(),
   NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
@@ -77,6 +79,7 @@ const input = {
   MAIL_FROM: blank(process.env.MAIL_FROM),
   STRIPE_SECRET_KEY: blank(process.env.STRIPE_SECRET_KEY),
   STRIPE_WEBHOOK_SECRET: blank(process.env.STRIPE_WEBHOOK_SECRET),
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: blank(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY),
   NEXT_PUBLIC_TURNSTILE_SITE_KEY: blank(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY),
   TURNSTILE_SECRET_KEY: blank(process.env.TURNSTILE_SECRET_KEY),
   NEXT_PUBLIC_POSTHOG_KEY: blank(process.env.NEXT_PUBLIC_POSTHOG_KEY),

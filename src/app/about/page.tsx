@@ -31,12 +31,12 @@ export default function AboutPage() {
           video on building distinctly different voices inspired VO GOAT&apos;s parameter system.
           His teaching is worth your time:{" "}
           <a
-            href="https://www.youtube.com/results?search_query=Improve+Your+Voice+Darren+McStay"
+            href="https://www.youtube.com/watch?v=FVmAEezr6ao"
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-moss underline-offset-4 hover:underline"
           >
-            find his channel on YouTube
+            watch the video
             <span className="sr-only"> (opens in new tab)</span>
           </a>
           .
@@ -46,6 +46,16 @@ export default function AboutPage() {
           and materials are original, and none of his script lines appear here.
         </p>
       </section>
+      <div className="overflow-hidden rounded-md border border-rule" style={{ aspectRatio: "16 / 9" }}>
+        <iframe
+          className="h-full w-full"
+          src="https://www.youtube.com/embed/FVmAEezr6ao?si=5CS8fsIkw1egGbEZ"
+          title="How To Create 100 Distinctly Different Voices (Darren McStay, Improve Your Voice)"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
       <section className="rounded-md border border-rule bg-card p-4 text-sm leading-relaxed">
         <p className="font-semibold">Why 11,664 recipes?</p>
         <p className="mt-1 text-muted">

@@ -357,7 +357,10 @@ Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-buil
 
 > **2026-09-01 update (BAM):** items 1–3 answered. Prices: lifetime **$103.29** (or **$100.00**
 > via Cash App Pay), monthly **$10.60**, annual **$103.29** offered only after 100 lifetime
-> founders. Sequencing: monthly subscription ships at launch alongside free + lifetime + admin.
+> founders (the $100 path is a Cash App QR with hand verification in /admin/cashapp).
+> Sequencing: monthly subscription ships at launch alongside free + lifetime + admin.
+> Admin addendum: admin gets unlimited attempts and REPLACE-resubmission (a new submit demotes
+> the previous one to kept); the one-submitted-row-per-day schema invariant is untouched.
 > Lapse policy: as proposed (lapse → 30-day clock on stored audio; Menagerie survives).
 
 1. **Lifetime price** (and subscription price, if it ships at launch). Operator decision,

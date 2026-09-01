@@ -140,3 +140,25 @@ describe("take lifecycle", () => {
     }
   });
 });
+
+describe("admin overrides (BAM 2026-09-01)", () => {
+  it("admin role means no attempt cap", async () => {
+    const { takeLimitFor } = await import("@/lib/takes/core");
+    expect(takeLimitFor("free", "admin")).toBeNull();
+    expect(takeLimitFor("free", "player")).toBe(3);
+  });
+
+  it("admin resubmit replaces the previous entry; the schema invariant holds", async () => {
+    const rows = await db.select().from(schema.take);
+    const submitted = rows.find((t) => t.userId === "free1" && t.status === "submitted");
+    const kept = rows.find((t) => t.userId === "free1" && t.status === "kept");
+    if (!submitted || !kept) throw new Error("fixture missing");
+    const denied = await submitTake(db, { userId: "free1", takeId: kept.id, todayKey: "2026-09-01" });
+    expect(!denied.ok && denied.code).toBe("already_submitted");
+    const replaced = await submitTake(db, { userId: "free1", takeId: kept.id, todayKey: "2026-09-01", allowResubmit: true });
+    expect(replaced.ok).toBe(true);
+    const after = await db.select().from(schema.take);
+    expect(after.filter((t) => t.userId === "free1" && t.status === "submitted")).toHaveLength(1);
+    expect(after.find((t) => t.id === submitted.id)?.status).toBe("kept");
+  });
+});

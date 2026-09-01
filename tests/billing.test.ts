@@ -77,3 +77,26 @@ describe("subscriptions and the lapse policy", () => {
     expect(await applySubscriptionLapsed(db, { stripeCustomerId: "cus_unknown", now })).toBe(false);
   });
 });
+
+describe("cash app claims (manual $100 flow)", () => {
+  it("claims once, verifies into a founder grant, and blocks double-pending", async () => {
+    const { latestClaim, listClaims, resolveClaim, submitCashAppClaim } = await import("@/lib/billing/cashapp");
+    await db.insert(schema.user).values({ id: "qr", name: "QR", email: "qr@example.com" });
+    const first = await submitCashAppClaim(db, { userId: "qr", cashAppName: "$bamfan" });
+    expect(first.ok).toBe(true);
+    const dup = await submitCashAppClaim(db, { userId: "qr", cashAppName: "$bamfan" });
+    expect(!dup.ok && dup.code).toBe("pending");
+    const claim = await latestClaim(db, "qr");
+    if (!claim) throw new Error("no claim");
+    const resolved = await resolveClaim(db, { claimId: claim.id, action: "verified" });
+    expect(resolved.ok).toBe(true);
+    const [account] = await db.select().from(schema.user).where(eq(schema.user.id, "qr"));
+    expect(account.plan).toBe("lifetime");
+    expect(await isFounder(db, "qr")).toBe(true);
+    const again = await resolveClaim(db, { claimId: claim.id, action: "verified" });
+    expect(!again.ok && again.code).toBe("wrong_state");
+    const blocked = await submitCashAppClaim(db, { userId: "qr", cashAppName: "$bamfan" });
+    expect(!blocked.ok && blocked.code).toBe("already");
+    expect((await listClaims(db)).length).toBe(1);
+  });
+});

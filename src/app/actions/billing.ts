@@ -9,7 +9,7 @@ import { env, hasStripe } from "@/lib/env";
 import { isRateLimited } from "@/lib/rate-limit";
 import { getSession, type SessionUser } from "@/lib/session";
 
-type CheckoutKind = "lifetime" | "lifetime-cashapp" | "monthly" | "annual";
+type CheckoutKind = "lifetime" | "monthly" | "annual";
 
 /**
  * Form action (must resolve void): failures land back on /upgrade with a status code the
@@ -21,7 +21,7 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
   if (!session) redirect("/sign-in");
   const user = session.user as SessionUser;
   const kind = formData.get("kind") as CheckoutKind | null;
-  if (!kind || !["lifetime", "lifetime-cashapp", "monthly", "annual"].includes(kind)) redirect("/upgrade?status=error");
+  if (!kind || !["lifetime", "monthly", "annual"].includes(kind)) redirect("/upgrade?status=error");
   if (!hasStripe) redirect("/upgrade?status=unconfigured");
   if (user.plan === "lifetime") redirect("/upgrade?status=already");
   if (isRateLimited(`checkout:${user.id}`, 5, 60_000)) redirect("/upgrade?status=rate_limited");
@@ -58,13 +58,12 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
         : await stripe.checkout.sessions.create({
             ...base,
             mode: "payment",
-            ...(kind === "lifetime-cashapp" ? { payment_method_types: ["cashapp" as const] } : {}),
             line_items: [
               {
                 quantity: 1,
                 price_data: {
                   currency: "usd",
-                  unit_amount: kind === "lifetime-cashapp" ? PRICES.lifetimeCashApp.cents : PRICES.lifetime.cents,
+                  unit_amount: PRICES.lifetime.cents,
                   product_data: { name: "VO GOAT lifetime (founder)" },
                 },
               },

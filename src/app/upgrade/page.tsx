@@ -6,6 +6,8 @@ import { annualUnlocked, ANNUAL_UNLOCK_AT, PRICES } from "@/lib/billing/prices";
 import { lifetimeSoldCount } from "@/lib/billing/core";
 import { hasStripe } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
+import { latestClaim } from "@/lib/billing/cashapp";
+import { CashAppClaim } from "@/components/billing/cashapp-claim";
 
 export const metadata: Metadata = { title: "Upgrade" };
 export const dynamic = "force-dynamic";
@@ -18,6 +20,8 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
   const db = await getDb();
   const sold = await lifetimeSoldCount(db);
   const annualOpen = annualUnlocked(sold);
+  const claim = user ? await latestClaim(db, user.id) : null;
+  const claimStatus = (claim?.status ?? "none") as "none" | "pending" | "verified" | "rejected";
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
@@ -86,12 +90,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
                 Become a founder · {PRICES.lifetime.label}
               </button>
             </form>
-            <form action={startCheckoutAction}>
-              <input type="hidden" name="kind" value="lifetime-cashapp" />
-              <button type="submit" disabled={!hasStripe || user.plan === "lifetime"} className="min-h-11 w-full rounded-md border border-ink text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50">
-                Pay {PRICES.lifetimeCashApp.label} with Cash App Pay
-              </button>
-            </form>
+            {user.plan !== "lifetime" ? <CashAppClaim status={claimStatus} price={PRICES.lifetimeCashApp.label} /> : null}
           </div>
         ) : (
           <Link href="/sign-in" className="mt-3 flex min-h-12 items-center justify-center rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">

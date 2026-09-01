@@ -24,7 +24,7 @@ export async function registerTakeAction(dailyId: string): Promise<ActionResult<
   if (!uuid.safeParse(dailyId).success) return err("bad_input", "Invalid daily.");
   if (isRateLimited(`register:${user.id}`, 10, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
-  return registerTake(db, { userId: user.id, plan: user.plan as "free", dailyId });
+  return registerTake(db, { userId: user.id, plan: user.plan as "free", dailyId, role: user.role });
 }
 
 export async function keepTakeAction(formData: FormData): Promise<ActionResult<TakeView>> {
@@ -66,7 +66,7 @@ export async function submitTakeAction(takeId: string): Promise<ActionResult<Tak
   if (!uuid.safeParse(takeId).success) return err("bad_input", "Invalid take.");
   if (isRateLimited(`submit:${user.id}`, 5, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
-  const result = await submitTake(db, { userId: user.id, takeId, todayKey: dayKey(new Date(), env.DAILY_TIMEZONE) });
+  const result = await submitTake(db, { userId: user.id, takeId, todayKey: dayKey(new Date(), env.DAILY_TIMEZONE), allowResubmit: user.role === "admin" });
   if (result.ok) revalidatePath("/");
   return result;
 }

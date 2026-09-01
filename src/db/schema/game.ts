@@ -23,6 +23,7 @@ export const scriptStatusEnum = pgEnum("script_status", ["candidate", "use", "ba
 export const dailyStatusEnum = pgEnum("daily_status", ["draft", "approved", "published", "auto"]);
 export const takeStatusEnum = pgEnum("take_status", ["recorded", "kept", "submitted", "discarded"]);
 export const purchaseKindEnum = pgEnum("purchase_kind", ["lifetime"]);
+export const claimStatusEnum = pgEnum("claim_status", ["pending", "verified", "rejected"]);
 
 /** Micro-scripts. Only `use`/`backlog` may ever be paired into a daily (invariant 3). */
 export const script = pgTable(
@@ -156,6 +157,20 @@ export const purchase = pgTable("purchase", {
   stripeCheckoutId: text("stripe_checkout_id").notNull().unique(),
   amount: integer("amount").notNull(),
   currency: text("currency").notNull().default("usd"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Manual $100 Cash App lifetime flow (BAM 2026-09-01, mirroring FlashLearnAI): pay the QR,
+ * submit your Cash App name, BAM verifies in /admin/cashapp. */
+export const cashappClaim = pgTable("cashapp_claim", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  cashAppName: text("cash_app_name").notNull(),
+  status: claimStatusEnum("status").notNull().default("pending"),
+  adminNotes: text("admin_notes"),
+  verifiedAt: timestamp("verified_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
