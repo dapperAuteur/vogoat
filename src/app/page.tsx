@@ -72,6 +72,14 @@ export default async function HomePage() {
                 Scripts
               </Link>
             ) : null}
+            {user.role === "admin" ? (
+              <Link
+                href="/admin/creatures"
+                className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+              >
+                Creatures
+              </Link>
+            ) : null}
             <span className="text-sm font-semibold text-muted">{user.name}</span>
             <SignOutButton />
           </div>

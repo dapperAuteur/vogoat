@@ -52,6 +52,19 @@ export const creature = pgTable("creature", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/**
+ * BAM's animal vetting (plans/future/02, 2026-09-01): same ritual as scripts. Animals are
+ * LIVE unless marked `never` (a default-off rule would black out the daily before vetting);
+ * `candidate` means not yet vetted, `use`/`backlog` record an explicit yes.
+ */
+export const animalVerdict = pgTable("animal_verdict", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  animal: text("animal").notNull().unique(),
+  status: scriptStatusEnum("status").notNull().default("candidate"),
+  decidedAt: timestamp("decided_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /** The authored unit: (recipe, script, creature) for one calendar date. */
 export const daily = pgTable(
   "daily",

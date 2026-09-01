@@ -15,6 +15,13 @@
       "when": 1788195609934,
       "tag": "0001_flawless_bloodstorm",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788292971162,
+      "tag": "0002_cloudy_masque",
+      "breakpoints": true
     }
   ]
 }

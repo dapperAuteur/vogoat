@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, isNull, lt } from "drizzle-orm";
 import type { Db } from "@/db/client";
-import { creature, daily, script, type DailyStatus } from "@/db/schema";
+import { animalVerdict, creature, daily, script, type DailyStatus } from "@/db/schema";
 import { type DayKey, dayKey, dayNumber } from "@/lib/game/day";
 import type { CreatureLayers } from "@/lib/game/creature";
 import { assembleFallback } from "@/lib/game/never-dark";
@@ -38,7 +38,7 @@ export async function getDailyForToday(db: Db, opts: DailyOptions): Promise<Dail
   const existing = await loadDaily(db, key);
   if (existing) return finalize(db, existing, key, opts.launchDate);
 
-  const [used, recent, scripts] = await Promise.all([
+  const [used, recent, scripts, neverAnimals] = await Promise.all([
     db.select({ recipeId: daily.recipeId }).from(daily),
     db.select({ recipe: daily.recipe }).from(daily).where(lt(daily.dayDate, key)).orderBy(desc(daily.dayDate)).limit(RECENT_WINDOW_DAYS),
     db
@@ -46,6 +46,7 @@ export async function getDailyForToday(db: Db, opts: DailyOptions): Promise<Dail
       .from(script)
       .where(and(inArray(script.status, ["backlog", "use"]), isNull(script.usedOn)))
       .orderBy(asc(script.createdAt)),
+    db.select({ animal: animalVerdict.animal }).from(animalVerdict).where(eq(animalVerdict.status, "never")),
   ]);
   // Backlog first: `use` scripts are the ones BAM wants in authored dailies.
   const pool = [...scripts.filter((s) => s.status === "backlog"), ...scripts.filter((s) => s.status === "use")];
@@ -54,6 +55,7 @@ export async function getDailyForToday(db: Db, opts: DailyOptions): Promise<Dail
     usedRecipeIds: new Set(used.map((u) => u.recipeId)),
     recentRecipes: recent.map((r) => r.recipe),
     scripts: pool,
+    excludedAnimals: new Set(neverAnimals.map((n) => n.animal)),
   });
   if (!fallback) throw new NoScriptAvailableError();
 
