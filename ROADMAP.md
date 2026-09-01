@@ -10,7 +10,7 @@ Phases from the v1 build plan (PRD: `docs/01-prd.md`). Status as of 2026-08-31.
 | 4 | Recorder + takes: MediaRecorder, 30s cap, keep/discard, 3/day free, private Blob upload, submit | Not started |
 | 5 | Payoff + Menagerie: plate fills in, streaks, silhouettes for missed days, 30-day expiry cron | Not started |
 | 6 | Share: spoiler-free text card, plate image, unguessable audio page (noindex, revoke, report) | Not started |
-| 7 | Admin console: daily authoring queue, script triage, runway alert | Not started |
+| 7 | Admin console: daily authoring queue, script triage, runway alert | Script triage shipped early at `/admin/scripts` (2026-09-01); authoring queue + runway alert pending |
 | 8 | The Workshop (admin-only daily literary device) | Not started |
 | 9 | Lifetime tier: Stripe checkout, practice mode, downloads, founder badge | Waits on price (witus task 79) |
 | 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Not started |
