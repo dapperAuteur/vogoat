@@ -11,7 +11,7 @@ Phases from the v1 build plan (PRD: `docs/01-prd.md`). Status as of 2026-08-31.
 | 5 | Payoff + Menagerie: plate fills in, streaks, silhouettes for missed days, 30-day expiry cron | Done 2026-09-01: /menagerie (stats, goat milestones, silhouettes), computed streaks, expiry cron (needs CRON_SECRET, task 05) |
 | 6 | Share: spoiler-free text card, plate image, unguessable audio page (noindex, revoke, report) | Done 2026-09-01: copy-card + revocable audio link on the payoff, /s/[slug] page with transcript, expired-audio state, report form, OG image |
 | 7 | Admin console: daily authoring queue, script triage, runway alert | Done 2026-09-01: `/admin` hub, `/admin/dailies` (runway, extend, approve/revert, rerolls, script swap), triage, creature vetting, runway alert email on the daily cron |
-| 8 | The Workshop (admin-only daily literary device) | Not started |
+| 8 | The Workshop (admin-only daily literary device) | Done 2026-09-01: shuffled no-repeat cycle, write/save/archive, streaks, script-candidate loop-closer into triage |
 | 9 | Lifetime tier: Stripe checkout, practice mode, downloads, founder badge | Waits on price (witus task 79) |
 | 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Not started |
 
