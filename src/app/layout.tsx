@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/next";
+import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SiteFooter } from "@/components/site-footer";
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         {children}
         <SiteFooter />
+        <AnalyticsProvider />
         {/* Cookieless pageview counts; sends nothing until Web Analytics is enabled on the project. */}
         <Analytics />
       </body>

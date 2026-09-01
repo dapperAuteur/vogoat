@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createShareAction, revokeShareAction } from "@/app/actions/share";
+import { track } from "@/lib/analytics";
 
 type Props = {
   takeId: string;
@@ -33,7 +34,10 @@ export function SharePanel({ takeId, cardText, siteUrl, slug: initialSlug }: Pro
     setBusy(true);
     setError(null);
     const result = await createShareAction(takeId);
-    if (result.ok) setSlug(result.data.slug);
+    if (result.ok) {
+      setSlug(result.data.slug);
+      track("share_created");
+    }
     else setError(result.error);
     setBusy(false);
   }

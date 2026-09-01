@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { discardTakeAction, submitTakeAction } from "@/app/actions/takes";
+import { track } from "@/lib/analytics";
 
 /** Submit or discard one kept take; the server re-render carries the new state. */
 export function KeptTakeControls({
@@ -28,6 +29,7 @@ export function KeptTakeControls({
     setBusy(kind);
     setError(null);
     const result = kind === "submit" ? await submitTakeAction(takeId) : await discardTakeAction(takeId);
+    if (result.ok && kind === "submit") track("take_submitted");
     if (!result.ok) setError(result.error);
     setBusy(null);
     router.refresh();
