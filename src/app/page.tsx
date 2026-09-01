@@ -146,6 +146,14 @@ export default async function HomePage() {
                     <span className="text-xs text-muted">{t.durationMs ? `${(t.durationMs / 1000).toFixed(1)}s` : ""}</span>
                   </div>
                   <audio controls preload="none" src={`/api/takes/${t.id}/audio`} className="w-full" />
+                  {user && user.plan !== "free" ? (
+                    <a
+                      href={`/api/takes/${t.id}/audio?download=1`}
+                      className="flex min-h-11 items-center justify-center rounded-md border border-rule text-sm font-semibold text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+                    >
+                      Download
+                    </a>
+                  ) : null}
                   <KeptTakeControls takeId={t.id} canSubmit={!submitted} isLastOption={kept.length === 1 && limit !== null && takes.length >= limit} />
                 </div>
               ))}

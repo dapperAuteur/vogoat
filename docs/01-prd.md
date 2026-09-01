@@ -2,7 +2,7 @@
 
 **Status:** decisions locked by BAM 2026-08-30 · repo scaffolded 2026-08-31 · pre-provisioning ·
 **Owner:** BAM · **Admin account:** `bam@awews.com` (via `ADMIN_EMAIL` env) ·
-**Last updated:** 2026-08-31
+**Last updated:** 2026-09-01
 
 > Tracked in `docs/` rather than `plans/` because `plans/` is gitignored ecosystem-wide and this
 > document must survive a fresh clone. Origin: idea + decision pass in
@@ -354,6 +354,11 @@ subscription tier if deferred at launch (see §5) · Workshop opened to paid tie
 Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-build outreach).
 
 ## 17. Remaining open items (none block the build)
+
+> **2026-09-01 update (BAM):** items 1–3 answered. Prices: lifetime **$103.29** (or **$100.00**
+> via Cash App Pay), monthly **$10.60**, annual **$103.29** offered only after 100 lifetime
+> founders. Sequencing: monthly subscription ships at launch alongside free + lifetime + admin.
+> Lapse policy: as proposed (lapse → 30-day clock on stored audio; Menagerie survives).
 
 1. **Lifetime price** (and subscription price, if it ships at launch). Operator decision,
    captured in witus user-task 79.

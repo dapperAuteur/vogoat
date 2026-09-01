@@ -6,6 +6,7 @@ export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 export const dynamic = "force-dynamic";
 
 const TOOLS = [
+  { href: "/admin/roadmap", name: "Roadmap", detail: "What is built, partial, and still to come" },
   { href: "/admin/workshop", name: "The Workshop", detail: "One literary device a day; write, save, feed script triage" },
   { href: "/admin/dailies", name: "Daily authoring", detail: "Runway, extend the queue, approve pairings, reroll, swap scripts" },
   { href: "/admin/scripts", name: "Script triage", detail: "The weekly 20-script ritual: use, backlog, never" },
