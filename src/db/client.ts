@@ -1,3 +1,4 @@
+import { mkdirSync } from "node:fs";
 import type { ExtractTablesWithRelations } from "drizzle-orm";
 import { neonConfig, Pool } from "@neondatabase/serverless";
 import { drizzle as drizzleNeon } from "drizzle-orm/neon-serverless";
@@ -35,7 +36,10 @@ async function create(): Promise<Db> {
     import("drizzle-orm/pglite"),
     import("drizzle-orm/pglite/migrator"),
   ]);
-  const client = new PGlite(process.env.PGLITE_DIR ?? "./.data/pglite");
+  const dir = process.env.PGLITE_DIR ?? "./.data/pglite";
+  // PGlite does not create missing parent directories (ENOENT on a fresh checkout).
+  mkdirSync(dir, { recursive: true });
+  const client = new PGlite(dir);
   const pg = drizzlePglite(client, { schema });
   await migrate(pg, { migrationsFolder: "./src/db/migrations" });
   return pg as unknown as Db;

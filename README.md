@@ -1,6 +1,7 @@
-# VoGoat
+# VO GOAT (repo: vogoat)
 
-**The daily voiceover game.** One shared voice recipe a day: everyone gets the same recipe,
+**The daily voiceover game.** Stylized VO GOAT in all user-facing surfaces (BAM, 2026-09-01);
+code, package, and repo stay `vogoat`. One shared voice recipe a day: everyone gets the same recipe,
 the same mundane micro-script, the same cartoon creature. Record your take (audio only), submit
 your best, collect the creature, share the card. VO = voiceover. GOAT = greatest of all time.
 The mascot is a goat.

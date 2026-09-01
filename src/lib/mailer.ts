@@ -36,7 +36,7 @@ export async function sendEmail({ to, subject, text, html }: SendEmailInput): Pr
   });
 
   await mg.messages.create(env.MAILGUN_DOMAIN as string, {
-    from: env.MAIL_FROM ?? `VoGoat <noreply@${env.MAILGUN_DOMAIN}>`,
+    from: env.MAIL_FROM ?? `VO GOAT <noreply@${env.MAILGUN_DOMAIN}>`,
     to: [to],
     subject,
     text,

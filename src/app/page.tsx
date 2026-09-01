@@ -3,33 +3,48 @@ import { SignOutButton } from "@/components/auth/sign-out-button";
 import { CreatureSvg } from "@/components/creature-svg";
 import { Countdown } from "@/components/daily/countdown";
 import { WheelTable } from "@/components/daily/wheel-table";
+import { KeptTakeControls } from "@/components/take/kept-take-controls";
+import { TakeRecorder } from "@/components/take/take-recorder";
+import { getDb } from "@/db/client";
+import type { Plan } from "@/db/schema";
 import { getTodaysDaily, NoScriptAvailableError, type DailyView } from "@/lib/daily";
 import { nextDayBoundary } from "@/lib/game/day";
 import { env } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
+import { listTakes, takeLimitFor, type TakeView } from "@/lib/takes/core";
 
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const session = await getSession();
+  const user = session ? (session.user as SessionUser) : null;
   let daily: DailyView | null = null;
   try {
     daily = await getTodaysDaily();
   } catch (error: unknown) {
     if (!(error instanceof NoScriptAvailableError)) throw error;
   }
+  let takes: TakeView[] = [];
+  let limit: number | null = null;
+  if (user && daily) {
+    const db = await getDb();
+    takes = await listTakes(db, { userId: user.id, dailyId: daily.id });
+    limit = takeLimitFor(user.plan as Plan);
+  }
+  const submitted = takes.find((t) => t.status === "submitted");
+  const kept = takes.filter((t) => t.status === "kept");
   const boundary = nextDayBoundary(new Date(), env.DAILY_TIMEZONE).getTime();
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 pt-6">
       <header className="flex items-center justify-between">
         <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl italic">VoGoat</span>
+          <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
           {daily ? <span className="text-sm font-semibold text-muted">No. {daily.dayNumber}</span> : null}
         </div>
-        {session ? (
+        {session && user ? (
           <div className="flex items-center gap-1">
-            {(session.user as SessionUser).role === "admin" ? (
+            {user.role === "admin" ? (
               <Link
                 href="/admin/scripts"
                 className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
@@ -37,7 +52,7 @@ export default async function HomePage() {
                 Scripts
               </Link>
             ) : null}
-            <span className="text-sm font-semibold text-muted">{session.user.name}</span>
+            <span className="text-sm font-semibold text-muted">{user.name}</span>
             <SignOutButton />
           </div>
         ) : (
@@ -69,12 +84,20 @@ export default async function HomePage() {
 
           <section className="flex items-stretch gap-4">
             <div className="flex w-32 shrink-0 flex-col items-center gap-1 rounded-md border border-rule bg-card p-2">
-              <CreatureSvg layers={daily.creature.layers} variant="outline" size={104} title={`${daily.creature.name}, unrecorded`} />
-              <span className="text-[10px] tracking-[0.12em] text-muted uppercase">Plate {daily.dayNumber} · unrecorded</span>
+              <CreatureSvg
+                layers={daily.creature.layers}
+                variant={submitted ? "plate" : "outline"}
+                size={104}
+                title={`${daily.creature.name}, ${submitted ? "recorded" : "unrecorded"}`}
+              />
+              <span className="text-[10px] tracking-[0.12em] text-muted uppercase">
+                Plate {daily.dayNumber} · {submitted ? "recorded" : "unrecorded"}
+              </span>
             </div>
             <p className="self-center text-sm leading-relaxed text-muted">
-              The plate fills in when you submit a take. Spinning and rehearsing never need an
-              account.
+              {submitted
+                ? "Added to your Menagerie. Come back for tomorrow's specimen."
+                : "The plate fills in when you submit a take. Spinning and rehearsing never need an account."}
             </p>
           </section>
 
@@ -84,6 +107,28 @@ export default async function HomePage() {
               {daily.script.body}
             </p>
           </section>
+
+          {kept.length > 0 ? (
+            <section className="flex flex-col gap-3" aria-label="Your kept takes">
+              <p className="text-[10px] font-semibold tracking-[0.16em] text-muted uppercase">Your kept takes</p>
+              {kept.map((t) => (
+                <div key={t.id} className="flex flex-col gap-2 rounded-md border border-rule bg-card p-3">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-sm font-semibold">Take {t.takeNumber}</span>
+                    <span className="text-xs text-muted">{t.durationMs ? `${(t.durationMs / 1000).toFixed(1)}s` : ""}</span>
+                  </div>
+                  <audio controls preload="none" src={`/api/takes/${t.id}/audio`} className="w-full" />
+                  <KeptTakeControls takeId={t.id} canSubmit={!submitted} />
+                </div>
+              ))}
+            </section>
+          ) : null}
+          {submitted ? (
+            <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
+              Submitted: take {submitted.takeNumber}
+              {limit !== null ? ` of ${limit}` : ""}. One entry per day, every tier.
+            </p>
+          ) : null}
         </>
       ) : (
         <section className="rounded-md border border-rule bg-card p-5">
@@ -97,22 +142,14 @@ export default async function HomePage() {
       )}
 
       <div className="sticky bottom-0 mt-auto flex flex-col gap-2 bg-paper pt-2 pb-5">
-        <button
-          type="button"
-          disabled
-          className="flex min-h-14 w-full items-center justify-center gap-2 rounded-md bg-moss font-semibold text-on-moss opacity-60"
-          title="Recording is being built"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <rect x="9" y="3" width="6" height="11" rx="3" />
-            <path d="M5 11a7 7 0 0 0 14 0" />
-            <path d="M12 18v3" />
-          </svg>
-          Record a take (coming soon)
-        </button>
-        <p className="text-center text-xs leading-relaxed text-muted">
-          Audio stays on your device until you keep a take. Free plan: 3 takes a day.
-        </p>
+        {daily && !submitted ? (
+          <TakeRecorder dailyId={daily.id} isSignedIn={Boolean(user)} attemptCount={takes.length} limit={limit} />
+        ) : null}
+        {!daily ? (
+          <p className="text-center text-xs leading-relaxed text-muted">
+            Audio stays on your device until you keep a take. Free plan: 3 takes a day.
+          </p>
+        ) : null}
         <p className="text-center text-xs text-muted">
           Next specimen at midnight UTC<Countdown deadlineMs={boundary} />
         </p>
