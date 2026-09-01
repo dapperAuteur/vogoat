@@ -163,7 +163,6 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit }: Props
             Specimen call · {(review.durationMs / 1000).toFixed(1)}s
           </span>
         </div>
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption -- the script text on this page is the transcript */}
         <audio controls src={review.url} className="w-full" />
         <p className="text-xs leading-relaxed text-muted">
           That is the character, not you. Nobody hears it unless you keep it.

@@ -117,7 +117,6 @@ export default async function HomePage() {
                     <span className="text-sm font-semibold">Take {t.takeNumber}</span>
                     <span className="text-xs text-muted">{t.durationMs ? `${(t.durationMs / 1000).toFixed(1)}s` : ""}</span>
                   </div>
-                  {/* eslint-disable-next-line jsx-a11y/media-has-caption -- the script above is the transcript */}
                   <audio controls preload="none" src={`/api/takes/${t.id}/audio`} className="w-full" />
                   <KeptTakeControls takeId={t.id} canSubmit={!submitted} />
                 </div>
