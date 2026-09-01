@@ -64,3 +64,9 @@
     animation: none;
   }
 }
+
+/* Tailwind v4 preflight leaves buttons with the default cursor; interactive means pointer. */
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
