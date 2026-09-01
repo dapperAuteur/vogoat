@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { keepTakeAction, registerTakeAction } from "@/app/actions/takes";
+import { discardTakeAction, keepTakeAction, registerTakeAction } from "@/app/actions/takes";
 
 const MAX_MS = 30_000;
 
@@ -16,6 +16,8 @@ type Props = {
   attemptCount: number;
   /** Attempt cap for the plan; null = unlimited. */
   limit: number | null;
+  /** Kept takes available to submit; guards the last-attempt discard. */
+  keptCount: number;
 };
 
 function pickMimeType(): string {
@@ -31,11 +33,12 @@ function pickMimeType(): string {
  * Signed-in attempts are registered at record-start, which is how the 3/day cap is enforced;
  * anonymous rehearsal never touches the server.
  */
-export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit }: Props) {
+export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCount }: Props) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [review, setReview] = useState<{ url: string; blob: Blob; durationMs: number; takeId: string | null } | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
@@ -122,10 +125,13 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit }: Props
   }
 
   function discardLocal() {
+    // The attempt stays counted (PRD: counts are server-tracked; audio never left the device);
+    // the server row is marked discarded so the record is honest.
+    if (review?.takeId) void discardTakeAction(review.takeId).catch(() => undefined);
     if (review) URL.revokeObjectURL(review.url);
     setReview(null);
+    setConfirmDiscard(false);
     setPhase("idle");
-    // The attempt stays counted (PRD: counts are server-tracked; audio never left the device).
     router.refresh();
   }
 
@@ -156,6 +162,10 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit }: Props
     : "Rehearsal (not counted)";
 
   if (phase === "review" && review) {
+    // Discarding is what spends the option, not declining to submit: with the cap reached and
+    // nothing kept, one more discard means no submission until tomorrow. Make that a two-tap.
+    const attemptsUsed = isSignedIn ? attemptCount + 1 : 0;
+    const dangerousDiscard = isSignedIn && limit !== null && attemptsUsed >= limit && keptCount === 0;
     return (
       <div className="flex flex-col gap-2 rounded-md border border-rule bg-card p-4">
         <div className="flex items-baseline justify-between">
@@ -190,13 +200,31 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit }: Props
               Sign in to keep takes
             </Link>
           )}
-          <button
-            type="button"
-            onClick={discardLocal}
-            className="min-h-12 rounded-md border border-ink font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-          >
-            Discard (deletes from this device)
-          </button>
+          {dangerousDiscard && !confirmDiscard ? (
+            <button
+              type="button"
+              onClick={() => setConfirmDiscard(true)}
+              className="min-h-12 rounded-md border border-ink font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+            >
+              Discard (deletes from this device)
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={discardLocal}
+              className={`min-h-12 rounded-md border font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current ${
+                dangerousDiscard ? "border-ochre text-ochre" : "border-ink text-ink"
+              }`}
+            >
+              {dangerousDiscard ? "Discard anyway (nothing left to submit today)" : "Discard (deletes from this device)"}
+            </button>
+          )}
+          {dangerousDiscard && confirmDiscard ? (
+            <p role="alert" className="text-xs leading-relaxed text-ochre">
+              This was your last take today and nothing is kept. Discarding it leaves you with no
+              entry to submit until tomorrow; keeping costs nothing and you can delete it later.
+            </p>
+          ) : null}
         </div>
       </div>
     );
