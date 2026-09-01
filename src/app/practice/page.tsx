@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CreatureSvg } from "@/components/creature-svg";
 import { WheelTable } from "@/components/daily/wheel-table";
+import { SpinAnother } from "@/components/practice/spin-another";
 import { PracticeRecorder } from "@/components/take/practice-recorder";
 import { deriveCreature } from "@/lib/game/creature";
+import { dayKey } from "@/lib/game/day";
+import { randomInt, seededRandom } from "@/lib/game/random";
+import { env } from "@/lib/env";
 import { RECIPE_COUNT, recipeFromId } from "@/lib/game/recipe";
 import { getSession, type SessionUser } from "@/lib/session";
 
@@ -17,10 +21,11 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
   const paid = user && user.plan !== "free";
   const { r } = await searchParams;
   const parsed = Number(r);
-  const recipeId = Number.isInteger(parsed) && parsed >= 1 && parsed <= RECIPE_COUNT ? parsed : 1 + Math.floor(Math.random() * RECIPE_COUNT);
+  // Render-pure: with no ?r, the day seeds the starter recipe; Spin another randomizes client-side.
+  const fallbackId = 1 + randomInt(seededRandom(`practice:${dayKey(new Date(), env.DAILY_TIMEZONE)}`), RECIPE_COUNT);
+  const recipeId = Number.isInteger(parsed) && parsed >= 1 && parsed <= RECIPE_COUNT ? parsed : fallbackId;
   const recipe = recipeFromId(recipeId);
   const creature = deriveCreature(recipe, recipeId);
-  const next = 1 + Math.floor(Math.random() * RECIPE_COUNT);
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
@@ -56,12 +61,7 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
             <div className="w-24 shrink-0 rounded-md border border-rule bg-card p-2">
               <CreatureSvg layers={creature.layers} variant="plate" size={80} title={creature.name} />
             </div>
-            <Link
-              href={`/practice?r=${next}`}
-              className="flex min-h-12 flex-1 items-center justify-center rounded-md border border-ink font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-            >
-              Spin another recipe
-            </Link>
+            <SpinAnother />
           </div>
           <p className="text-sm leading-relaxed text-muted">
             Read anything you like in this voice; yesterday&apos;s grocery list works. Nothing here

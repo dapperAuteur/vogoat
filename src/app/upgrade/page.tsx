@@ -44,6 +44,19 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           Checkout cancelled; nothing was charged.
         </p>
       ) : null}
+      {status && ["error", "unconfigured", "already", "rate_limited", "locked"].includes(status) ? (
+        <p role="alert" className="rounded-md border border-ochre px-3 py-2 text-sm text-ochre">
+          {status === "unconfigured"
+            ? "Payments are not switched on yet."
+            : status === "already"
+              ? "You already own VO GOAT for life."
+              : status === "rate_limited"
+                ? "Slow down a moment and try again."
+                : status === "locked"
+                  ? "Annual opens after the first 100 lifetime founders."
+                  : "Checkout could not start; nothing was charged. Try again."}
+        </p>
+      ) : null}
       {user?.plan === "lifetime" ? (
         <p className="rounded-md border border-moss bg-card p-4 text-sm font-semibold text-moss">
           You are a founder. VO GOAT is yours for life.
