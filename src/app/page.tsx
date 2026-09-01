@@ -8,6 +8,11 @@ import { TakeRecorder } from "@/components/take/take-recorder";
 import { getDb } from "@/db/client";
 import type { Plan } from "@/db/schema";
 import { getTodaysDaily, NoScriptAvailableError, type DailyView } from "@/lib/daily";
+import { formatShareText } from "@/lib/game/share-card";
+import { SharePanel } from "@/components/share/share-panel";
+import { share as shareTable } from "@/db/schema";
+import { and, eq, isNull } from "drizzle-orm";
+import type { BaseAnimal } from "@/lib/game/creature";
 import { nextDayBoundary } from "@/lib/game/day";
 import { env } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
@@ -33,6 +38,15 @@ export default async function HomePage() {
   }
   const submitted = takes.find((t) => t.status === "submitted");
   const kept = takes.filter((t) => t.status === "kept");
+  let activeShareSlug: string | null = null;
+  if (submitted) {
+    const db = await getDb();
+    const [row] = await db
+      .select({ slug: shareTable.slug })
+      .from(shareTable)
+      .where(and(eq(shareTable.takeId, submitted.id), isNull(shareTable.revokedAt)));
+    activeShareSlug = row?.slug ?? null;
+  }
   const boundary = nextDayBoundary(new Date(), env.DAILY_TIMEZONE).getTime();
 
   return (
@@ -137,11 +151,26 @@ export default async function HomePage() {
               ))}
             </section>
           ) : null}
-          {submitted ? (
-            <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
-              Submitted: take {submitted.takeNumber}
-              {limit !== null ? ` of ${limit}` : ""}. One entry per day, every tier.
-            </p>
+          {submitted && daily ? (
+            <>
+              <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
+                Submitted: take {submitted.takeNumber}
+                {limit !== null ? ` of ${limit}` : ""}. One entry per day, every tier.
+              </p>
+              <SharePanel
+                takeId={submitted.id}
+                cardText={formatShareText({
+                  dayNumber: daily.dayNumber,
+                  recipe: daily.recipe,
+                  baseAnimal: daily.creature.baseAnimal as BaseAnimal,
+                  takeNumber: submitted.takeNumber,
+                  takeLimit: limit,
+                  url: "",
+                }).replace(/ · $/, "")}
+                siteUrl={env.APP_URL}
+                slug={activeShareSlug}
+              />
+            </>
           ) : null}
         </>
       ) : (
