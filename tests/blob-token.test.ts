@@ -9,3 +9,22 @@ describe("blob token resolution", () => {
     expect(resolveBlobToken({ BLOB_READ_WRITE_TOKEN: "  ", VO_GOAT_BLOB_STORE_ID: "id" })).toBeUndefined();
   });
 });
+
+describe("connected-store detection (OIDC-era stores)", () => {
+  it("requires Vercel plus a store id", async () => {
+    const { hasConnectedBlobStore } = await import("@/lib/blob-token");
+    expect(hasConnectedBlobStore({ VERCEL: "1", VO_GOAT_BLOB_STORE_ID: "store_x" })).toBe(true);
+    expect(hasConnectedBlobStore({ VERCEL: "1", BLOB_STORE_ID: "store_x" })).toBe(true);
+    expect(hasConnectedBlobStore({ VO_GOAT_BLOB_STORE_ID: "store_x" })).toBe(false);
+    expect(hasConnectedBlobStore({ VERCEL: "1" })).toBe(false);
+  });
+});
+
+describe("store id resolution for OIDC", () => {
+  it("prefers the exact name, then any prefixed one", async () => {
+    const { resolveBlobStoreId } = await import("@/lib/blob-token");
+    expect(resolveBlobStoreId({ BLOB_STORE_ID: "store_a", VO_GOAT_BLOB_STORE_ID: "store_b" })).toBe("store_a");
+    expect(resolveBlobStoreId({ VO_GOAT_BLOB_STORE_ID: "store_b" })).toBe("store_b");
+    expect(resolveBlobStoreId({})).toBeUndefined();
+  });
+});

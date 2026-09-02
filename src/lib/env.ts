@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { resolveBlobToken } from "./blob-token";
+import { hasConnectedBlobStore, resolveBlobToken } from "./blob-token";
 
 /**
  * Runtime environment, validated once. `next build` runs with NODE_ENV=production but is
@@ -104,7 +104,8 @@ if (isProduction && !hasDatabaseUrl) {
 export const hasWitusSso = Boolean(env.WITUS_OIDC_CLIENT_ID);
 /** Development-only sign-in when SSO is not provisioned (BAM, 2026-08-31). Never in production. */
 export const hasDevMagicLink = !isProd;
-export const hasBlobStore = Boolean(env.BLOB_READ_WRITE_TOKEN);
+/** A token, or a connected store on Vercel (the SDK then authenticates via OIDC). */
+export const hasBlobStore = Boolean(env.BLOB_READ_WRITE_TOKEN) || hasConnectedBlobStore(process.env);
 export const hasMailgun = Boolean(env.MAILGUN_API_KEY && env.MAILGUN_DOMAIN);
 export const hasPostHog = Boolean(env.NEXT_PUBLIC_POSTHOG_KEY);
 /** Payments are live once the Stripe secret exists; the upgrade page degrades until then. */
