@@ -36,7 +36,9 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
     const stripe = getStripe();
     const base = {
       ...(user ? { client_reference_id: user.id, customer_email: user.email } : {}),
-      metadata: { ...(user ? { userId: user.id } : {}), kind },
+      // `app` is the ecosystem guard: the Stripe account is shared, so every app stamps its
+      // slug and ignores sessions that are not its own (see plans/future/07).
+      metadata: { app: "vogoat", ...(user ? { userId: user.id } : {}), kind },
       success_url: `${env.APP_URL}/upgrade?status=success`,
       cancel_url: `${env.APP_URL}/upgrade?status=cancelled`,
       // Promos (future/03 step 1): BAM creates codes in the Stripe dashboard; checkout shows the field.

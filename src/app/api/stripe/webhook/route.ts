@@ -26,6 +26,12 @@ export async function POST(request: Request) {
   try {
     if (event.type === "checkout.session.completed") {
       const s = event.data.object;
+      // The Stripe account is shared across the WitUS ecosystem, so this endpoint also hears
+      // about other products' checkouts. Anything not stamped by this app is not ours: acting
+      // on it could hand a VO GOAT lifetime seat to someone who bought a sibling product.
+      if (s.metadata?.app !== "vogoat") {
+        return NextResponse.json({ ok: true, data: { ignored: "not this app" } });
+      }
       const userId = s.client_reference_id ?? s.metadata?.userId;
       const payerEmail = s.customer_details?.email ?? s.customer_email ?? null;
       if (!userId && s.mode === "payment" && payerEmail) {
