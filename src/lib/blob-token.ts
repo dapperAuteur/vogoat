@@ -24,3 +24,13 @@ export function hasConnectedBlobStore(environment: Record<string, string | undef
   if (!environment.VERCEL) return false;
   return Object.keys(environment).some((key) => (key === "BLOB_STORE_ID" || key.endsWith("_BLOB_STORE_ID")) && environment[key]?.trim());
 }
+
+/** The SDK's OIDC path reads BLOB_STORE_ID exactly; resolve prefixed names for it. */
+export function resolveBlobStoreId(environment: Record<string, string | undefined>): string | undefined {
+  const direct = environment.BLOB_STORE_ID?.trim();
+  if (direct) return direct;
+  const key = Object.keys(environment)
+    .filter((k) => k.endsWith("_BLOB_STORE_ID") && environment[k]?.trim())
+    .sort()[0];
+  return key ? environment[key]?.trim() : undefined;
+}

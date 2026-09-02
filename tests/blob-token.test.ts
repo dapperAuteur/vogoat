@@ -19,3 +19,12 @@ describe("connected-store detection (OIDC-era stores)", () => {
     expect(hasConnectedBlobStore({ VERCEL: "1" })).toBe(false);
   });
 });
+
+describe("store id resolution for OIDC", () => {
+  it("prefers the exact name, then any prefixed one", async () => {
+    const { resolveBlobStoreId } = await import("@/lib/blob-token");
+    expect(resolveBlobStoreId({ BLOB_STORE_ID: "store_a", VO_GOAT_BLOB_STORE_ID: "store_b" })).toBe("store_a");
+    expect(resolveBlobStoreId({ VO_GOAT_BLOB_STORE_ID: "store_b" })).toBe("store_b");
+    expect(resolveBlobStoreId({})).toBeUndefined();
+  });
+});

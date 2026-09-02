@@ -1,6 +1,7 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { del, get, put } from "@vercel/blob";
+import { resolveBlobStoreId } from "@/lib/blob-token";
 import { env, hasBlobStore, isProduction } from "@/lib/env";
 
 /**
@@ -44,14 +45,15 @@ const vercelStore: TakeAudioStore = {
       contentType,
       addRandomSuffix: true,
       // Omitted token = the SDK resolves env token or Vercel OIDC (new-generation stores).
-      ...(env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : {}),
+      // OIDC needs the store id, and the SDK only reads BLOB_STORE_ID; ours is prefixed.
+      ...(env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : { storeId: resolveBlobStoreId(process.env) }),
     });
     return result.url;
   },
   async get(url) {
     // v2.8 `get` returns the blob content for private blobs when authorized; older shapes
     // expose only a downloadUrl. Feature-detect rather than assume.
-    const result = (await get(url, (env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : {}) as Parameters<typeof get>[1])) as unknown;
+    const result = (await get(url, (env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : { storeId: resolveBlobStoreId(process.env) }) as Parameters<typeof get>[1])) as unknown;
     if (!result) return null;
     const r = result as {
       stream?: ReadableStream<Uint8Array> | null;
@@ -70,7 +72,7 @@ const vercelStore: TakeAudioStore = {
     return new Uint8Array(await res.arrayBuffer());
   },
   async delete(url) {
-    await del(url, env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : undefined);
+    await del(url, env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : { storeId: resolveBlobStoreId(process.env) });
   },
 };
 
