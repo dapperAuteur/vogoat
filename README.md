@@ -56,6 +56,17 @@ appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offe
 link whose URL prints to the dev server console (development never sends real email, even
 with Mailgun configured). The account matching `ADMIN_EMAIL` becomes admin at first sign-in.
 
+**Continue as \<name\>:** `/sign-in` renders immediately and, in parallel, asks the IdP
+whether this browser already has a WitUS session. If it answers, the button relabels itself
+"Continue as \<name\>"; the click still runs the full OIDC flow, so the name is display copy
+and never a credential. A blocked, failed or timed-out check is completely invisible — which
+is the normal outcome in Safari and Firefox, where the IdP's cookie is third-party.
+
+**Sign-out is global** (BAM, 2026-08-30): it destroys the VO GOAT session first, then ends the
+shared session at `accounts.witus.online`, so you are signed out of every WitUS app. The IdP
+returns you to the VO GOAT home page. Without `WITUS_OIDC_CLIENT_ID` both features stay dark
+and sign-out is local-only, landing on `/goodbye`.
+
 Environment variables are documented in [`.env.example`](.env.example). Deploy, Neon, the
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).

@@ -14,7 +14,7 @@ import { share as shareTable } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import type { BaseAnimal } from "@/lib/game/creature";
 import { nextDayBoundary } from "@/lib/game/day";
-import { env } from "@/lib/env";
+import { env, witusEndSessionEndpoint } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
 import { listTakes, takeLimitFor, type TakeView } from "@/lib/takes/core";
 
@@ -86,7 +86,7 @@ export default async function HomePage() {
               </Link>
             ) : null}
             <span className="text-sm font-semibold text-muted">{user.name}</span>
-            <SignOutButton />
+            <SignOutButton endSessionUrl={witusEndSessionEndpoint} />
           </div>
         ) : (
           <Link

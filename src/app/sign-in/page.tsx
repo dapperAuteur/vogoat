@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DevMagicLinkForm } from "@/components/auth/dev-magic-link-form";
 import { WitusSsoButton } from "@/components/auth/witus-sso-button";
-import { hasDevMagicLink, hasWitusSso } from "@/lib/env";
+import { hasDevMagicLink, hasWitusSso, witusSilentSsoEndpoint } from "@/lib/env";
 import { getSession } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Sign in" };
@@ -24,7 +24,7 @@ export default async function SignInPage() {
             rehearsing never do.
           </p>
         </div>
-        {hasWitusSso ? <WitusSsoButton /> : null}
+        {hasWitusSso ? <WitusSsoButton silentCheckUrl={witusSilentSsoEndpoint} /> : null}
         {hasDevMagicLink ? <DevMagicLinkForm /> : null}
         {!hasWitusSso && !hasDevMagicLink ? (
           <p className="text-sm leading-relaxed text-muted">
