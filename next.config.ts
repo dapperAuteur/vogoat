@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   // Side effect: disables the automatic trailing-slash redirect for every route.
   skipTrailingSlashRedirect: true,
 
+  async redirects() {
+    // The collection is the Guild now (BAM, 2026-09-02); shared links keep working with a 308.
+    return [{ source: "/menagerie", destination: "/guild", permanent: true }];
+  },
+
   async rewrites() {
     // Reverse-proxy PostHog through our origin so content blockers have nothing to match on.
     return [

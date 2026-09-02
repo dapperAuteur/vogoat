@@ -52,7 +52,7 @@ export async function applySubscriptionActive(db: Db, args: { userId: string; st
 
 /**
  * Lapse policy (PRD §5, proposed and now shipping): the account drops to free rules and
- * already-stored audio gets a 30-day clock from the lapse; the Menagerie survives regardless.
+ * already-stored audio gets a 30-day clock from the lapse; the Guild survives regardless.
  */
 export async function applySubscriptionLapsed(db: Db, args: { stripeCustomerId: string; now: Date }): Promise<boolean> {
   const rows = await db

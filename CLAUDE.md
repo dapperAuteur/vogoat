@@ -2,7 +2,7 @@
 
 This repo — **vogoat** — is **VoGoat** (`vogoat.witus.online`): a **daily shared voiceover
 game**. Everyone on Earth gets the same daily voice recipe + micro-script + cartoon creature;
-players record audio-only takes, submit one, collect the creature in their Menagerie, and share
+players record audio-only takes, submit one, collect the creature in their Guild (renamed from Menagerie, 2026-09-02), and share
 a spoiler-free card. VO = voiceover; GOAT = greatest of all time; the mascot is a goat.
 
 Don't confuse it with the other WitUS apps. In particular it is **not**:
@@ -49,7 +49,7 @@ the Redundancy Test in `gemini/witus/plans/ecosystem/README.md`.
 6. **The creature derives from the recipe, not from ML analysis of the user's audio.**
 7. **Admin is `ADMIN_EMAIL` (env), never a hardcoded address.** The Workshop (daily
    literary-device writing) is admin-only for now but gated by role, not by a hardcoded user.
-8. **Free-tier audio expires at 30 days; the Menagerie survives expiry** — expiry nulls the
+8. **Free-tier audio expires at 30 days; the Guild survives expiry** — expiry nulls the
    blob, never the row. Streaks and creatures are forever.
 
 ## Stack (planned — no app code yet)

@@ -5,7 +5,7 @@ import type { CreatureLayers } from "@/lib/game/creature";
 import type { DayKey } from "@/lib/game/day";
 import { computeStreaks, type Streaks } from "@/lib/game/streak";
 
-export type MenagerieEntry = {
+export type GuildEntry = {
   dayKey: string;
   creatureName: string;
   layers: CreatureLayers;
@@ -18,15 +18,15 @@ export type MenagerieEntry = {
   isToday: boolean;
 };
 
-export type MenagerieView = {
-  entries: MenagerieEntry[]; // newest first, from today back to the first submitted day
+export type GuildView = {
+  entries: GuildEntry[]; // newest first, from today back to the first submitted day
   observed: number;
   missed: number;
   streaks: Streaks;
 };
 
 /** The collection never breaks: rows survive audio expiry; missed days show as silhouettes. */
-export async function getMenagerie(db: Db, args: { userId: string; today: DayKey }): Promise<MenagerieView> {
+export async function getGuild(db: Db, args: { userId: string; today: DayKey }): Promise<GuildView> {
   const rows = await db
     .select({
       dayKey: daily.dayDate,

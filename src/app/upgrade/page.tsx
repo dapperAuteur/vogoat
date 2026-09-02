@@ -83,7 +83,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
           Once, forever: practice room, unlimited daily takes, audio kept for good, take
-          downloads, and the founder badge in your Menagerie. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
+          downloads, and the founder badge in your Guild. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
           founder seats taken.
         </p>
         {user ? (
@@ -110,7 +110,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
           Same practice room and unlimited takes; audio kept while active (30-day clock if you
-          lapse; your Menagerie survives no matter what).
+          lapse; your Guild survives no matter what).
         </p>
         {user ? (
           <form action={startCheckoutAction} className="mt-3">

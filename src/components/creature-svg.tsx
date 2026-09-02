@@ -3,7 +3,7 @@ import type { CreatureLayers } from "@/lib/game/creature";
 /**
  * Placeholder layered creature art (build plan: Claude draws flat SVG; BAM can replace the
  * set later; the CreatureLayers contract is the stable interface). One renderer for every
- * surface: reveal outline, payoff plate, Menagerie thumbnails, and later the share image.
+ * surface: reveal outline, payoff plate, Guild thumbnails, and later the share image.
  */
 type Archetype = "round" | "point" | "side" | "top";
 

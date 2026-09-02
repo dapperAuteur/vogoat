@@ -20,7 +20,7 @@ export default async function SignInPage() {
         <div>
           <h1 className="font-display text-2xl italic">Sign in</h1>
           <p className="mt-1 text-sm leading-relaxed text-muted">
-            Keeping takes, streaks, the Menagerie, and sharing need an account. Spinning and
+            Keeping takes, streaks, the Guild, and sharing need an account. Spinning and
             rehearsing never do.
           </p>
         </div>
