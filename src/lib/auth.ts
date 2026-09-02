@@ -5,7 +5,7 @@ import { genericOAuth } from "better-auth/plugins";
 import { magicLink } from "better-auth/plugins/magic-link";
 import { getDb } from "@/db/client";
 import { isAdminEmail } from "./admin";
-import { env, hasDevMagicLink, hasWitusSso } from "./env";
+import { env, hasDevMagicLink, hasWitusSso, WITUS_OIDC_DISCOVERY_URL } from "./env";
 import { sendEmail } from "./mailer";
 
 /**
@@ -53,9 +53,7 @@ async function createAuth() {
               config: [
                 {
                   providerId: "witus",
-                  discoveryUrl:
-                    env.WITUS_OIDC_DISCOVERY_URL ??
-                    "https://accounts.witus.online/api/idp/.well-known/openid-configuration",
+                  discoveryUrl: WITUS_OIDC_DISCOVERY_URL,
                   clientId: env.WITUS_OIDC_CLIENT_ID as string,
                   clientSecret: env.WITUS_OIDC_CLIENT_SECRET ?? "",
                   scopes: ["openid", "email", "profile"],

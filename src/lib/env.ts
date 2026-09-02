@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { hasConnectedBlobStore, resolveBlobToken } from "./blob-token";
+import { endSessionEndpointFromDiscovery, silentSsoEndpointFromDiscovery } from "./silent-sso";
 
 /**
  * Runtime environment, validated once. `next build` runs with NODE_ENV=production but is
@@ -102,6 +103,43 @@ if (isProduction && !hasDatabaseUrl) {
 }
 /** True once the WitUS SSO client is provisioned; gates the provider and the button. */
 export const hasWitusSso = Boolean(env.WITUS_OIDC_CLIENT_ID);
+
+/**
+ * The IdP discovery document, named ONCE for the whole app (auth.ts imports it too). Everything
+ * else about accounts.witus.online — the session probe, the logout endpoint — is derived from this
+ * one value rather than asserted a second time (authoritative-values rule).
+ */
+export const WITUS_OIDC_DISCOVERY_URL =
+  env.WITUS_OIDC_DISCOVERY_URL ?? "https://accounts.witus.online/api/idp/.well-known/openid-configuration";
+
+/**
+ * Where /sign-in's silent "Continue as <name>" check asks the IdP who this browser is.
+ *
+ * `null` — the feature stays completely dark — unless the ecosystem OIDC client is configured,
+ * because an affordance the visitor cannot complete is worse than no affordance. See
+ * src/lib/silent-sso.ts for the whole design; note the IdP must also allow this origin with
+ * credentials, and third-party-cookie blocking means the probe simply answers nothing on Safari
+ * and Firefox. Both outcomes render the ordinary button.
+ */
+export const witusSilentSsoEndpoint: string | null = hasWitusSso
+  ? silentSsoEndpointFromDiscovery(WITUS_OIDC_DISCOVERY_URL)
+  : null;
+
+/**
+ * Where sign-out ends the SHARED WitUS session (BAM, 2026-08-30: signing out of one WitUS app
+ * signs you out of all of them). Dark under exactly the same condition as the probe: with no
+ * registered OIDC client there is no shared session to end and sign-out stays purely local.
+ */
+export const witusEndSessionEndpoint: string | null = (() => {
+  if (!hasWitusSso) return null;
+  const base = endSessionEndpointFromDiscovery(WITUS_OIDC_DISCOVERY_URL);
+  if (!base) return null;
+  // client_id IS REQUIRED, not optional. better-auth's endSession endpoint rejects a
+  // post_logout_redirect_uri with invalid_request unless the request carries a verifiable
+  // id_token_hint or an explicit client_id, and we have no id_token client-side. Baked in HERE,
+  // on the server, because the sign-out button is a client component and must never read raw env.
+  return `${base}?client_id=${encodeURIComponent(env.WITUS_OIDC_CLIENT_ID as string)}`;
+})();
 /** Development-only sign-in when SSO is not provisioned (BAM, 2026-08-31). Never in production. */
 export const hasDevMagicLink = !isProd;
 /** A token, or a connected store on Vercel (the SDK then authenticates via OIDC). */
