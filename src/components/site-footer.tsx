@@ -68,6 +68,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/how-to" className={linkClasses}>
+                  How to play
+                </Link>
+              </li>
+              <li>
                 <Link href="/guild" className={linkClasses}>
                   Guild
                 </Link>
