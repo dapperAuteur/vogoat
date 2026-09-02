@@ -15,7 +15,12 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/takes/[i
   const db = await getDb();
   const [row] = await db.select().from(take).where(and(eq(take.id, id), eq(take.userId, session.user.id)));
   if (!row || !row.blobUrl) return NextResponse.json({ ok: false, error: "not found", code: "not_found" }, { status: 404 });
-  const bytes = await getTakeAudioStore().get(row.blobUrl);
+  let bytes: Uint8Array | null = null;
+  try {
+    bytes = await getTakeAudioStore().get(row.blobUrl);
+  } catch {
+    return NextResponse.json({ ok: false, error: "audio storage unavailable", code: "storage_unavailable" }, { status: 503 });
+  }
   if (!bytes) return NextResponse.json({ ok: false, error: "audio unavailable", code: "gone" }, { status: 410 });
   // Take downloads are a paid extra (PRD §5).
   const wantsDownload = request.nextUrl.searchParams.get("download") === "1";

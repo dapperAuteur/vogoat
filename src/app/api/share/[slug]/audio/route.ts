@@ -18,7 +18,12 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/share/[slug
   const row = rows[0];
   if (!row || row.revokedAt !== null) return NextResponse.json({ ok: false, error: "not found", code: "not_found" }, { status: 404 });
   if (!row.blobUrl) return NextResponse.json({ ok: false, error: "expired", code: "gone" }, { status: 410 });
-  const bytes = await getTakeAudioStore().get(row.blobUrl);
+  let bytes: Uint8Array | null = null;
+  try {
+    bytes = await getTakeAudioStore().get(row.blobUrl);
+  } catch {
+    return NextResponse.json({ ok: false, error: "audio storage unavailable", code: "storage_unavailable" }, { status: 503 });
+  }
   if (!bytes) return NextResponse.json({ ok: false, error: "expired", code: "gone" }, { status: 410 });
   return new NextResponse(Buffer.from(bytes), {
     headers: { "content-type": row.mime ?? "audio/webm", "cache-control": "private, no-store", "x-robots-tag": "noindex" },

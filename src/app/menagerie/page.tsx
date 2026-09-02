@@ -94,6 +94,12 @@ export default async function MenageriePage() {
                   {entry.dayKey.slice(5)}
                   {entry.isToday ? " · today" : submitted ? "" : " · missed"}
                 </span>
+                {submitted && entry.takeId && entry.hasAudio ? (
+                  <audio controls preload="none" src={`/api/takes/${entry.takeId}/audio`} className="h-8 w-full" />
+                ) : null}
+                {submitted && !entry.hasAudio ? (
+                  <span className="text-[9px] text-muted">audio expired</span>
+                ) : null}
               </li>
             );
           })}

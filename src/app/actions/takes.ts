@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getDb } from "@/db/client";
+import { logAppError } from "@/lib/errors/log";
 import { err, type ActionResult } from "@/lib/action-result";
 import { getTakeAudioStore } from "@/lib/blob-store";
 import { dayKey } from "@/lib/game/day";
@@ -38,7 +39,15 @@ export async function keepTakeAction(formData: FormData): Promise<ActionResult<T
   }
   if (isRateLimited(`keep:${user.id}`, 10, 60_000)) return err("rate_limited", "Slow down a moment.");
   const db = await getDb();
-  const result = await keepTake(db, getTakeAudioStore(), {
+  let store: ReturnType<typeof getTakeAudioStore>;
+  try {
+    store = getTakeAudioStore();
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "storage unconfigured";
+    await logAppError(db, { source: "server", message, path: "action:keepTake" });
+    return err("storage_unavailable", "Audio storage is not set up yet; your recording is still on this device. (Admin: create the Vercel Blob store, task 10.)");
+  }
+  const result = await keepTake(db, store, {
     userId: user.id,
     plan: user.plan as "free",
     takeId,
@@ -55,7 +64,13 @@ export async function discardTakeAction(takeId: string): Promise<ActionResult<Ta
   if (!user) return err("unauthenticated", "Sign in first.");
   if (!uuid.safeParse(takeId).success) return err("bad_input", "Invalid take.");
   const db = await getDb();
-  const result = await discardTake(db, getTakeAudioStore(), { userId: user.id, takeId });
+  let discardStore: ReturnType<typeof getTakeAudioStore> | null = null;
+  try {
+    discardStore = getTakeAudioStore();
+  } catch {
+    discardStore = { put: async () => "", get: async () => null, delete: async () => undefined };
+  }
+  const result = await discardTake(db, discardStore, { userId: user.id, takeId });
   if (result.ok) revalidatePath("/");
   return result;
 }
