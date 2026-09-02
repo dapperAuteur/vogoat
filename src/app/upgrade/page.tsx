@@ -5,6 +5,7 @@ import { getDb } from "@/db/client";
 import { annualUnlocked, ANNUAL_UNLOCK_AT, PRICES } from "@/lib/billing/prices";
 import { lifetimeSoldCount } from "@/lib/billing/core";
 import { hasStripe } from "@/lib/env";
+import { stripeMode } from "@/lib/billing/status";
 import { getSession, type SessionUser } from "@/lib/session";
 import { latestClaim } from "@/lib/billing/cashapp";
 import { CashAppClaim } from "@/components/billing/cashapp-claim";
@@ -26,6 +27,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
   const annualOpen = annualUnlocked(sold);
   const claim = user ? await latestClaim(db, user.id) : null;
   const claimStatus = (claim?.status ?? "none") as "none" | "pending" | "verified" | "rejected";
+  const testMode = stripeMode() === "test";
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
@@ -68,6 +70,12 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
       {user?.plan === "lifetime" ? (
         <p className="rounded-md border border-moss bg-card p-4 text-sm font-semibold text-moss">
           You are a founder. VO GOAT is yours for life.
+        </p>
+      ) : null}
+      {testMode ? (
+        <p role="status" className="rounded-md border border-ochre px-3 py-2 text-sm text-ochre">
+          Payments are in test mode right now: card checkout will not charge you. The Cash App
+          option below is real either way.
         </p>
       ) : null}
       {!hasStripe ? (

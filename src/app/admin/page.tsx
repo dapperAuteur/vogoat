@@ -6,6 +6,7 @@ export const metadata: Metadata = { title: "Admin", robots: { index: false } };
 export const dynamic = "force-dynamic";
 
 const TOOLS = [
+  { href: "/admin/billing", name: "Billing health", detail: "Stripe mode, webhook wiring, founders, recent purchases" },
   { href: "/admin/errors", name: "Errors", detail: "How and why things failed, with the reference users see" },
   { href: "/admin/cashapp", name: "Cash App claims", detail: "Verify $100 QR payments; verifying grants lifetime" },
   { href: "/admin/roadmap", name: "Roadmap", detail: "What is built, partial, and still to come" },
