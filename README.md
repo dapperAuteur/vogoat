@@ -6,7 +6,7 @@ the same mundane micro-script, the same cartoon creature. Record your take (audi
 your best, collect the creature, share the card. VO = voiceover. GOAT = greatest of all time.
 The mascot is a goat.
 
-- **Status:** phase 1 of 10 (scaffold) on the way to v1; see [`ROADMAP.md`](ROADMAP.md).
+- **Status:** live in production at [vogoat.witus.online](https://vogoat.witus.online); the daily loop works end to end. What is left: [`ROADMAP.md`](ROADMAP.md).
 - **PRD (read first):** [`docs/01-prd.md`](docs/01-prd.md), decisions locked 2026-08-30.
 - **Design:** [`docs/02-design-directions.md`](docs/02-design-directions.md); direction B
   "Field Guide" chosen 2026-08-31. Tokens live in `src/app/globals.css` behind
@@ -43,13 +43,17 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
-**Guild:** `/menagerie` (signed in) shows every plate you have performed with playback of each past recording while its audio lives, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
+**Guild:** `/guild` (signed in; `/menagerie` permanently redirects there) shows every plate you have performed with playback of each past recording while its audio lives, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
+
+**Archive:** `/archive` lists every past specimen and `/day/<date>` is its own public, indexable page (creature plate, the eight-wheel recipe, the line everyone read, per-day OG image). Today's daily is never in the archive, so the surprise holds.
+
+**Paid tiers:** `/upgrade` sells lifetime, monthly, and annual; `/practice` is the paid practice room, any of the 11,664 recipes on demand with nothing counted against the daily.
 
 **Sharing:** after submitting, copy the spoiler-free text card or mint an unguessable, revocable audio link; `/s/[slug]` (noindex) plays the take with the script as its transcript, keeps the card alive after audio expiry, and carries a report form on every page.
 
 **Failures:** 500s show a branded screen with a reference code, a Try again, and a way back to today; every server and client error lands in `/admin/errors` with that same reference. 
 
-**Admin:** the `ADMIN_EMAIL` account sees an Admin link in the header to the console hub: `/admin/dailies` (runway, extend the queue, approve/reroll/swap; the daily cron emails when approved days drop below 7), `/admin/scripts` is the §8 triage ritual in-app `/admin/workshop` is the daily literary-device writing practice (shuffled no-repeat cycle through the seeded devices, entries private and saved forever, a flag sends an entry to script triage), and `/admin/creatures` vets the placeholder animal art (use / backlog / never; animals stay live unless marked never so the daily cannot go dark), 404 for everyone else.
+**Admin:** the `ADMIN_EMAIL` account sees an Admin link in the header to the console hub: `/admin/dailies` (runway, extend the queue, approve/reroll/swap; the daily cron emails when approved days drop below 7), `/admin/scripts` is the §8 triage ritual in-app `/admin/workshop` is the daily literary-device writing practice (shuffled no-repeat cycle through the seeded devices, entries private and saved forever, a flag sends an entry to script triage), `/admin/creatures` vets the placeholder animal art (use / backlog / never; animals stay live unless marked never so the daily cannot go dark), `/admin/cashapp` verifies Cash App lifetime claims, `/admin/errors` shows how and why things failed, and `/admin/roadmap` renders this repo's ROADMAP.md. Every admin route 404s for everyone else.
 
 **Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
 appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offers a magic
