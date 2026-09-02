@@ -34,6 +34,7 @@ pnpm dev                     # http://localhost:3050
 |---|---|
 | `pnpm dev` / `pnpm build` / `pnpm start` | Next.js on port 3050 |
 | `pnpm check` | typecheck + lint + unit tests |
+| `pnpm test:e2e` | Playwright: the critical flows (landing, sign-in, record to submit, archive, admin gating) plus an axe accessibility sweep. Needs `pnpm exec playwright install chromium` once |
 | `pnpm test` | Vitest: recipe id mapping against the CSV, schema invariants on an in-memory Postgres |
 | `pnpm db:generate` | Drizzle migration from `src/db/schema/*` into `src/db/migrations/` |
 | `pnpm db:seed` | Idempotent seed: 251 literary devices + script batch 01 as `candidate` (safe on Neon) |

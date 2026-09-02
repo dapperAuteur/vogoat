@@ -48,7 +48,7 @@ test.describe("anonymous landing", () => {
     // Signed out, recording is rehearsal and nothing is counted.
     await expect(page.getByRole("button", { name: /Record a take · Rehearsal \(not counted\)/ })).toBeVisible();
     // Scoped to the page header: the ecosystem footer carries its own Sign in link.
-    const header = page.locator("#main > header");
+    const header = page.getByRole("banner"); // the sticky site header (layout-level, outside #main)
     await expect(header.getByRole("link", { name: "Sign in" })).toBeVisible();
     await expect(header.getByRole("link", { name: "Guild" })).toHaveCount(0);
   });

@@ -26,7 +26,7 @@ export async function SiteHeader() {
   const seatsLeft = Math.max(ANNUAL_UNLOCK_AT - sold, 0);
 
   return (
-    <div className="sticky top-0 z-50 border-b border-rule bg-paper/95 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-rule bg-paper/95 backdrop-blur">
       {!isPaid ? (
         <Link
           href="/upgrade"
@@ -75,6 +75,6 @@ export async function SiteHeader() {
           )}
         </div>
       </nav>
-    </div>
+    </header>
   );
 }

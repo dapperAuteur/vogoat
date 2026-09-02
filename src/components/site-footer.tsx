@@ -180,7 +180,7 @@ function RiseWellnessCallout() {
         <h2 id="rise-wellness-heading" className="text-base font-semibold text-gray-900">
           Rise Wellness of Indiana
         </h2>
-        <p className="mt-0.5 text-xs text-gray-500">Independent mental health provider · Not affiliated with VO GOAT</p>
+        <p className="mt-0.5 text-xs text-gray-600">Independent mental health provider · Not affiliated with VO GOAT</p>
       </header>
 
       <p className="leading-relaxed text-gray-700">
@@ -191,7 +191,7 @@ function RiseWellnessCallout() {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="space-y-1">
-          <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">Services</p>
+          <p className="text-[11px] font-semibold tracking-wide text-gray-600 uppercase">Services</p>
           <ul className="space-y-0.5 text-xs text-gray-700">
             <li>ADHD testing &amp; management (in-person and from home)</li>
             <li>Anxiety &amp; depression</li>
@@ -204,7 +204,7 @@ function RiseWellnessCallout() {
         </div>
 
         <div className="space-y-1">
-          <p className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">Visit or call</p>
+          <p className="text-[11px] font-semibold tracking-wide text-gray-600 uppercase">Visit or call</p>
           <address className="text-xs leading-relaxed text-gray-700 not-italic">
             320 North Meridian Street
             <br />
@@ -251,13 +251,13 @@ function RiseWellnessCallout() {
         &ldquo;At Rise Wellness, we believe everyone has the capacity to rise above challenges
         and live a fulfilling, healthy life. Our care is guided by the belief that healing is
         personal, holistic, and rooted in compassion.&rdquo;
-        <span className="mt-1 block text-gray-500 not-italic">Rise Wellness of Indiana</span>
+        <span className="mt-1 block text-gray-600 not-italic">Rise Wellness of Indiana</span>
       </blockquote>
 
       {/* === NON-NEGOTIABLE DISCLAIMER ===
            Edit ONLY the app name token. Don't paraphrase. Don't trim.
            Don't reorder. This was vetted with the partner. */}
-      <p className="mt-4 text-[11px] leading-relaxed text-gray-500">
+      <p className="mt-4 text-[11px] leading-relaxed text-gray-600">
         Rise Wellness of Indiana is an independent organization. They are not affiliated with,
         employed by, or endorsed by VO GOAT, CentenarianOS, B4C LLC, AwesomeWebStore.com, or
         Anthony McDonald. We are grateful for their collaboration on mental health safety

@@ -15,7 +15,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | 7 | Admin console: daily authoring queue, script triage, runway alert | Done: `/admin` hub, dailies, scripts, creatures, workshop, cashapp, errors, roadmap |
 | 8 | The Workshop (admin-only daily literary device) | Done: shuffled no-repeat cycle over 251 devices, archive, script-candidate loop-closer |
 | 9 | Paid tiers: Stripe checkout (lifetime $103.29 / $100 Cash App QR, monthly $10.60, annual gated at 100 founders), plan sync + lapse policy, practice room, downloads, founder badge | Code done; Stripe keys are set on the project. **Not yet exercised end to end** (test purchase + webhook + a lapse) |
-| 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done: rate limits, PostHog wired (key set), `/voice-data`, `/about` with the method video, OG + favicon, robots + sitemap. **Remaining: Turnstile keys are not set, and the Playwright/axe E2E sweep is unwritten** |
+| 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done: rate limits, PostHog wired (key set), `/voice-data`, `/about` with the method video, OG + favicon, robots + sitemap. **Remaining: Turnstile keys are not set.** The Playwright + axe sweep now runs (16 specs, zero serious violations); two known issues are filed in `plans/bugs/` |
 
 ## Shipped after the original plan (BAM requests, 2026-09-01/02)
 

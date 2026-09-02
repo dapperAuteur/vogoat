@@ -8,7 +8,6 @@ import { expect, test, type Page, type TestInfo } from "@playwright/test";
 const PAGES = ["/", "/about", "/voice-data", "/upgrade", "/archive", "/sign-in"];
 
 /** The ecosystem footer's Rise Wellness partner block. */
-const PARTNER_CALLOUT = '[aria-labelledby="rise-wellness-heading"]';
 
 /**
  * KNOWN, UNFIXED APP DEFECT — reported, deliberately not patched from the test suite.
@@ -22,17 +21,6 @@ const PARTNER_CALLOUT = '[aria-labelledby="rise-wellness-heading"]';
  * The allowance is scoped to nodes INSIDE that callout and to that one rule: any new contrast
  * failure anywhere else on the page still fails the run. Delete this once the footer is fixed.
  */
-async function isKnownPartnerContrast(page: Page, rule: string, selector: unknown): Promise<boolean> {
-  if (rule !== "color-contrast" || typeof selector !== "string") return false;
-  return page.evaluate(
-    ([sel, root]) => {
-      const element = document.querySelector(sel);
-      return Boolean(element && element.closest(root));
-    },
-    [selector, PARTNER_CALLOUT] as const,
-  );
-}
-
 type AxePage = ConstructorParameters<typeof AxeBuilder>[0]["page"];
 
 /** axe-core is a transitive dependency, so the result shape is derived rather than imported. */
@@ -85,12 +73,9 @@ async function scan(page: Page, info: TestInfo, path: string): Promise<void> {
   const blocking: string[] = [];
   for (const v of results.violations) {
     if (v.impact !== "serious" && v.impact !== "critical") continue;
-    const unexcused: string[] = [];
-    for (const node of v.nodes) {
-      if (await isKnownPartnerContrast(page, v.id, node.target[0])) continue;
-      unexcused.push(node.target.join(" "));
-    }
-    if (unexcused.length > 0) blocking.push(`${v.id} (${v.impact}): ${unexcused.join(", ")}`);
+    // No exceptions: the footer's partner callout used to miss 4.5:1 and was excused here.
+    // Its muted greys were darkened instead, so any serious violation now fails the run.
+    blocking.push(`${v.id} (${v.impact}): ${v.nodes.map((node) => node.target.join(" ")).join(", ")}`);
   }
 
   const lesser = results.violations.filter((v) => v.impact !== "serious" && v.impact !== "critical");
