@@ -54,6 +54,8 @@ afterAll(async () => {
 describe("menagerie", () => {
   it("shows newest first with silhouettes for missed days and today pending", async () => {
     const view = await getMenagerie(db, { userId: "u1", today: "2026-09-04" });
+    expect(view.entries.filter((e) => e.takeNumber !== null).every((e) => e.takeId !== null)).toBe(true);
+    expect(view.entries.find((e) => e.dayKey === "2026-09-01")?.hasAudio).toBe(true);
     expect(view.entries.map((e) => [e.dayKey, e.takeNumber !== null, e.isToday])).toEqual([
       ["2026-09-04", false, true],
       ["2026-09-03", true, false],
@@ -71,6 +73,7 @@ describe("menagerie", () => {
     expect(store.deleted).toEqual(["fake:a"]);
     const view = await getMenagerie(db, { userId: "u1", today: "2026-09-04" });
     expect(view.observed).toBe(2);
+    expect(view.entries.find((e) => e.dayKey === "2026-09-01")?.hasAudio).toBe(false); // expired, plate stays
     const rerun = await expireTakeAudio(db, store, new Date("2026-10-15T00:00:00Z"));
     expect(rerun).toEqual({ expired: 0, failed: 0 });
   });

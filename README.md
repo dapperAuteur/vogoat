@@ -43,7 +43,7 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
-**Menagerie:** `/menagerie` (signed in) shows every plate you have performed, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
+**Menagerie:** `/menagerie` (signed in) shows every plate you have performed with playback of each past recording while its audio lives, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
 
 **Sharing:** after submitting, copy the spoiler-free text card or mint an unguessable, revocable audio link; `/s/[slug]` (noindex) plays the take with the script as its transcript, keeps the card alive after audio expiry, and carries a report form on every page.
 

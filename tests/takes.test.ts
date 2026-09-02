@@ -162,3 +162,27 @@ describe("admin overrides (BAM 2026-09-01)", () => {
     expect(after.find((t) => t.id === submitted.id)?.status).toBe("kept");
   });
 });
+
+describe("storage failure grace", () => {
+  it("keep returns an envelope when the store fails; discard still discards", async () => {
+    const throwing = {
+      async put(): Promise<string> {
+        throw new Error("no store");
+      },
+      async get() {
+        return null;
+      },
+      async delete(): Promise<void> {
+        throw new Error("no store");
+      },
+    };
+    const r = await registerTake(db, { userId: "paid1", plan: "lifetime", dailyId });
+    if (!r.ok) throw new Error(r.code);
+    const kept = await keepTake(db, throwing, { userId: "paid1", plan: "lifetime", takeId: r.data.takeId, ...keepArgs });
+    expect(!kept.ok && kept.code).toBe("storage_unavailable");
+    const okKept = await keepTake(db, fakeStore, { userId: "paid1", plan: "lifetime", takeId: r.data.takeId, ...keepArgs });
+    expect(okKept.ok).toBe(true);
+    const d = await discardTake(db, throwing, { userId: "paid1", takeId: r.data.takeId });
+    expect(d.ok).toBe(true);
+  });
+});

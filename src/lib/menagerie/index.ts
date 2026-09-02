@@ -11,6 +11,10 @@ export type MenagerieEntry = {
   layers: CreatureLayers;
   /** null = not submitted (a silhouette; "today" while the day is still open). */
   takeNumber: number | null;
+  /** The submitted take's id, for playback of past recordings. */
+  takeId: string | null;
+  /** False once free-plan audio expired (the plate stays; PRD §5). */
+  hasAudio: boolean;
   isToday: boolean;
 };
 
@@ -29,6 +33,8 @@ export async function getMenagerie(db: Db, args: { userId: string; today: DayKey
       creatureName: creature.name,
       layers: creature.layers,
       takeNumber: take.takeNumber,
+      takeId: take.id,
+      blobUrl: take.blobUrl,
     })
     .from(daily)
     .innerJoin(creature, eq(creature.id, daily.creatureId))
@@ -44,6 +50,8 @@ export async function getMenagerie(db: Db, args: { userId: string; today: DayKey
       creatureName: r.creatureName,
       layers: r.layers,
       takeNumber: r.takeNumber,
+      takeId: r.takeId,
+      hasAudio: r.blobUrl !== null,
       isToday: r.dayKey === args.today,
     }))
     .reverse();

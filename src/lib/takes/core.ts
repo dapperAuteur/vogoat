@@ -65,7 +65,13 @@ export async function keepTake(
   const [row] = await db.select().from(take).where(and(eq(take.id, args.takeId), eq(take.userId, args.userId)));
   if (!row) return err("not_found", "That take does not exist.");
   if (row.status !== "recorded") return err("wrong_state", "Only a fresh recording can be kept.");
-  const blobUrl = await store.put(row.id, args.bytes, baseMime);
+  let blobUrl: string;
+  try {
+    blobUrl = await store.put(row.id, args.bytes, baseMime);
+  } catch (error: unknown) {
+    console.error("[takes] store.put failed:", error instanceof Error ? error.message : "unknown");
+    return err("storage_unavailable", "Audio storage is not available right now; your recording is still on this device. Try Keep again in a minute.");
+  }
   const expiresAt = args.plan === "free" ? new Date(row.createdAt.getTime() + EXPIRY_DAYS * 86_400_000) : null;
   const [updated] = await db
     .update(take)
@@ -84,7 +90,14 @@ export async function discardTake(
   const [row] = await db.select().from(take).where(and(eq(take.id, args.takeId), eq(take.userId, args.userId)));
   if (!row) return err("not_found", "That take does not exist.");
   if (row.status === "submitted") return err("wrong_state", "A submitted take cannot be discarded.");
-  if (row.blobUrl) await store.delete(row.blobUrl);
+  if (row.blobUrl) {
+    try {
+      await store.delete(row.blobUrl);
+    } catch (error: unknown) {
+      // The row is the source of truth; the expiry cron retries orphaned blobs later.
+      console.error("[takes] store.delete failed:", error instanceof Error ? error.constructor.name : "unknown");
+    }
+  }
   const [updated] = await db
     .update(take)
     .set({ status: "discarded", blobUrl: null, deletedAt: new Date() })
