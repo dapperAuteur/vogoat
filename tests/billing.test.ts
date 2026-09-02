@@ -112,3 +112,16 @@ describe("error log", () => {
     expect(rows[1].digest).toBe("abc123");
   });
 });
+
+describe("purchase before login", () => {
+  it("parks a payment with no account, then grants it on first sign-in", async () => {
+    const { claimPendingPurchases, recordPendingPurchase } = await import("@/lib/billing/core");
+    expect(await recordPendingPurchase(db, { email: "Later@Example.com", checkoutId: "cs_pending", amountCents: 10329, currency: "usd" })).toBe("stored");
+    expect(await recordPendingPurchase(db, { email: "later@example.com", checkoutId: "cs_pending", amountCents: 10329, currency: "usd" })).toBe("duplicate");
+    await db.insert(schema.user).values({ id: "later", name: "Later", email: "later@example.com" });
+    expect(await claimPendingPurchases(db, { userId: "later", email: "later@example.com" })).toBe(true);
+    const [account] = await db.select().from(schema.user).where(eq(schema.user.id, "later"));
+    expect(account.plan).toBe("lifetime");
+    expect(await claimPendingPurchases(db, { userId: "later", email: "later@example.com" })).toBe(false);
+  });
+});

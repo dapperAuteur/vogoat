@@ -1,6 +1,8 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { savePracticeTakeAction } from "@/app/actions/practice";
 
 const MAX_MS = 30_000;
 
@@ -8,10 +10,14 @@ const MAX_MS = 30_000;
  * The practice room's recorder: entirely local (nothing registers, nothing uploads yet;
  * saved practice takes are the fast-follow). Same mic etiquette as the daily.
  */
-export function PracticeRecorder() {
+export function PracticeRecorder({ recipeId, canSave }: { recipeId: number; canSave: boolean }) {
+  const router = useRouter();
   const [phase, setPhase] = useState<"idle" | "starting" | "recording" | "review">("idle");
   const [elapsedMs, setElapsedMs] = useState(0);
   const [url, setUrl] = useState<string | null>(null);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  const [saving, setSaving] = useState(false);
+  const startedMsRef = useRef(0);
   const [error, setError] = useState<string | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -41,8 +47,10 @@ export function PracticeRecorder() {
         if (e.data.size > 0) chunksRef.current.push(e.data);
       };
       recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
-        setUrl(URL.createObjectURL(blob));
+        const recorded = new Blob(chunksRef.current, { type: recorder.mimeType || "audio/webm" });
+        setBlob(recorded);
+        startedMsRef.current = Math.min(Date.now() - startedAtRef.current, MAX_MS);
+        setUrl(URL.createObjectURL(recorded));
         setPhase("review");
         if (timerRef.current) clearInterval(timerRef.current);
         streamRef.current?.getTracks().forEach((t) => t.stop());
@@ -70,17 +78,53 @@ export function PracticeRecorder() {
       <div className="flex flex-col gap-2 rounded-md border border-rule bg-card p-4">
         {/* The recipe on this page is the transcript prompt; nothing here uploads. */}
         <audio controls src={url} className="w-full" />
+        {canSave ? (
+          <button
+            type="button"
+            disabled={saving}
+            onClick={() => {
+              if (!blob) return;
+              setSaving(true);
+              setError(null);
+              const form = new FormData();
+              form.set("recipeId", String(recipeId));
+              form.set("durationMs", String(Math.round(startedMsRef.current)));
+              form.set("audio", new File([blob], "practice", { type: blob.type || "audio/webm" }));
+              void savePracticeTakeAction(form).then((result) => {
+                setSaving(false);
+                if (!result.ok) {
+                  setError(result.error);
+                  return;
+                }
+                URL.revokeObjectURL(url);
+                setUrl(null);
+                setBlob(null);
+                setPhase("idle");
+                router.refresh();
+              });
+            }}
+            className="min-h-12 rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50"
+          >
+            {saving ? "Saving…" : "Save this practice take"}
+          </button>
+        ) : null}
         <button
           type="button"
           onClick={() => {
             URL.revokeObjectURL(url);
             setUrl(null);
+            setBlob(null);
             setPhase("idle");
           }}
           className="min-h-12 rounded-md border border-ink font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
         >
           Again (stays on this device)
         </button>
+        {error ? (
+          <p role="alert" className="text-xs text-ochre">
+            {error}
+          </p>
+        ) : null}
       </div>
     );
   }
@@ -103,7 +147,7 @@ export function PracticeRecorder() {
         </p>
       ) : null}
       <p className="text-center text-xs leading-relaxed text-muted">
-        Practice never touches the daily and never uploads; saved practice takes are coming.
+        Practice never touches the daily. Nothing leaves this device unless you save it.
       </p>
     </div>
   );

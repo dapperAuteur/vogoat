@@ -5,6 +5,7 @@ import { cache } from "react";
 import { getDb } from "@/db/client";
 import { user } from "@/db/schema";
 import type { Role } from "@/db/schema";
+import { claimPendingPurchases } from "./billing/core";
 import { isAdminEmail } from "./admin";
 import { getAuth, type Session } from "./auth";
 import { env } from "./env";
@@ -17,6 +18,15 @@ export const getSession = cache(async (): Promise<Session | null> => {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return null;
   const u = session.user as SessionUser;
+  if (u.plan === "free") {
+    // A seat bought before this account existed is granted on the first request after sign-in.
+    try {
+      const db = await getDb();
+      if (await claimPendingPurchases(db, { userId: u.id, email: u.email })) u.plan = "lifetime";
+    } catch (error: unknown) {
+      console.error("[session] pending purchase claim failed:", error instanceof Error ? error.constructor.name : "unknown");
+    }
+  }
   if (u.role !== "admin" && isAdminEmail(u.email, env.ADMIN_EMAIL)) {
     const db = await getDb();
     await db.update(user).set({ role: "admin" }).where(eq(user.id, u.id));
