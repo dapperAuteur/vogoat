@@ -192,6 +192,15 @@ export default async function HomePage() {
         </section>
       )}
 
+      <p className="px-1 text-xs leading-relaxed text-muted">
+        The voices come from somewhere: Rudolf Laban&apos;s century-old effort work, brought to
+        voice acting by coach Darren McStay.{" "}
+        <Link href="/about" className="font-semibold text-moss underline-offset-4 hover:underline">
+          The story behind the game
+        </Link>
+        .
+      </p>
+
       <div className="sticky bottom-0 mt-auto flex flex-col gap-2 bg-paper pt-2 pb-5">
         {daily && (!submitted || user?.role === "admin") ? (
           <TakeRecorder dailyId={daily.id} isSignedIn={Boolean(user)} attemptCount={takes.length} limit={limit} keptCount={kept.length} />
