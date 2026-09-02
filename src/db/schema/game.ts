@@ -23,6 +23,7 @@ export const scriptStatusEnum = pgEnum("script_status", ["candidate", "use", "ba
 export const dailyStatusEnum = pgEnum("daily_status", ["draft", "approved", "published", "auto"]);
 export const takeStatusEnum = pgEnum("take_status", ["recorded", "kept", "submitted", "discarded"]);
 export const purchaseKindEnum = pgEnum("purchase_kind", ["lifetime"]);
+export const campaignStatusEnum = pgEnum("campaign_status", ["draft", "sending", "sent"]);
 export const claimStatusEnum = pgEnum("claim_status", ["pending", "verified", "rejected"]);
 export const errorSourceEnum = pgEnum("error_source", ["server", "client"]);
 
@@ -158,6 +159,38 @@ export const purchase = pgTable("purchase", {
   stripeCheckoutId: text("stripe_checkout_id").notNull().unique(),
   amount: integer("amount").notNull(),
   currency: text("currency").notNull().default("usd"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
+ * A purchase made before signing in (BAM, 2026-09-02: "purchase first, then allow login").
+ * Stripe knows only the payer's email at that point, so the grant waits here until an account
+ * with that email exists, then is claimed exactly once.
+ */
+export const pendingPurchase = pgTable(
+  "pending_purchase",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    email: text("email").notNull(),
+    kind: purchaseKindEnum("kind").notNull(),
+    stripeCheckoutId: text("stripe_checkout_id").notNull().unique(),
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull().default("usd"),
+    claimedAt: timestamp("claimed_at", { withTimezone: true }),
+    claimedBy: text("claimed_by").references(() => user.id),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index("pending_purchase_email_idx").on(t.email)],
+);
+
+/** Marketing campaigns to consenting players (admin-authored, sent via Mailgun). */
+export const campaign = pgTable("campaign", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  subject: text("subject").notNull(),
+  body: text("body").notNull(),
+  status: campaignStatusEnum("status").notNull().default("draft"),
+  recipientCount: integer("recipient_count").notNull().default(0),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

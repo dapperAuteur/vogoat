@@ -17,6 +17,9 @@ export const user = pgTable("user", {
   role: roleEnum("role").notNull().default("player"),
   // Maps Stripe webhook events back to the account (subscriptions have no session ref).
   stripeCustomerId: text("stripe_customer_id").unique(),
+  // Marketing consent is opt-in and separate from the account (campaigns, 2026-09-02).
+  marketingConsent: boolean("marketing_consent").notNull().default(false),
+  unsubscribeToken: text("unsubscribe_token").unique(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
