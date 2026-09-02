@@ -32,9 +32,8 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 ## Backlog (not v1)
 
 - Saving practice-room takes to the server (today the practice recorder is local-only).
-- Users download all their attempts, paid-only for now (`plans/future/05`).
-- Admin usage analytics: what players use vs avoid (`plans/future/04`).
-- Promos beyond Stripe codes: campaigns/marketing like FlashLearnAI (`plans/future/03`).
+- Users download all their attempts in one place, paid-only (`plans/future/05`); per-take download already works.
+- One Stripe webhook for the whole ecosystem, or per-app endpoints with the app stamp (`plans/future/07`).
 - A/B/C test of the three design directions once there is traffic (`plans/future/01`).
 - Blog posts about this build for bam-landing-page (`plans/future/00`).
 - Real creature art replacing the placeholder SVG set (the `layers` contract is stable).

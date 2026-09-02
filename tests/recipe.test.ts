@@ -13,12 +13,18 @@ describe("recipe ids mirror data/voice-recipes.csv", () => {
   });
 
   it("maps every id to the CSV row and back", () => {
+    // One assertion, not one per field: 11,664 rows times eight wheels is ~93k expect() calls,
+    // which timed out once the suite grew. Collect mismatches, then assert on the list.
+    const mismatches: string[] = [];
     for (const row of rows) {
       const id = Number(row.id);
       const recipe = recipeFromId(id);
-      for (const w of WHEELS) expect(recipe[w], `row ${id} ${w}`).toBe(row[w]);
-      expect(recipeId(recipe)).toBe(id);
+      for (const w of WHEELS) {
+        if (recipe[w] !== row[w]) mismatches.push(`row ${id} ${w}: ${recipe[w]} != ${row[w]}`);
+      }
+      if (recipeId(recipe) !== id) mismatches.push(`row ${id}: recipeId round-trip returned ${recipeId(recipe)}`);
     }
+    expect(mismatches).toEqual([]);
   });
 
   it("rejects out-of-range ids", () => {

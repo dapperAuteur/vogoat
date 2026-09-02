@@ -51,9 +51,13 @@ pnpm dev                     # http://localhost:3050
 
 **Sharing:** after submitting, copy the spoiler-free text card or mint an unguessable, revocable audio link; `/s/[slug]` (noindex) plays the take with the script as its transcript, keeps the card alive after audio expiry, and carries a report form on every page.
 
+**Help:** `/how-to` is a guide per thing a player can do (play today, sign in, takes, share, Guild, archive, practice, upgrade, privacy), each with numbered steps and a slot for a walkthrough video; paste a YouTube id into `src/lib/how-to/guides.ts` to fill one.
+
+**Announcements:** players opt in from the Guild; `/admin/campaigns` writes and sends them through Mailgun, every message carries a one-click `/unsubscribe/<token>` link, and a campaign can only be sent once.
+
 **Failures:** 500s show a branded screen with a reference code, a Try again, and a way back to today; every server and client error lands in `/admin/errors` with that same reference. 
 
-**Admin:** the `ADMIN_EMAIL` account sees an Admin link in the header to the console hub: `/admin/dailies` (runway, extend the queue, approve/reroll/swap; the daily cron emails when approved days drop below 7), `/admin/scripts` is the §8 triage ritual in-app `/admin/workshop` is the daily literary-device writing practice (shuffled no-repeat cycle through the seeded devices, entries private and saved forever, a flag sends an entry to script triage), `/admin/creatures` vets the placeholder animal art (use / backlog / never; animals stay live unless marked never so the daily cannot go dark), `/admin/cashapp` verifies Cash App lifetime claims, `/admin/errors` shows how and why things failed, and `/admin/roadmap` renders this repo's ROADMAP.md. Every admin route 404s for everyone else.
+**Admin:** the `ADMIN_EMAIL` account sees an Admin link in the header to the console hub: `/admin/dailies` (runway, extend the queue, approve/reroll/swap; the daily cron emails when approved days drop below 7), `/admin/scripts` is the §8 triage ritual in-app `/admin/workshop` is the daily literary-device writing practice (shuffled no-repeat cycle through the seeded devices, entries private and saved forever, a flag sends an entry to script triage), `/admin/creatures` vets the placeholder animal art (use / backlog / never; animals stay live unless marked never so the daily cannot go dark), `/admin/cashapp` verifies Cash App lifetime claims, `/admin/analytics` answers what players use versus avoid (the PRD funnel, habit, streaks), `/admin/billing` shows whether the money plumbing is connected, `/admin/errors` shows how and why things failed, and `/admin/roadmap` renders this repo's ROADMAP.md. Every admin route 404s for everyone else.
 
 **Sign-in:** production is Sign in with WitUS only (`accounts.witus.online`); the button
 appears once `WITUS_OIDC_CLIENT_ID` is set. In development, `/sign-in` also offers a magic
