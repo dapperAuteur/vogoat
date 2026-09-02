@@ -3,6 +3,7 @@ import type { Db } from "@/db/client";
 import { daily, take, type Plan, type Role } from "@/db/schema";
 import { err, ok, type ActionResult } from "@/lib/action-result";
 import type { TakeAudioStore } from "@/lib/blob-store";
+import { logAppError } from "@/lib/errors/log";
 
 // The take lifecycle (PRD §7.3-4, invariants 1 and 2). Pure of framework: db and store are
 // injected so every rule is testable against a real Postgres and a fake store.
@@ -69,7 +70,9 @@ export async function keepTake(
   try {
     blobUrl = await store.put(row.id, args.bytes, baseMime);
   } catch (error: unknown) {
-    console.error("[takes] store.put failed:", error instanceof Error ? error.message : "unknown");
+    const message = error instanceof Error ? error.message : "unknown";
+    console.error("[takes] store.put failed:", message);
+    await logAppError(db, { source: "server", message: `store.put: ${message}`.slice(0, 500), path: "core:keepTake" });
     return err("storage_unavailable", "Audio storage is not available right now; your recording is still on this device. Try Keep again in a minute.");
   }
   const expiresAt = args.plan === "free" ? new Date(row.createdAt.getTime() + EXPIRY_DAYS * 86_400_000) : null;
