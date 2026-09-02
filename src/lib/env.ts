@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { resolveBlobToken } from "./blob-token";
 
 /**
  * Runtime environment, validated once. `next build` runs with NODE_ENV=production but is
@@ -71,7 +72,7 @@ const input = {
   WITUS_OIDC_DISCOVERY_URL: blank(process.env.WITUS_OIDC_DISCOVERY_URL),
   DAILY_TIMEZONE: blank(process.env.DAILY_TIMEZONE),
   LAUNCH_DATE: blank(process.env.LAUNCH_DATE),
-  BLOB_READ_WRITE_TOKEN: blank(process.env.BLOB_READ_WRITE_TOKEN),
+  BLOB_READ_WRITE_TOKEN: resolveBlobToken(process.env),
   CRON_SECRET: blank(process.env.CRON_SECRET),
   MAILGUN_API_KEY: blank(process.env.MAILGUN_API_KEY),
   MAILGUN_DOMAIN: blank(process.env.MAILGUN_DOMAIN),
