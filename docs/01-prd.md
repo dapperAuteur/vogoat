@@ -46,13 +46,13 @@ Not a voice course (link out). Not a podcast platform (Stream owns that). Not a 
 | Daily model | **Shared daily** — everyone gets the same recipe + script + creature, seeded by date. The button press is a slot-machine *reveal*, not per-user RNG. |
 | Daily unit | One authored row: (recipe, script, creature) curated together, human-vetoed before publish → **§6**. |
 | Takes & submissions | **Free: 3 takes + 1 submission per day.** Paid/admin: unlimited takes, still 1 submission (see §5 — one-submission-per-day is universal; paying buys practice, never extra entries). |
-| Retention | **Free: audio kept 30 days.** Menagerie creatures, streaks, and share cards persist forever — only the audio expires. Paid/admin: audio kept indefinitely. |
+| Retention | **Free: audio kept 30 days.** Guild creatures, streaks, and share cards persist forever — only the audio expires. Paid/admin: audio kept indefinitely. |
 | Recording | **Audio only.** In-browser MediaRecorder, ~30s hard cap. |
 | Recording privacy | **Audio never leaves the device unless the user keeps a take.** Attempt *counts* are server-tracked for signed-in users (that's how 3/day is enforced); discarded audio is never uploaded. |
 | Anonymous funnel | Anyone can spin + rehearse with no account (all local, nothing counted). **Keep / submit / streak / menagerie / share require Sign in with WitUS.** VoGoat is a consumer front door for `accounts.witus.online`. |
 | Sharing | **Pull, not push.** No public feed in v1 (BAM: acceptable). Share = unguessable `noindex` URL, revocable, report button on every shared page. Plus a Wordle-style text/image card that works with no audio. |
 | Creature | Derived from the recipe (size → animal class, attitude → expression, age → accessories, effort → pose), rendered from a layered 2D asset library at authoring time. No runtime AI image generation. Goat reserved for milestones. |
-| Collection | **The Menagerie** — archive grid of every creature you've performed. Streak + collection are the retention pair. |
+| Collection | **The Guild** (renamed from Guild by BAM, 2026-09-02) — archive grid of every creature you've performed. Streak + collection are the retention pair. |
 | Script | Original micro-scripts, mundane, never McStay's lines. **BAM approves every script** via a weekly 20-script batch ritual → **§8**. |
 | The Workshop | **Admin-only daily writing feature** (BAM, 2026-08-31): one randomly-ordered literary device per day, BAM writes a piece using it → **§9**. Gated by role, not hardcoded to a user. |
 | Placement | WitUS product, repo **`claude/vogoat`**, **`vogoat.witus.online`** (vogoat.com is taken — subdomain only, no purchase), OIDC client of `accounts.witus.online`. |
@@ -108,7 +108,7 @@ number goes on the share card ("take 1/3" is the flex).
 
 | | Daily takes | Submissions/day | Audio retention | Practice mode | Extras |
 |---|---|---|---|---|---|
-| **Free** | 3 | 1 | 30 days | — | Menagerie + streaks + share cards forever (audio expires, the creature doesn't) |
+| **Free** | 3 | 1 | 30 days | — | Guild + streaks + share cards forever (audio expires, the creature doesn't) |
 | **Lifetime** (one-time purchase) | unlimited | 1 | forever | ✓ | Take downloads · founder badge in menagerie |
 | **Subscription** (monthly) | unlimited | 1 | while active* | ✓ | Take downloads |
 | **Admin** (`ADMIN_EMAIL`) | unlimited | 1 | forever | ✓ | Authoring console: dailies, script triage, creatures, reports, runway alerts · **The Workshop (§9)** |
@@ -120,7 +120,7 @@ at launch.
 
 *\*Proposed lapse policy (BAM to confirm): subscription lapses → account drops to free rules
 going forward; already-stored audio gets a 30-day clock from lapse, then expires like free.
-Menagerie survives regardless.*
+Guild survives regardless.*
 
 **Sequencing recommendation (BAM to confirm):** launch with **free + lifetime + admin**;
 lifetime is a one-time Stripe checkout with no webhook lifecycle, which fits the spring
@@ -164,7 +164,7 @@ ahead of time and human-approved. Operationally:
    the counter is server-tracked and the UI shows it plainly ("take 2 of 3").
 4. **Submit** — pick one kept take as the official entry → Sign in with WitUS if not signed
    in. One submission per day, enforced in the schema, said in the UI before the button.
-5. **Payoff** — creature card flips to full color with the submitted take attached. Menagerie
+5. **Payoff** — creature card flips to full color with the submitted take attached. Guild
    updated, streak incremented.
 6. **Share** — (a) spoiler-free text/image card: `VoGoat #214 🐁 tiny · menacing · elder ·
    hushed · float — take 2/3 — [link]`; (b) optional audio share link (unguessable slug,
@@ -355,13 +355,16 @@ Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-buil
 
 ## 17. Remaining open items (none block the build)
 
+> **2026-09-02 update (BAM):** past dailies are PUBLIC and indexable at /archive and /day/<date>,
+> script text included; the collection is called the **Guild**.
+>
 > **2026-09-01 update (BAM):** items 1–3 answered. Prices: lifetime **$103.29** (or **$100.00**
 > via Cash App Pay), monthly **$10.60**, annual **$103.29** offered only after 100 lifetime
 > founders (the $100 path is a Cash App QR with hand verification in /admin/cashapp).
 > Sequencing: monthly subscription ships at launch alongside free + lifetime + admin.
 > Admin addendum: admin gets unlimited attempts and REPLACE-resubmission (a new submit demotes
 > the previous one to kept); the one-submitted-row-per-day schema invariant is untouched.
-> Lapse policy: as proposed (lapse → 30-day clock on stored audio; Menagerie survives).
+> Lapse policy: as proposed (lapse → 30-day clock on stored audio; Guild survives).
 
 1. **Lifetime price** (and subscription price, if it ships at launch). Operator decision,
    captured in witus user-task 79.

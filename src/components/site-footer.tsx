@@ -68,13 +68,18 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/menagerie" className={linkClasses}>
-                  Menagerie
+                <Link href="/guild" className={linkClasses}>
+                  Guild
                 </Link>
               </li>
               <li>
                 <Link href="/sign-in" className={linkClasses}>
                   Sign in
+                </Link>
+              </li>
+              <li>
+                <Link href="/archive" className={linkClasses}>
+                  Every specimen
                 </Link>
               </li>
               <li>

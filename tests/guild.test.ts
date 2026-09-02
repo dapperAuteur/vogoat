@@ -7,7 +7,7 @@ import * as schema from "@/db/schema";
 import type { TakeAudioStore } from "@/lib/blob-store";
 import { deriveCreature } from "@/lib/game/creature";
 import { recipeFromId } from "@/lib/game/recipe";
-import { getMenagerie } from "@/lib/menagerie";
+import { getGuild } from "@/lib/menagerie";
 import { expireTakeAudio } from "@/lib/takes/expiry";
 
 const client = new PGlite();
@@ -51,9 +51,9 @@ afterAll(async () => {
   await client.close();
 });
 
-describe("menagerie", () => {
+describe("guild", () => {
   it("shows newest first with silhouettes for missed days and today pending", async () => {
-    const view = await getMenagerie(db, { userId: "u1", today: "2026-09-04" });
+    const view: Awaited<ReturnType<typeof getGuild>> = await getGuild(db, { userId: "u1", today: "2026-09-04" });
     expect(view.entries.filter((e) => e.takeNumber !== null).every((e) => e.takeId !== null)).toBe(true);
     expect(view.entries.find((e) => e.dayKey === "2026-09-01")?.hasAudio).toBe(true);
     expect(view.entries.map((e) => [e.dayKey, e.takeNumber !== null, e.isToday])).toEqual([
@@ -71,7 +71,7 @@ describe("menagerie", () => {
     const result = await expireTakeAudio(db, store, new Date("2026-10-15T00:00:00Z"));
     expect(result).toEqual({ expired: 1, failed: 0 });
     expect(store.deleted).toEqual(["fake:a"]);
-    const view = await getMenagerie(db, { userId: "u1", today: "2026-09-04" });
+    const view: Awaited<ReturnType<typeof getGuild>> = await getGuild(db, { userId: "u1", today: "2026-09-04" });
     expect(view.observed).toBe(2);
     expect(view.entries.find((e) => e.dayKey === "2026-09-01")?.hasAudio).toBe(false); // expired, plate stays
     const rerun = await expireTakeAudio(db, store, new Date("2026-10-15T00:00:00Z"));

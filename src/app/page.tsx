@@ -72,10 +72,10 @@ export default async function HomePage() {
         {session && user ? (
           <div className="flex items-center gap-1">
             <Link
-              href="/menagerie"
+              href="/guild"
               className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
             >
-              Menagerie
+              Guild
             </Link>
             {user.role === "admin" ? (
               <Link
@@ -131,8 +131,8 @@ export default async function HomePage() {
               {submitted ? (
                 <>
                   Added to{" "}
-                  <Link href="/menagerie" className="font-semibold text-moss underline-offset-4 hover:underline">
-                    your Menagerie
+                  <Link href="/guild" className="font-semibold text-moss underline-offset-4 hover:underline">
+                    your Guild
                   </Link>
                   . Come back for tomorrow&apos;s specimen.
                 </>
@@ -200,7 +200,7 @@ export default async function HomePage() {
           <h1 className="mt-2 font-display text-3xl leading-tight italic">Today&apos;s specimen is resting.</h1>
           <p className="mt-3 text-sm leading-relaxed text-muted">
             The next recipe appears at midnight UTC. One shared voice recipe a day: record your
-            take, keep your best, collect the creature in your Menagerie.
+            take, keep your best, collect the creature in your Guild.
           </p>
         </section>
       )}
