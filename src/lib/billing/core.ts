@@ -1,6 +1,6 @@
 import { and, eq, isNull, inArray, sql } from "drizzle-orm";
 import type { Db } from "@/db/client";
-import { purchase, take, user } from "@/db/schema";
+import { pendingPurchase, purchase, take, user } from "@/db/schema";
 
 // Plan changes driven by Stripe webhooks. Money buys practice, retention, and tools;
 // NEVER extra entries into the shared daily (invariant 1 lives in the schema regardless).
@@ -68,6 +68,53 @@ export async function applySubscriptionLapsed(db: Db, args: { stripeCustomerId: 
     .set({ expiresAt: clock })
     .where(and(eq(take.userId, account.id), inArray(take.status, ["kept", "submitted"]), isNull(take.expiresAt)));
   return true;
+}
+
+/**
+ * A lifetime payment with no account yet (BAM: "purchase first, then allow login"). Stored
+ * against the paying email and granted the moment an account with that email appears.
+ */
+export async function recordPendingPurchase(
+  db: Db,
+  args: { email: string; checkoutId: string; amountCents: number; currency: string },
+): Promise<"stored" | "duplicate"> {
+  try {
+    await db.insert(pendingPurchase).values({
+      email: args.email.trim().toLowerCase(),
+      kind: "lifetime",
+      stripeCheckoutId: args.checkoutId,
+      amount: args.amountCents,
+      currency: args.currency,
+    });
+    return "stored";
+  } catch (error: unknown) {
+    if (isUniqueViolation(error)) return "duplicate";
+    throw error;
+  }
+}
+
+/** Grants any purchase waiting on this account's email. Safe to call on every request. */
+export async function claimPendingPurchases(db: Db, args: { userId: string; email: string }): Promise<boolean> {
+  const rows = await db
+    .select()
+    .from(pendingPurchase)
+    .where(and(eq(pendingPurchase.email, args.email.trim().toLowerCase()), isNull(pendingPurchase.claimedAt)));
+  let granted = false;
+  for (const row of rows) {
+    const result = await applyLifetimePurchase(db, {
+      userId: args.userId,
+      checkoutId: row.stripeCheckoutId,
+      amountCents: row.amount,
+      currency: row.currency,
+      stripeCustomerId: null,
+    });
+    await db
+      .update(pendingPurchase)
+      .set({ claimedAt: new Date(), claimedBy: args.userId })
+      .where(eq(pendingPurchase.id, row.id));
+    if (result === "applied") granted = true;
+  }
+  return granted;
 }
 
 export async function isFounder(db: Db, userId: string): Promise<boolean> {

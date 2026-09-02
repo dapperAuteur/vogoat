@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CreatureSvg } from "@/components/creature-svg";
 import { getDb } from "@/db/client";
 import { dayKey } from "@/lib/game/day";
@@ -24,23 +23,12 @@ export default async function GuildPage() {
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl italic">
-          The Guild
-          {founder ? (
-            <span className="ml-2 align-middle rounded-sm border border-ochre px-2 py-0.5 font-sans text-[10px] font-semibold tracking-[0.1em] text-ochre uppercase not-italic">
-              founder
-            </span>
-          ) : null}
-        </span>
-        <Link
-          href="/"
-          className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-        >
-          Today
-        </Link>
-      </header>
 
+      {founder ? (
+        <p className="self-start rounded-sm border border-ochre px-2 py-0.5 text-[10px] font-semibold tracking-[0.1em] text-ochre uppercase">
+          founder
+        </p>
+      ) : null}
       <div className="grid grid-cols-4 border-t border-b border-ink py-2">
         <div className="flex flex-col gap-0.5 px-1">
           <span className="font-display text-2xl">{view.observed}</span>

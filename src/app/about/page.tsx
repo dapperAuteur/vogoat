@@ -11,12 +11,6 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
-        <Link href="/" className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-          Today
-        </Link>
-      </header>
       <h1 className="font-display text-3xl leading-tight italic">Where the wheels come from.</h1>
       <section className="rounded-md border border-rule bg-card p-4 text-sm leading-relaxed">
         <p>

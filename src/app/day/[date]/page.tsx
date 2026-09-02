@@ -38,14 +38,6 @@ export default async function ArchiveDayPage({ params }: Params) {
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <Link href="/" className="font-display text-3xl tracking-wide italic">
-          VO GOAT
-        </Link>
-        <Link href="/archive" className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-          All specimens
-        </Link>
-      </header>
 
       <article className="rounded-md border border-ink bg-card p-4">
         <div className="flex items-baseline justify-between">

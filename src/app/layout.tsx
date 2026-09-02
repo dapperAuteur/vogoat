@@ -1,6 +1,7 @@
 import { Analytics } from "@vercel/analytics/next";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { env } from "@/lib/env";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         >
           Skip to content
         </a>
+        <SiteHeader />
         {children}
         <SiteFooter />
         <AnalyticsProvider />

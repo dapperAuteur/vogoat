@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getDb } from "@/db/client";
-import { applyLifetimePurchase, applySubscriptionActive, applySubscriptionLapsed } from "@/lib/billing/core";
+import { applyLifetimePurchase, applySubscriptionActive, applySubscriptionLapsed, recordPendingPurchase } from "@/lib/billing/core";
+import { eq } from "drizzle-orm";
+import { user } from "@/db/schema";
 import { getStripe } from "@/lib/billing/stripe";
 import { env } from "@/lib/env";
 
@@ -25,7 +27,28 @@ export async function POST(request: Request) {
     if (event.type === "checkout.session.completed") {
       const s = event.data.object;
       const userId = s.client_reference_id ?? s.metadata?.userId;
-      if (userId && s.mode === "payment") {
+      const payerEmail = s.customer_details?.email ?? s.customer_email ?? null;
+      if (!userId && s.mode === "payment" && payerEmail) {
+        // Bought while signed out: grant it now if the email already has an account, else park
+        // it until one appears (claimed on that account's next request).
+        const [existing] = await db.select({ id: user.id }).from(user).where(eq(user.email, payerEmail));
+        if (existing) {
+          await applyLifetimePurchase(db, {
+            userId: existing.id,
+            checkoutId: s.id,
+            amountCents: s.amount_total ?? 0,
+            currency: s.currency ?? "usd",
+            stripeCustomerId: typeof s.customer === "string" ? s.customer : null,
+          });
+        } else {
+          await recordPendingPurchase(db, {
+            email: payerEmail,
+            checkoutId: s.id,
+            amountCents: s.amount_total ?? 0,
+            currency: s.currency ?? "usd",
+          });
+        }
+      } else if (userId && s.mode === "payment") {
         await applyLifetimePurchase(db, {
           userId,
           checkoutId: s.id,

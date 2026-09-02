@@ -29,12 +29,6 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
-        <Link href="/" className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-          Today
-        </Link>
-      </header>
       <h1 className="font-display text-3xl leading-tight italic">Practice like it matters.</h1>
       <p className="text-sm leading-relaxed text-muted">
         Every tier keeps the same one daily entry; that rule is the game. Paying buys the
@@ -43,8 +37,9 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
       </p>
       {status === "success" ? (
         <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
-          Payment received. Your plan updates within a minute of Stripe confirming; refresh if
-          needed.
+          Payment received. If you are signed in, your plan updates within a minute of Stripe
+          confirming. If you bought while signed out, sign in with the email you paid with and
+          your founder access is applied automatically.
         </p>
       ) : null}
       {status === "cancelled" ? (
@@ -86,21 +81,30 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           downloads, and the founder badge in your Guild. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
           founder seats taken.
         </p>
-        {user ? (
-          <div className="mt-3 flex flex-col gap-2">
-            <form action={startCheckoutAction}>
-              <input type="hidden" name="kind" value="lifetime" />
-              <button type="submit" disabled={!hasStripe || user.plan === "lifetime"} className="min-h-12 w-full rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50">
-                Become a founder · {PRICES.lifetime.label}
-              </button>
-            </form>
-            {user.plan !== "lifetime" ? <CashAppClaim status={claimStatus} price={PRICES.lifetimeCashApp.label} /> : null}
-          </div>
-        ) : (
-          <Link href="/sign-in" className="mt-3 flex min-h-12 items-center justify-center rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-            Sign in to upgrade
-          </Link>
-        )}
+        <div className="mt-3 flex flex-col gap-2">
+          <form action={startCheckoutAction}>
+            <input type="hidden" name="kind" value="lifetime" />
+            <button type="submit" disabled={!hasStripe || user?.plan === "lifetime"} className="min-h-12 w-full rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50">
+              {user?.plan === "lifetime" ? "You are a founder" : `Become a founder · ${PRICES.lifetime.label}`}
+            </button>
+          </form>
+          {!user ? (
+            <p className="text-xs leading-relaxed text-muted">
+              No account needed to buy. Pay first, then sign in with the same email and your
+              founder access is waiting.
+            </p>
+          ) : null}
+          {user && user.plan !== "lifetime" ? <CashAppClaim status={claimStatus} price={PRICES.lifetimeCashApp.label} /> : null}
+          {!user ? (
+            <p className="text-xs leading-relaxed text-muted">
+              Paying with Cash App instead?{" "}
+              <Link href="/sign-in" className="font-semibold text-moss underline-offset-4 hover:underline">
+                Sign in first
+              </Link>{" "}
+              so the payment can be matched to your account.
+            </p>
+          ) : null}
+        </div>
       </section>
 
       <section className="rounded-md border border-rule bg-card p-4">
@@ -112,35 +116,40 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           Same practice room and unlimited takes; audio kept while active (30-day clock if you
           lapse; your Guild survives no matter what).
         </p>
-        {user ? (
-          <form action={startCheckoutAction} className="mt-3">
-            <input type="hidden" name="kind" value="monthly" />
-            <button type="submit" disabled={!hasStripe || user.plan !== "free"} className="min-h-11 w-full rounded-md border border-ink text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50">
-              Subscribe monthly
-            </button>
-          </form>
-        ) : null}
+        <form action={startCheckoutAction} className="mt-3">
+          <input type="hidden" name="kind" value="monthly" />
+          <button
+            type="submit"
+            disabled={!hasStripe || user?.plan === "lifetime" || user?.plan === "subscriber"}
+            className="min-h-12 w-full rounded-md border border-ink text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50"
+          >
+            {user?.plan === "lifetime" ? "Lifetime already covers this" : user?.plan === "subscriber" ? "You are subscribed" : "Subscribe monthly"}
+          </button>
+        </form>
       </section>
 
-      <section className={`rounded-md border p-4 ${annualOpen ? "border-rule bg-card" : "border-dashed border-muted"}`}>
-        <div className="flex items-baseline justify-between">
-          <p className="font-display text-xl italic">Annual</p>
-          <p className="font-display text-xl">{PRICES.annual.label}<span className="text-sm text-muted">/yr</span></p>
-        </div>
-        <p className="mt-1 text-sm leading-relaxed text-muted">
-          {annualOpen
-            ? "Twelve months for the price of a lifetime seat."
-            : `Opens after the first ${ANNUAL_UNLOCK_AT} lifetime founders (${sold} so far).`}
-        </p>
-        {user && annualOpen ? (
+      {annualOpen ? (
+        <section className="rounded-md border border-rule bg-card p-4">
+          <div className="flex items-baseline justify-between">
+            <p className="font-display text-xl italic">Annual</p>
+            <p className="font-display text-xl">
+              {PRICES.annual.label}
+              <span className="text-sm text-muted">/yr</span>
+            </p>
+          </div>
+          <p className="mt-1 text-sm leading-relaxed text-muted">Twelve months for the price of a lifetime seat.</p>
           <form action={startCheckoutAction} className="mt-3">
             <input type="hidden" name="kind" value="annual" />
-            <button type="submit" disabled={!hasStripe || user.plan !== "free"} className="min-h-11 w-full rounded-md border border-ink text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50">
+            <button
+              type="submit"
+              disabled={!hasStripe || user?.plan === "lifetime" || user?.plan === "subscriber"}
+              className="min-h-12 w-full rounded-md border border-ink text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50"
+            >
               Subscribe annually
             </button>
           </form>
-        ) : null}
-      </section>
+        </section>
+      ) : null}
 
       <p className="pb-4 text-xs leading-relaxed text-muted">
         One submission per day for every tier, including these. Money never buys extra entries.
