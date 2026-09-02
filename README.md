@@ -60,7 +60,7 @@ Environment variables are documented in [`.env.example`](.env.example). Deploy, 
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).
 
-`/upgrade` sells lifetime ($103.29, or $100 via Cash App Pay), monthly ($10.60), and annual ($103.29, unlocked after 100 founders); Stripe webhooks keep `user.plan` true, with the lapse policy starting 30-day audio clocks. Paid plans get the `/practice` room, take downloads, forever retention, and the founder badge. `/voice-data` states the voice-data promise in plain language and `/about` credits the method (Laban; popularized by Darren McStay). Report submissions are rate-limited and Turnstile-guarded once keys exist; PostHog (when keyed) tracks the PRD §15 funnel through a first-party `/ingest` proxy.
+`/upgrade` sells lifetime ($103.29, or $100 via Cash App Pay), monthly ($10.60), and annual ($103.29, unlocked after 100 founders); Stripe webhooks keep `user.plan` true, with the lapse policy starting 30-day audio clocks. Paid plans get the `/practice` room, take downloads, forever retention, and the founder badge. `/voice-data` states the voice-data promise in plain language and `/about` credits the method (Laban; popularized by Darren McStay). Checkout accepts Stripe promotion codes; public pages carry canonical URLs, OG/Twitter cards, and landing JSON-LD. Report submissions are rate-limited and Turnstile-guarded once keys exist; PostHog (when keyed) tracks the PRD §15 funnel through a first-party `/ingest` proxy.
 
 Every page carries the WitUS ecosystem footer (sibling products, the Rise Wellness callout
 verbatim per `gemini/witus/public/brand/footer-recipe.md`, terms/privacy/contact).

@@ -37,6 +37,8 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
       metadata: { userId: user.id, kind },
       success_url: `${env.APP_URL}/upgrade?status=success`,
       cancel_url: `${env.APP_URL}/upgrade?status=cancelled`,
+      // Promos (future/03 step 1): BAM creates codes in the Stripe dashboard; checkout shows the field.
+      allow_promotion_codes: true,
     } as const;
     const checkout =
       kind === "monthly" || kind === "annual"
