@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About the method",
   description: "Where the eight wheels come from: Rudolf Laban's efforts, popularized for voice work by Darren McStay.",
+  alternates: { canonical: "/about" },
 };
 
 /** PRD §14: credit the method's lineage. The scripts and materials here are original. */

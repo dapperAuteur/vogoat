@@ -9,7 +9,11 @@ import { getSession, type SessionUser } from "@/lib/session";
 import { latestClaim } from "@/lib/billing/cashapp";
 import { CashAppClaim } from "@/components/billing/cashapp-claim";
 
-export const metadata: Metadata = { title: "Upgrade" };
+export const metadata: Metadata = {
+  title: "Upgrade",
+  description: "Lifetime founder seats, monthly, and annual plans: the practice room, unlimited daily takes, audio kept forever, take downloads. One submission a day for every tier.",
+  alternates: { canonical: "/upgrade" },
+};
 export const dynamic = "force-dynamic";
 
 /** PRD §5: money buys practice, retention, and tools. Never extra entries into the daily. */
@@ -140,6 +144,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
 
       <p className="pb-4 text-xs leading-relaxed text-muted">
         One submission per day for every tier, including these. Money never buys extra entries.
+        Have a promo code? There is a field for it at checkout.
       </p>
     </main>
   );

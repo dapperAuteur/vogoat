@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   title: { default: "VO GOAT", template: "%s · VO GOAT" },
   description:
     "The daily voiceover game. One shared voice recipe a day: record your take, collect the creature, share the card.",
+  openGraph: {
+    siteName: "VO GOAT",
+    type: "website",
+    locale: "en_US",
+  },
+  twitter: { card: "summary_large_image" },
+  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover" };

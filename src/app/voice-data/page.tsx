@@ -4,6 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "Your voice data",
   description: "What VO GOAT does and never does with your recordings, in plain language.",
+  alternates: { canonical: "/voice-data" },
 };
 
 /** PRD §11: say the voice-data policy loudly, in plain language. */

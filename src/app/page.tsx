@@ -20,6 +20,18 @@ import { listTakes, takeLimitFor, type TakeView } from "@/lib/takes/core";
 
 export const dynamic = "force-dynamic";
 
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "VO GOAT",
+  applicationCategory: "GameApplication",
+  operatingSystem: "Web",
+  description:
+    "The daily voiceover game: everyone on Earth gets the same absurd voice recipe and the same mundane line each day. Record your best take, collect the creature, share a spoiler-free card.",
+  url: "https://vogoat.witus.online",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+
 export default async function HomePage() {
   const session = await getSession();
   const user = session ? (session.user as SessionUser) : null;
@@ -51,6 +63,7 @@ export default async function HomePage() {
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 pt-6">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       <header className="flex items-center justify-between">
         <div className="flex items-baseline gap-2">
           <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
