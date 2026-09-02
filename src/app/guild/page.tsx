@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { MarketingConsent } from "@/components/campaigns/marketing-consent";
 import { CreatureSvg } from "@/components/creature-svg";
 import { getDb } from "@/db/client";
 import { dayKey } from "@/lib/game/day";
 import { GOAT_MILESTONES, nextGoat } from "@/lib/game/streak";
 import { env } from "@/lib/env";
 import { isFounder } from "@/lib/billing/core";
+import { getMarketingConsent } from "@/lib/campaigns/core";
 import { getGuild } from "@/lib/menagerie";
 import { requireUser } from "@/lib/session";
 
@@ -19,6 +21,7 @@ export default async function GuildPage() {
   const today = dayKey(new Date(), env.DAILY_TIMEZONE);
   const view = await getGuild(db, { userId: user.id, today });
   const founder = await isFounder(db, user.id);
+  const marketingConsent = await getMarketingConsent(db, user.id);
   const upcoming = nextGoat(view.streaks.current);
   const collectedGoats = GOAT_MILESTONES.filter((m) => view.streaks.best >= m).length;
 
@@ -106,7 +109,12 @@ export default async function GuildPage() {
         </ul>
       )}
 
-      <p className="mt-auto pb-4 text-xs leading-relaxed text-muted">
+      <section className="mt-auto flex flex-col gap-2 border-t border-rule pt-4">
+        <h2 className="text-[10px] font-semibold tracking-[0.16em] text-muted uppercase">Announcements</h2>
+        <MarketingConsent initial={marketingConsent} />
+      </section>
+
+      <p className="pb-4 text-xs leading-relaxed text-muted">
         A dashed frame is a day you missed. It stays a silhouette; the day is the point. Plates
         and runs are yours forever, even after free-plan audio expires at 30 days.
       </p>
