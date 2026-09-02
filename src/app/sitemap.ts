@@ -1,12 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getDb } from "@/db/client";
 import { listArchiveDays } from "@/lib/archive";
+import { GUIDES } from "@/lib/how-to/guides";
 import { dayKey } from "@/lib/game/day";
 import { env } from "@/lib/env";
 
 /** Static pages plus one entry per past specimen (public archive, BAM 2026-09-02). */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages = ["/", "/archive", "/about", "/voice-data"].map((path) => ({
+  const staticPages = ["/", "/archive", "/how-to", "/about", "/voice-data", ...GUIDES.map((g) => `/how-to/${g.slug}`)].map((path) => ({
     url: `${env.APP_URL}${path}`,
     changeFrequency: (path === "/" ? "daily" : "monthly") as "daily" | "monthly",
   }));

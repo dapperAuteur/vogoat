@@ -22,3 +22,8 @@ plans/
 # typescript build info
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright defaults, in case the suite is ever run without playwright.config.ts
+# (its own artifacts land in .data/e2e/, already ignored above)
+playwright-report/
+test-results/

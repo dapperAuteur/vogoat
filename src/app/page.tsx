@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { SignOutButton } from "@/components/auth/sign-out-button";
 import { CreatureSvg } from "@/components/creature-svg";
 import { Countdown } from "@/components/daily/countdown";
 import { WheelTable } from "@/components/daily/wheel-table";
@@ -14,7 +13,7 @@ import { share as shareTable } from "@/db/schema";
 import { and, eq, isNull } from "drizzle-orm";
 import type { BaseAnimal } from "@/lib/game/creature";
 import { nextDayBoundary } from "@/lib/game/day";
-import { env, witusEndSessionEndpoint } from "@/lib/env";
+import { env } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
 import { listTakes, takeLimitFor, type TakeView } from "@/lib/takes/core";
 
@@ -64,39 +63,6 @@ export default async function HomePage() {
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 pt-6">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
-      <header className="flex items-center justify-between">
-        <div className="flex items-baseline gap-2">
-          <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
-          {daily ? <span className="text-sm font-semibold text-muted">No. {daily.dayNumber}</span> : null}
-        </div>
-        {session && user ? (
-          <div className="flex items-center gap-1">
-            <Link
-              href="/guild"
-              className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-            >
-              Guild
-            </Link>
-            {user.role === "admin" ? (
-              <Link
-                href="/admin"
-                className="flex min-h-11 items-center px-2 text-sm font-semibold text-ochre underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-              >
-                Admin
-              </Link>
-            ) : null}
-            <span className="text-sm font-semibold text-muted">{user.name}</span>
-            <SignOutButton endSessionUrl={witusEndSessionEndpoint} />
-          </div>
-        ) : (
-          <Link
-            href="/sign-in"
-            className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
-          >
-            Sign in
-          </Link>
-        )}
-      </header>
 
       {daily ? (
         <>

@@ -18,13 +18,16 @@ type CheckoutKind = "lifetime" | "monthly" | "annual";
  */
 export async function startCheckoutAction(formData: FormData): Promise<void> {
   const session = await getSession();
-  if (!session) redirect("/sign-in");
-  const user = session.user as SessionUser;
+  const user = session ? (session.user as SessionUser) : null;
   const kind = formData.get("kind") as CheckoutKind | null;
+  // Buying does not require an account (BAM, 2026-09-02): a lifetime seat bought while signed
+  // out is claimed by whoever signs in with the paying email. Subscriptions still need the
+  // account first, because the plan follows a Stripe customer over time.
+  if (!user && kind !== "lifetime") redirect("/sign-in");
   if (!kind || !["lifetime", "monthly", "annual"].includes(kind)) redirect("/upgrade?status=error");
   if (!hasStripe) redirect("/upgrade?status=unconfigured");
-  if (user.plan === "lifetime") redirect("/upgrade?status=already");
-  if (isRateLimited(`checkout:${user.id}`, 5, 60_000)) redirect("/upgrade?status=rate_limited");
+  if (user?.plan === "lifetime") redirect("/upgrade?status=already");
+  if (user && isRateLimited(`checkout:${user.id}`, 5, 60_000)) redirect("/upgrade?status=rate_limited");
   const db = await getDb();
   if (kind === "annual" && !annualUnlocked(await lifetimeSoldCount(db))) redirect("/upgrade?status=locked");
 
@@ -32,9 +35,10 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
   try {
     const stripe = getStripe();
     const base = {
-      client_reference_id: user.id,
-      customer_email: user.email,
-      metadata: { userId: user.id, kind },
+      ...(user ? { client_reference_id: user.id, customer_email: user.email } : {}),
+      // `app` is the ecosystem guard: the Stripe account is shared, so every app stamps its
+      // slug and ignores sessions that are not its own (see plans/future/07).
+      metadata: { app: "vogoat", ...(user ? { userId: user.id } : {}), kind },
       success_url: `${env.APP_URL}/upgrade?status=success`,
       cancel_url: `${env.APP_URL}/upgrade?status=cancelled`,
       // Promos (future/03 step 1): BAM creates codes in the Stripe dashboard; checkout shows the field.

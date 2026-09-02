@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Your voice data",
@@ -19,12 +18,6 @@ export default function VoiceDataPage() {
   ];
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
-        <Link href="/" className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-          Today
-        </Link>
-      </header>
       <h1 className="font-display text-3xl leading-tight italic">Your voice, your data.</h1>
       <p className="text-sm leading-relaxed text-muted">
         A voice game lives or dies on trust, so here is the whole policy in plain language.

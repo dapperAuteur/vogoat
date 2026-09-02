@@ -4,6 +4,9 @@ import { CreatureSvg } from "@/components/creature-svg";
 import { WheelTable } from "@/components/daily/wheel-table";
 import { SpinAnother } from "@/components/practice/spin-another";
 import { PracticeRecorder } from "@/components/take/practice-recorder";
+import { PracticeTakeList } from "@/components/take/practice-take-list";
+import { getDb } from "@/db/client";
+import { listPracticeTakes } from "@/lib/practice/core";
 import { deriveCreature } from "@/lib/game/creature";
 import { dayKey } from "@/lib/game/day";
 import { randomInt, seededRandom } from "@/lib/game/random";
@@ -26,15 +29,17 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
   const recipeId = Number.isInteger(parsed) && parsed >= 1 && parsed <= RECIPE_COUNT ? parsed : fallbackId;
   const recipe = recipeFromId(recipeId);
   const creature = deriveCreature(recipe, recipeId);
+  const saved = paid
+    ? (await listPracticeTakes(await getDb(), user.id)).map((row) => ({
+        id: row.id,
+        recipeId: row.recipeId,
+        creatureName: deriveCreature(row.recipe, row.recipeId).name,
+        durationMs: row.durationMs,
+      }))
+    : [];
 
   return (
     <main id="main" className="mx-auto flex min-h-dvh w-full max-w-md flex-col gap-4 px-5 py-6">
-      <header className="flex items-baseline justify-between">
-        <span className="font-display text-3xl tracking-wide italic">VO GOAT</span>
-        <Link href="/" className="flex min-h-11 items-center px-2 text-sm font-semibold text-moss underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
-          Today
-        </Link>
-      </header>
       <h1 className="font-display text-3xl leading-tight italic">The practice room.</h1>
       {!paid ? (
         <section className="rounded-md border border-rule bg-card p-4">
@@ -67,8 +72,9 @@ export default async function PracticePage({ searchParams }: { searchParams: Pro
             Read anything you like in this voice; yesterday&apos;s grocery list works. Nothing here
             is counted or uploaded.
           </p>
+          <PracticeTakeList items={saved} />
           <div className="mt-auto pb-2">
-            <PracticeRecorder />
+            <PracticeRecorder recipeId={recipeId} canSave={Boolean(paid)} />
           </div>
         </>
       )}

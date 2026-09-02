@@ -15,7 +15,7 @@ export function DevMagicLinkForm() {
         event.preventDefault();
         setStatus("sending");
         void authClient.signIn
-          .magicLink({ email, callbackURL: "/" })
+          .magicLink({ email, name: email.split("@")[0], callbackURL: "/" })
           .then((result) => setStatus(result.error ? "error" : "sent"))
           .catch(() => setStatus("error"));
       }}
