@@ -75,7 +75,8 @@ export async function keepTake(
     await logAppError(db, { source: "server", message: `store.put: ${message}`.slice(0, 500), path: "core:keepTake" });
     return err("storage_unavailable", "Audio storage is not available right now; your recording is still on this device. Try Keep again in a minute.");
   }
-  const expiresAt = args.plan === "free" ? new Date(row.createdAt.getTime() + EXPIRY_DAYS * 86_400_000) : null;
+  // Every plan: recordings are deleted 30 days after the take (BAM, 2026-09-10; was free only).
+  const expiresAt = new Date(row.createdAt.getTime() + EXPIRY_DAYS * 86_400_000);
   const [updated] = await db
     .update(take)
     .set({ status: "kept", blobUrl, mime: baseMime, sizeBytes: args.bytes.byteLength, durationMs: Math.round(args.durationMs), expiresAt })

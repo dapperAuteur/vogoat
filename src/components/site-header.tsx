@@ -48,7 +48,7 @@ export async function SiteHeader() {
           <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z" />
           <path d="m9 12 2 2 4-4" />
         </svg>
-        <span>No AI listens to or trains on your voice · Free-plan recordings deleted after 30 days</span>
+        <span>No AI listens to or trains on your voice · Recordings deleted after 30 days</span>
       </Link>
       <nav aria-label="Main" className="mx-auto flex w-full max-w-md items-center justify-between gap-2 px-5 py-2">
         <Link href="/" className="font-display text-xl tracking-wide italic focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">

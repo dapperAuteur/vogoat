@@ -52,7 +52,7 @@ export default async function SharePage({ params }: Params) {
             </>
           ) : (
             <p className="rounded-sm bg-paper p-3 text-center text-sm text-muted">
-              This take has expired. The creature is forever; free-plan audio lives 30 days.
+              This take has expired. The creature is forever; recordings are deleted after 30 days.
             </p>
           )}
           <p className="mt-3 border-t border-dotted border-rule pt-3 text-center font-display text-lg leading-snug">

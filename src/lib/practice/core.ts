@@ -7,7 +7,8 @@ import { MAX_AUDIO_BYTES, MAX_DURATION_MS } from "@/lib/takes/core";
 import { recipeFromId, RECIPE_COUNT } from "@/lib/game/recipe";
 
 // Saved practice takes (paid tiers). They never touch the daily: no attempt counting, no
-// submission, no expiry clock. Audio still only leaves the device when the user saves.
+// submission. Like every recording they are deleted 30 days after they are made (the expiry
+// cron uses created_at). Audio still only leaves the device when the user saves.
 
 const AUDIO_MIME_PREFIXES = ["audio/webm", "audio/mp4", "audio/ogg", "audio/mpeg", "audio/wav"];
 

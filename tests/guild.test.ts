@@ -69,12 +69,12 @@ describe("guild", () => {
 
   it("survives audio expiry: blob nulled, row and collection intact (invariant 8)", async () => {
     const result = await expireTakeAudio(db, store, new Date("2026-10-15T00:00:00Z"));
-    expect(result).toEqual({ expired: 1, failed: 0 });
+    expect(result).toEqual({ expired: 1, practiceExpired: 0, failed: 0 });
     expect(store.deleted).toEqual(["fake:a"]);
     const view: Awaited<ReturnType<typeof getGuild>> = await getGuild(db, { userId: "u1", today: "2026-09-04" });
     expect(view.observed).toBe(2);
     expect(view.entries.find((e) => e.dayKey === "2026-09-01")?.hasAudio).toBe(false); // expired, plate stays
     const rerun = await expireTakeAudio(db, store, new Date("2026-10-15T00:00:00Z"));
-    expect(rerun).toEqual({ expired: 0, failed: 0 });
+    expect(rerun).toEqual({ expired: 0, practiceExpired: 0, failed: 0 });
   });
 });

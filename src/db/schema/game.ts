@@ -112,7 +112,7 @@ export const take = pgTable(
     // waveform without decoding audio, and the no-ML self-check of which wheels were hit.
     peaks: jsonb("peaks").$type<number[]>(),
     selfCheck: jsonb("self_check").$type<Partial<Record<Wheel, boolean>>>(),
-    // created_at + 30 days for the free plan; cleared on upgrade (invariant 8).
+    // created_at + 30 days on every plan (invariant 8; BAM 2026-09-10, was free only).
     expiresAt: timestamp("expires_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),

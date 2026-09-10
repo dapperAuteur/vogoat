@@ -44,7 +44,7 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
-**The voice promise:** a bold banner pinned under the founder price promo in the sticky header, plus a full notice directly above the footer on every page, states that no AI listens to, analyzes, or trains on recordings and that free-plan recordings are deleted after 30 days, linking to `/voice-data`. An end-to-end assertion keeps it from disappearing again.
+**The voice promise:** a bold banner pinned under the founder price promo in the sticky header, plus a full notice directly above the footer on every page, states that no AI listens to, analyzes, or trains on recordings and that every recording is deleted after 30 days on every plan, linking to `/voice-data`. An end-to-end assertion keeps it from disappearing again.
 
 **Guild:** `/guild` (signed in; `/menagerie` permanently redirects there) shows every plate you have performed with playback of each past recording while its audio lives, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
 
@@ -82,7 +82,7 @@ Environment variables are documented in [`.env.example`](.env.example). Deploy, 
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in
 `plans/user-tasks/01-provision-infrastructure.md` (local, gitignored queue).
 
-`/upgrade` sells lifetime ($103.29, or $100 via Cash App Pay), monthly ($10.60), and annual ($103.29, unlocked after 100 founders); Stripe webhooks keep `user.plan` true, with the lapse policy starting 30-day audio clocks. Paid plans get the `/practice` room, take downloads, forever retention, and the founder badge. `/voice-data` states the voice-data promise in plain language and `/about` credits the method (Laban; popularized by Darren McStay). Checkout accepts Stripe promotion codes; public pages carry canonical URLs, OG/Twitter cards, and landing JSON-LD. Report submissions are rate-limited and Turnstile-guarded once keys exist; PostHog (when keyed) tracks the PRD §15 funnel through a first-party `/ingest` proxy.
+`/upgrade` sells lifetime ($103.29, or $100 via Cash App Pay), monthly ($10.60), and annual ($103.29, unlocked after 100 founders); Stripe webhooks keep `user.plan` true. Paid plans get the `/practice` room, take downloads, and the founder badge; audio (practice takes included) is deleted after 30 days on every plan. `/voice-data` states the voice-data promise in plain language and `/about` credits the method (Laban; popularized by Darren McStay). Checkout accepts Stripe promotion codes; public pages carry canonical URLs, OG/Twitter cards, and landing JSON-LD. Report submissions are rate-limited and Turnstile-guarded once keys exist; PostHog (when keyed) tracks the PRD §15 funnel through a first-party `/ingest` proxy.
 
 Every page carries the WitUS ecosystem footer (sibling products, the Rise Wellness callout
 verbatim per `gemini/witus/public/brand/footer-recipe.md`, terms/privacy/contact).

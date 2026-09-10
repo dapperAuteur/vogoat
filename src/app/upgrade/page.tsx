@@ -12,7 +12,7 @@ import { CashAppClaim } from "@/components/billing/cashapp-claim";
 
 export const metadata: Metadata = {
   title: "Upgrade",
-  description: "Lifetime founder seats, monthly, and annual plans: the practice room, unlimited daily takes, audio kept forever, take downloads. One submission a day for every tier.",
+  description: "Lifetime founder seats, monthly, and annual plans: the practice room, unlimited daily takes, take downloads. One submission a day for every tier.",
   alternates: { canonical: "/upgrade" },
 };
 export const dynamic = "force-dynamic";
@@ -34,8 +34,8 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
       <h1 className="font-display text-3xl leading-tight italic">Practice like it matters.</h1>
       <p className="text-sm leading-relaxed text-muted">
         Every tier keeps the same one daily entry; that rule is the game. Paying buys the
-        practice room (any of the 11,664 recipes on demand), unlimited daily takes, audio kept
-        forever, and take downloads.
+        practice room (any of the 11,664 recipes on demand), unlimited daily takes, and take downloads so you can keep
+        your own copy (every recording is deleted after 30 days, on every plan).
       </p>
       {status === "success" ? (
         <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
@@ -85,8 +85,8 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           <p className="font-display text-xl">{PRICES.lifetime.label}</p>
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
-          Once, forever: practice room, unlimited daily takes, audio kept for good, take
-          downloads, and the founder badge in your Guild. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
+          Once, forever: practice room, unlimited daily takes, take downloads (keep a
+          copy before the 30-day deletion), and the founder badge in your Guild. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
           founder seats taken.
         </p>
         <div className="mt-3 flex flex-col gap-2">
@@ -121,8 +121,8 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           <p className="font-display text-xl">{PRICES.monthly.label}<span className="text-sm text-muted">/mo</span></p>
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
-          Same practice room and unlimited takes; audio kept while active (30-day clock if you
-          lapse; your Guild survives no matter what).
+          Same practice room, unlimited takes, and downloads. Recordings are deleted after 30
+          days on every plan; your Guild survives no matter what.
         </p>
         <form action={startCheckoutAction} className="mt-3">
           <input type="hidden" name="kind" value="monthly" />

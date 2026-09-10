@@ -77,7 +77,7 @@ describe("take lifecycle", () => {
     }
   });
 
-  it("keep uploads and sets a 30-day clock for free, none for lifetime", async () => {
+  it("keep uploads and sets a 30-day clock on every plan", async () => {
     const r = await registerTake(db, { userId: "free1", plan: "free", dailyId });
     expect(r.ok).toBe(false); // capped; reuse an existing recorded take instead
     const rows = await db.select().from(schema.take);
@@ -91,7 +91,7 @@ describe("take lifecycle", () => {
     expect(keptPaid.ok).toBe(true);
     const after = await db.select().from(schema.take);
     expect(after.find((t) => t.id === freeRecorded.id)?.expiresAt).not.toBeNull();
-    expect(after.find((t) => t.id === paidRecorded.id)?.expiresAt).toBeNull();
+    expect(after.find((t) => t.id === paidRecorded.id)?.expiresAt).not.toBeNull(); // every plan, 2026-09-10
     expect(stored.size).toBe(2);
   });
 

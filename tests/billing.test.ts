@@ -37,14 +37,14 @@ afterAll(async () => {
 });
 
 describe("lifetime purchase", () => {
-  it("applies once, upgrades the plan, clears expiry clocks; retries are duplicates", async () => {
+  it("applies once, upgrades the plan, keeps the 30-day clock; retries are duplicates", async () => {
     const args = { userId: "buyer", checkoutId: "cs_1", amountCents: 10_329, currency: "usd", stripeCustomerId: "cus_1" };
     expect(await applyLifetimePurchase(db, args)).toBe("applied");
     expect(await applyLifetimePurchase(db, args)).toBe("duplicate");
     const [buyer] = await db.select().from(schema.user).where(eq(schema.user.id, "buyer"));
     expect(buyer.plan).toBe("lifetime");
     const takes = await db.select().from(schema.take).where(eq(schema.take.userId, "buyer"));
-    expect(takes[0].expiresAt).toBeNull();
+    expect(takes[0].expiresAt).not.toBeNull(); // upgrading no longer clears the 30-day clock
     expect(await lifetimeSoldCount(db)).toBe(1);
     expect(await isFounder(db, "buyer")).toBe(true);
     expect(await applyLifetimePurchase(db, { ...args, userId: "ghost", checkoutId: "cs_2" })).toBe("no_user");
@@ -66,13 +66,13 @@ describe("subscriptions and the lapse policy", () => {
     expect(buyer.plan).toBe("lifetime");
   });
 
-  it("lapse drops to free and starts 30-day clocks on unclocked audio; menagerie rows stay", async () => {
+  it("lapse drops to free and starts no clock (every plan already expires audio); guild rows stay", async () => {
     const now = new Date("2026-09-10T00:00:00Z");
     expect(await applySubscriptionLapsed(db, { stripeCustomerId: "cus_s", now })).toBe(true);
     const [subber] = await db.select().from(schema.user).where(eq(schema.user.id, "subber"));
     expect(subber.plan).toBe("free");
     const takes = await db.select().from(schema.take).where(eq(schema.take.userId, "subber"));
-    expect(takes[0].expiresAt?.toISOString()).toBe("2026-10-10T00:00:00.000Z");
+    expect(takes[0].expiresAt).toBeNull(); // legacy unclocked row: the expiry cron falls back to created_at
     expect(takes[0].status).toBe("submitted");
     expect(await applySubscriptionLapsed(db, { stripeCustomerId: "cus_unknown", now })).toBe(false);
   });

@@ -13,7 +13,7 @@ export type GuildEntry = {
   takeNumber: number | null;
   /** The submitted take's id, for playback of past recordings. */
   takeId: string | null;
-  /** False once free-plan audio expired (the plate stays; PRD §5). */
+  /** False once the audio expired (30 days, every plan) (the plate stays; PRD §5). */
   hasAudio: boolean;
   isToday: boolean;
 };
