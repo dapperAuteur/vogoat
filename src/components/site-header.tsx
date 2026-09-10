@@ -39,6 +39,17 @@ export async function SiteHeader() {
           <span aria-hidden="true">→</span>
         </Link>
       ) : null}
+      {/* The voice promise, pinned under the price promo on every page (BAM, 2026-09-10). */}
+      <Link
+        href="/voice-data"
+        className="flex min-h-11 w-full items-center justify-center gap-2 bg-ink px-4 text-center text-xs font-bold text-paper focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current sm:text-sm"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="shrink-0">
+          <path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+        <span>No AI listens to or trains on your voice · Free-plan recordings deleted after 30 days</span>
+      </Link>
       <nav aria-label="Main" className="mx-auto flex w-full max-w-md items-center justify-between gap-2 px-5 py-2">
         <Link href="/" className="font-display text-xl tracking-wide italic focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
           VO GOAT

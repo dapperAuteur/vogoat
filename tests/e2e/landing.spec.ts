@@ -50,6 +50,14 @@ test.describe("anonymous landing", () => {
     // Scoped to the page header: the ecosystem footer carries its own Sign in link.
     const header = page.getByRole("banner"); // the sticky site header (layout-level, outside #main)
     await expect(header.getByRole("link", { name: "Sign in" })).toBeVisible();
+
+    // The voice promise was lost once when the reveal page replaced the placeholder (BAM,
+    // 2026-09-10). Guard it: a sticky banner under the price promo plus the full notice above the footer.
+    await expect(header.getByRole("link", { name: /No AI listens to or trains on your voice/ })).toBeVisible();
+    const promise = page.getByRole("region", { name: "Your voice stays yours." });
+    await expect(promise).toBeVisible();
+    await expect(promise).toContainText("No AI listens to, analyzes, or trains on your recordings");
+    await expect(promise).toContainText("deleted after 30 days");
     await expect(header.getByRole("link", { name: "Guild" })).toHaveCount(0);
   });
 });
