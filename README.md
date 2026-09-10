@@ -44,6 +44,8 @@ pnpm dev                     # http://localhost:3050
 
 `GET /api/health` reports `{ ok, data: { db: "pglite" | "neon" } }`.
 
+**The voice promise:** a bold banner pinned under the founder price promo in the sticky header, plus a full notice directly above the footer on every page, states that no AI listens to, analyzes, or trains on recordings and that free-plan recordings are deleted after 30 days, linking to `/voice-data`. An end-to-end assertion keeps it from disappearing again.
+
 **Guild:** `/guild` (signed in; `/menagerie` permanently redirects there) shows every plate you have performed with playback of each past recording while its audio lives, silhouettes for missed days, current and best runs, and Goat milestones at 7/30/100; free-plan audio expires at 30 days via a daily cron but plates and runs are forever.
 
 **Archive:** `/archive` lists every past specimen and `/day/<date>` is its own public, indexable page (creature plate, the eight-wheel recipe, the line everyone read, per-day OG image). Today's daily is never in the archive, so the surprise holds.

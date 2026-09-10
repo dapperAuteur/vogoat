@@ -2,6 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
+import { VoicePromise } from "@/components/voice-promise";
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
 import { env } from "@/lib/env";
@@ -44,6 +45,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </a>
         <SiteHeader />
         {children}
+        <div className="mx-auto w-full max-w-md px-5 pt-8">
+          <VoicePromise />
+        </div>
         <SiteFooter />
         <AnalyticsProvider />
         {/* Cookieless pageview counts; sends nothing until Web Analytics is enabled on the project. */}
