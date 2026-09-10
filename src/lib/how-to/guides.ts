@@ -99,7 +99,7 @@ export const GUIDES: Guide[] = [
       "A dashed frame around a silhouette is a day you missed. It stays a silhouette, because no day can be filled in later.",
       "A run counts days in a row. Miss a day and the current run restarts, while your best run stands.",
       "Rare specimens land when your run reaches 7, 30, and 100 days.",
-      "Plates and runs are permanent. On the free plan the audio behind a plate goes after 30 days and the plate reads audio expired.",
+      "Plates and runs are permanent. The audio behind a plate is deleted after 30 days on every plan, and the plate then reads audio expired.",
     ],
   },
   {
@@ -145,7 +145,7 @@ export const GUIDES: Guide[] = [
       "Cash App payments are matched by hand, usually the same day. Card payments flip your plan within a minute of Stripe confirming.",
       "Refresh the page if your new plan takes a moment to show up.",
     ],
-    note: "Paying buys the practice room, unlimited takes a day, audio kept for good, take downloads, and the founder badge. It never buys a second entry into the daily. One submission a day, every tier.",
+    note: "Paying buys the practice room, unlimited takes a day, take downloads, and the founder badge. It never buys a second entry into the daily. One submission a day, every tier.",
   },
   {
     slug: "privacy",
@@ -158,7 +158,7 @@ export const GUIDES: Guide[] = [
       "Discarding still stores the count of the attempt, which is how 3 takes a day is counted on the free plan.",
       "Tap Keep and that one file uploads. It is yours, and no one else can play it.",
       "Deleting a kept take deletes the audio file itself, not only the row that points at it.",
-      "On the free plan, kept audio expires 30 days after the take. The plate, the run, and the share card all stay.",
+      "Kept audio is deleted 30 days after the take, on every plan. The plate, the run, and the share card all stay.",
       "Nothing analyses your voice. The creature comes from the recipe, never from your recording, and your audio is never training data.",
       "Read the whole promise on the Your voice data page.",
     ],

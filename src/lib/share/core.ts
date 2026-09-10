@@ -48,7 +48,7 @@ export type ShareView = {
   scriptBody: string;
   takeNumber: number;
   durationMs: number | null;
-  /** false once free-plan audio expired; the card stays live (PRD §5). */
+  /** false once the audio expired (30 days, every plan); the card stays live (PRD §5). */
   audioAvailable: boolean;
 };
 

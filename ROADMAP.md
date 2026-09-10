@@ -28,6 +28,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | Collection renamed Menagerie to **Guild** (`/menagerie` 308s to `/guild`) | Done |
 | SEO/meta polish (canonical, OG/Twitter, JSON-LD) and Stripe promotion codes at checkout | Done |
 | Ecosystem SSO: Continue as a known name, global sign-out, `/goodbye` come-back page | Done |
+| Every recording deleted after 30 days on every plan (was free only), practice takes included | Done 2026-09-10 |
 
 ## Backlog (not v1)
 

@@ -104,7 +104,7 @@ export default async function GuildPage() {
 
       <p className="pb-4 text-xs leading-relaxed text-muted">
         A dashed frame is a day you missed. It stays a silhouette; the day is the point. Plates
-        and runs are yours forever, even after free-plan audio expires at 30 days.
+        and runs are yours forever, even after recordings are deleted at 30 days.
       </p>
     </main>
   );

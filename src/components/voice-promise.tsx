@@ -20,7 +20,7 @@ export function VoicePromise({ className = "" }: { className?: string }) {
             Your voice stays yours.
           </h2>
           <p className="text-sm font-bold leading-snug">No AI listens to, analyzes, or trains on your recordings. Ever.</p>
-          <p className="text-sm font-bold leading-snug">Free-plan recordings are deleted after 30 days. Your creatures and streaks stay forever.</p>
+          <p className="text-sm font-bold leading-snug">Every recording is deleted after 30 days, on every plan. Your creatures and streaks stay forever.</p>
           <p className="text-sm leading-snug">
             Audio never leaves your device unless you keep a take.{" "}
             <Link href="/voice-data" className="font-bold underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">

@@ -46,7 +46,7 @@ Not a voice course (link out). Not a podcast platform (Stream owns that). Not a 
 | Daily model | **Shared daily** — everyone gets the same recipe + script + creature, seeded by date. The button press is a slot-machine *reveal*, not per-user RNG. |
 | Daily unit | One authored row: (recipe, script, creature) curated together, human-vetoed before publish → **§6**. |
 | Takes & submissions | **Free: 3 takes + 1 submission per day.** Paid/admin: unlimited takes, still 1 submission (see §5 — one-submission-per-day is universal; paying buys practice, never extra entries). |
-| Retention | **Free: audio kept 30 days.** Guild creatures, streaks, and share cards persist forever — only the audio expires. Paid/admin: audio kept indefinitely. |
+| Retention | **Every plan: audio kept 30 days** (BAM, 2026-09-10; paid/admin used to keep audio indefinitely). Guild creatures, streaks, and share cards persist forever — only the audio expires. Paid plans can download a copy first. |
 | Recording | **Audio only.** In-browser MediaRecorder, ~30s hard cap. |
 | Recording privacy | **Audio never leaves the device unless the user keeps a take.** Attempt *counts* are server-tracked for signed-in users (that's how 3/day is enforced); discarded audio is never uploaded. |
 | Anonymous funnel | Anyone can spin + rehearse with no account (all local, nothing counted). **Keep / submit / streak / menagerie / share require Sign in with WitUS.** VoGoat is a consumer front door for `accounts.witus.online`. |
@@ -103,24 +103,24 @@ Cut from McStay's full system: accents, speech quirks, gender (§3.1). "Aggressi
 
 Locked tier list (BAM): **free · lifetime · subscription · admin**. One rule is universal and
 carries the game's integrity: **every tier gets exactly 1 submission per day.** Money buys
-practice, storage, and tools — never extra entries into the shared daily. The submitted take's
+practice and tools — never extra entries into the shared daily. The submitted take's
 number goes on the share card ("take 1/3" is the flex).
 
 | | Daily takes | Submissions/day | Audio retention | Practice mode | Extras |
 |---|---|---|---|---|---|
 | **Free** | 3 | 1 | 30 days | — | Guild + streaks + share cards forever (audio expires, the creature doesn't) |
-| **Lifetime** (one-time purchase) | unlimited | 1 | forever | ✓ | Take downloads · founder badge in menagerie |
-| **Subscription** (monthly) | unlimited | 1 | while active* | ✓ | Take downloads |
-| **Admin** (`ADMIN_EMAIL`) | unlimited | 1 | forever | ✓ | Authoring console: dailies, script triage, creatures, reports, runway alerts · **The Workshop (§9)** |
+| **Lifetime** (one-time purchase) | unlimited | 1 | 30 days | ✓ | Take downloads · founder badge in menagerie |
+| **Subscription** (monthly) | unlimited | 1 | 30 days | ✓ | Take downloads |
+| **Admin** (`ADMIN_EMAIL`) | unlimited | 1 | 30 days | ✓ | Authoring console: dailies, script triage, creatures, reports, runway alerts · **The Workshop (§9)** |
 
 **Practice mode** (paid): spin *any* of the 11,664 recipes on demand, record freely, nothing
 counts against the daily. This is the VO-actor tool — the thing worth paying for — and it moved
 from phase-2 into the paid tier because a lifetime purchase at launch must buy something real
 at launch.
 
-*\*Proposed lapse policy (BAM to confirm): subscription lapses → account drops to free rules
-going forward; already-stored audio gets a 30-day clock from lapse, then expires like free.
-Guild survives regardless.*
+*Lapse policy: subscription lapses → account drops to free rules going forward. Audio needs no
+new clock since every plan deletes recordings after 30 days (2026-09-10). Guild survives
+regardless.*
 
 **Sequencing recommendation (BAM to confirm):** launch with **free + lifetime + admin**;
 lifetime is a one-time Stripe checkout with no webhook lifecycle, which fits the spring
@@ -273,7 +273,8 @@ authoring time)
 **`take`** — one row per attempt, registered at record-start for signed-in users.
 `id` · `user_id` · `daily_id` · `take_number` · `status` (`recorded|kept|submitted|discarded`) ·
 `blob_url` (nullable until kept) · `duration_ms` · `mime` · `expires_at` (nullable — set to
-`created_at + 30 days` for free plan, cleared on upgrade) · `created_at` · `deleted_at`
+`created_at + 30 days` on every plan; rows from before 2026-09-10 may be null and fall back to
+`created_at` in the expiry cron) · `created_at` · `deleted_at`
 — **unique (`user_id`, `daily_id`, `take_number`)** caps attempts; **partial unique index on
 (`user_id`, `daily_id`) where `status = 'submitted'`** puts the 1-submission rule in the
 schema, not application code.
@@ -312,9 +313,8 @@ of `accounts.witus.online` · **Vercel Blob (private)** for audio with tokenized
 
 Recording notes: MediaRecorder yields `audio/webm` (Opus) on Chrome/Firefox and `audio/mp4`
 (AAC) on Safari — store as recorded, play via `<audio>`, normalize later only if compilation
-features need it. Storage math: ~1MB/take, free audio expires at 30 days, so free-tier storage
-is bounded at ~(daily kept takes × 30) MB steady-state; only paid archives grow unbounded, and
-they're paid for.
+features need it. Storage math: ~1MB/take, all audio expires at 30 days on every plan, so
+storage is bounded at ~(daily kept takes × 30) MB steady-state, practice takes included.
 
 ## 14. Attribution and outreach
 
@@ -355,6 +355,9 @@ Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-buil
 
 ## 17. Remaining open items (none block the build)
 
+> **2026-09-10 update (BAM):** audio retention is **30 days on every plan**, paid and admin
+> included. Money no longer buys retention; downloads are how a paid player keeps a copy.
+>
 > **2026-09-02 update (BAM):** past dailies are PUBLIC and indexable at /archive and /day/<date>,
 > script text included; the collection is called the **Guild**.
 >
@@ -364,7 +367,8 @@ Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-buil
 > Sequencing: monthly subscription ships at launch alongside free + lifetime + admin.
 > Admin addendum: admin gets unlimited attempts and REPLACE-resubmission (a new submit demotes
 > the previous one to kept); the one-submitted-row-per-day schema invariant is untouched.
-> Lapse policy: as proposed (lapse → 30-day clock on stored audio; Guild survives).
+> Lapse policy: as proposed (lapse → 30-day clock on stored audio; Guild survives). Superseded
+> 2026-09-10: every plan deletes audio at 30 days, so a lapse starts no clock.
 
 1. **Lifetime price** (and subscription price, if it ships at launch). Operator decision,
    captured in witus user-task 79.

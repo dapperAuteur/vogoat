@@ -33,7 +33,7 @@ the Redundancy Test in `gemini/witus/plans/ecosystem/README.md`.
 ## The load-bearing invariants
 
 1. **One submission per day per account — every tier, including paid and admin.** Money buys
-   practice mode, retention, and downloads; it never buys extra entries into the shared daily.
+   practice mode and downloads; it never buys extra entries into the shared daily.
    The 1/day rule lives in the schema (partial unique index), not application code.
 2. **Discarded audio never leaves the device.** Recording is local; upload happens only when
    the user keeps a take. Attempt *counts* are server-registered (that's how free's 3/day is
@@ -49,7 +49,7 @@ the Redundancy Test in `gemini/witus/plans/ecosystem/README.md`.
 6. **The creature derives from the recipe, not from ML analysis of the user's audio.**
 7. **Admin is `ADMIN_EMAIL` (env), never a hardcoded address.** The Workshop (daily
    literary-device writing) is admin-only for now but gated by role, not by a hardcoded user.
-8. **Free-tier audio expires at 30 days; the Guild survives expiry** — expiry nulls the
+8. **All audio expires at 30 days, on every plan (BAM, 2026-09-10; was free-tier only); the Guild survives expiry** — expiry nulls the
    blob, never the row. Streaks and creatures are forever.
 
 ## Stack (planned — no app code yet)
