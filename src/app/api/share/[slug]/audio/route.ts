@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getDb } from "@/db/client";
 import { share, take } from "@/db/schema";
 import { getTakeAudioStore } from "@/lib/blob-store";
+import { logAppError } from "@/lib/errors/log";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,8 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/share/[slug
   let bytes: Uint8Array | null = null;
   try {
     bytes = await getTakeAudioStore().get(row.blobUrl);
-  } catch {
+  } catch (error: unknown) {
+    await logAppError(db, { source: "server", message: `store.get: ${error instanceof Error ? error.message : "unknown"}`, path: "/api/share/[slug]/audio" });
     return NextResponse.json({ ok: false, error: "audio storage unavailable", code: "storage_unavailable" }, { status: 503 });
   }
   if (!bytes) return NextResponse.json({ ok: false, error: "expired", code: "gone" }, { status: 410 });

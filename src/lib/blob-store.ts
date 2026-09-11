@@ -53,7 +53,12 @@ const vercelStore: TakeAudioStore = {
   async get(url) {
     // v2.8 `get` returns the blob content for private blobs when authorized; older shapes
     // expose only a downloadUrl. Feature-detect rather than assume.
-    const result = (await get(url, (env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : { storeId: resolveBlobStoreId(process.env) }) as Parameters<typeof get>[1])) as unknown;
+    const result = (await get(url, ({
+        // REQUIRED: get() throws without access, which made every playback and download 503
+        // (production, 2026-09-10). The store is private, so reads say so.
+        access: "private" as const,
+        ...(env.BLOB_READ_WRITE_TOKEN ? { token: env.BLOB_READ_WRITE_TOKEN } : { storeId: resolveBlobStoreId(process.env) }),
+      }) as Parameters<typeof get>[1])) as unknown;
     if (!result) return null;
     const r = result as {
       stream?: ReadableStream<Uint8Array> | null;

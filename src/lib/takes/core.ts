@@ -20,10 +20,11 @@ export type TakeView = {
   status: string;
   durationMs: number | null;
   hasAudio: boolean;
+  createdAt: Date;
 };
 
 function view(row: typeof take.$inferSelect): TakeView {
-  return { id: row.id, takeNumber: row.takeNumber, status: row.status, durationMs: row.durationMs, hasAudio: row.blobUrl != null };
+  return { id: row.id, takeNumber: row.takeNumber, status: row.status, durationMs: row.durationMs, hasAudio: row.blobUrl != null, createdAt: row.createdAt };
 }
 
 export function takeLimitFor(plan: Plan, role: Role = "player"): number | null {

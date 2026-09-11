@@ -34,8 +34,8 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
       <h1 className="font-display text-3xl leading-tight italic">Practice like it matters.</h1>
       <p className="text-sm leading-relaxed text-muted">
         Every tier keeps the same one daily entry; that rule is the game. Paying buys the
-        practice room (any of the 11,664 recipes on demand), unlimited daily takes, and take downloads so you can keep
-        your own copy (every recording is deleted after 30 days, on every plan).
+        practice room (any of the 11,664 recipes on demand), unlimited daily takes, and take downloads any time so you can keep
+        your own copy (free plans get 24 hours; every recording is deleted after 30 days).
       </p>
       {status === "success" ? (
         <p role="status" className="rounded-md border border-moss px-3 py-2 text-sm font-semibold text-moss">
@@ -85,7 +85,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           <p className="font-display text-xl">{PRICES.lifetime.label}</p>
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
-          Once, forever: practice room, unlimited daily takes, take downloads (keep a
+          Once, forever: practice room, unlimited daily takes, take downloads any time (keep a
           copy before the 30-day deletion), and the founder badge in your Guild. {sold} of the first {ANNUAL_UNLOCK_AT}{" "}
           founder seats taken.
         </p>
@@ -121,7 +121,7 @@ export default async function UpgradePage({ searchParams }: { searchParams: Prom
           <p className="font-display text-xl">{PRICES.monthly.label}<span className="text-sm text-muted">/mo</span></p>
         </div>
         <p className="mt-1 text-sm leading-relaxed text-muted">
-          Same practice room, unlimited takes, and downloads. Recordings are deleted after 30
+          Same practice room, unlimited takes, and downloads any time. Recordings are deleted after 30
           days on every plan; your Guild survives no matter what.
         </p>
         <form action={startCheckoutAction} className="mt-3">

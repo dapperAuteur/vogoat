@@ -69,3 +69,13 @@ describe("practice takes", () => {
     expect(await listPracticeTakes(db, "paid")).toHaveLength(0);
   });
 });
+
+describe("admin gets the practice room on any plan", () => {
+  it("lets an admin on the free plan save a practice take", async () => {
+    await db.insert(schema.user).values({ id: "admin-free", name: "Admin", email: "admin@example.com", role: "admin" });
+    const saved = await savePracticeTake(db, store, { userId: "admin-free", plan: "free", role: "admin", recipeId: 11, ...args });
+    expect(saved.ok).toBe(true);
+    const player = await savePracticeTake(db, store, { userId: "free", plan: "free", role: "player", recipeId: 11, ...args });
+    expect(!player.ok && player.code).toBe("paid_only");
+  });
+});

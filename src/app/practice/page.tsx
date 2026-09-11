@@ -7,6 +7,7 @@ import { PracticeRecorder } from "@/components/take/practice-recorder";
 import { PracticeTakeList } from "@/components/take/practice-take-list";
 import { getDb } from "@/db/client";
 import { listPracticeTakes } from "@/lib/practice/core";
+import { hasPaidPerks } from "@/lib/takes/download-policy";
 import { deriveCreature } from "@/lib/game/creature";
 import { dayKey } from "@/lib/game/day";
 import { randomInt, seededRandom } from "@/lib/game/random";
@@ -21,7 +22,9 @@ export const dynamic = "force-dynamic";
 export default async function PracticePage({ searchParams }: { searchParams: Promise<{ r?: string }> }) {
   const session = await getSession();
   const user = session ? (session.user as SessionUser) : null;
-  const paid = user && user.plan !== "free";
+  // Aliased null check keeps `user` narrowed where `paid` is tested. Admin gets the practice
+  // room regardless of plan.
+  const paid = user !== null && hasPaidPerks(user);
   const { r } = await searchParams;
   const parsed = Number(r);
   // Render-pure: with no ?r, the day seeds the starter recipe; Spin another randomizes client-side.
