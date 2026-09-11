@@ -13,6 +13,8 @@ export type GuildEntry = {
   takeNumber: number | null;
   /** The submitted take's id, for playback of past recordings. */
   takeId: string | null;
+  /** When the submitted take was recorded (drives the free plan's 24-hour download window). */
+  takeCreatedAt: Date | null;
   /** False once the audio expired (30 days, every plan) (the plate stays; PRD §5). */
   hasAudio: boolean;
   isToday: boolean;
@@ -34,6 +36,7 @@ export async function getGuild(db: Db, args: { userId: string; today: DayKey }):
       layers: creature.layers,
       takeNumber: take.takeNumber,
       takeId: take.id,
+      takeCreatedAt: take.createdAt,
       blobUrl: take.blobUrl,
     })
     .from(daily)
@@ -51,6 +54,7 @@ export async function getGuild(db: Db, args: { userId: string; today: DayKey }):
       layers: r.layers,
       takeNumber: r.takeNumber,
       takeId: r.takeId,
+      takeCreatedAt: r.takeCreatedAt,
       hasAudio: r.blobUrl !== null,
       isToday: r.dayKey === args.today,
     }))

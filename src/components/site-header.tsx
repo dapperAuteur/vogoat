@@ -4,6 +4,7 @@ import { lifetimeSoldCount } from "@/lib/billing/core";
 import { ANNUAL_UNLOCK_AT, PRICES } from "@/lib/billing/prices";
 import { witusEndSessionEndpoint } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
+import { hasPaidPerks } from "@/lib/takes/download-policy";
 import { SignOutButton } from "./auth/sign-out-button";
 
 /**
@@ -66,7 +67,7 @@ export async function SiteHeader() {
               <Link href="/guild" className="flex min-h-11 items-center px-2 text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
                 Guild
               </Link>
-              {isPaid ? (
+              {hasPaidPerks(user) ? (
                 <Link href="/practice" className="flex min-h-11 items-center px-2 text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
                   Practice
                 </Link>

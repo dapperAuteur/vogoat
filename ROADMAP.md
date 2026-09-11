@@ -17,7 +17,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | 9 | Paid tiers: Stripe checkout (lifetime $103.29 / $100 Cash App QR, monthly $10.60, annual gated at 100 founders), plan sync + lapse policy, practice room, downloads, founder badge | Code done; Stripe keys are set on the project. **Not yet exercised end to end** (test purchase + webhook + a lapse) |
 | 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done: rate limits, PostHog wired (key set), `/voice-data`, `/about` with the method video, OG + favicon, robots + sitemap. **Remaining: Turnstile keys are not set.** The Playwright + axe sweep now runs (16 specs, zero serious violations); two known issues are filed in `plans/bugs/` |
 
-## Shipped after the original plan (BAM requests, 2026-09-01/02)
+## Shipped after the original plan (BAM requests, 2026-09-01 to 09-10)
 
 | Change | Status |
 |---|---|
@@ -28,12 +28,23 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | Collection renamed Menagerie to **Guild** (`/menagerie` 308s to `/guild`) | Done |
 | SEO/meta polish (canonical, OG/Twitter, JSON-LD) and Stripe promotion codes at checkout | Done |
 | Ecosystem SSO: Continue as a known name, global sign-out, `/goodbye` come-back page | Done |
+| Sticky header with the menu, the founder price banner, and the voice-promise banner | Done |
+| Buy a lifetime seat with no account; the next sign-in with that email claims it | Done |
+| Annual hidden until 100 founders; monthly clickable for signed-out and free accounts | Done |
+| Saving practice takes (playback, download, delete) | Done |
+| Stripe webhook ignores sibling products' checkouts (the Stripe account is shared) | Done |
+| How-to guides with a video slot per feature (`/how-to`) | Done; BAM pastes YouTube ids into `src/lib/how-to/guides.ts` |
+| Admin usage analytics (`/admin/analytics`): funnel, habit, used vs avoided | Done |
+| Opt-in marketing campaigns with one-click unsubscribe (`/admin/campaigns`) | Done; needs Mailgun live to actually send |
+| Billing health (`/admin/billing`) | Done |
+| Playwright critical-flow specs and an axe sweep (`pnpm test:e2e`) | Done; caught and fixed a footer contrast failure |
 | Every recording deleted after 30 days on every plan (was free only), practice takes included | Done 2026-09-10 |
+| Audio playback and downloads fixed (storage reads declare private access); storage failures now logged | Done 2026-09-10 |
+| Downloads: free plans within 24 hours of recording, paid plans and admin any time; admin gets the paid perks | Done 2026-09-10 |
 
 ## Backlog (not v1)
 
-- Saving practice-room takes to the server (today the practice recorder is local-only).
-- Users download all their attempts in one place, paid-only (`plans/future/05`); per-take download already works.
+- Users download all their attempts in one place (`plans/future/05`); per-take download already works (free plans within 24 hours, paid any time).
 - One Stripe webhook for the whole ecosystem, or per-app endpoints with the app stamp (`plans/future/07`).
 - A/B/C test of the three design directions once there is traffic (`plans/future/01`).
 - Blog posts about this build for bam-landing-page (`plans/future/00`).

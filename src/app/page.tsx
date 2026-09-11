@@ -15,6 +15,7 @@ import type { BaseAnimal } from "@/lib/game/creature";
 import { nextDayBoundary } from "@/lib/game/day";
 import { env } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
+import { canDownloadTake, FREE_DOWNLOAD_WINDOW_HOURS, hasPaidPerks } from "@/lib/takes/download-policy";
 import { listTakes, takeLimitFor, type TakeView } from "@/lib/takes/core";
 
 export const dynamic = "force-dynamic";
@@ -124,14 +125,25 @@ export default async function HomePage() {
                     <span className="text-sm font-semibold">Take {t.takeNumber}</span>
                     <span className="text-xs text-muted">{t.durationMs ? `${(t.durationMs / 1000).toFixed(1)}s` : ""}</span>
                   </div>
-                  <audio controls preload="none" src={`/api/takes/${t.id}/audio`} className="w-full" />
-                  {user && user.plan !== "free" ? (
+                  <audio
+                    controls
+                    preload="none"
+                    src={`/api/takes/${t.id}/audio`}
+                    controlsList={canDownloadTake({ user, takeCreatedAt: t.createdAt }) ? undefined : "nodownload"}
+                    className="w-full"
+                  />
+                  {canDownloadTake({ user, takeCreatedAt: t.createdAt }) ? (
                     <a
                       href={`/api/takes/${t.id}/audio?download=1`}
                       className="flex min-h-11 items-center justify-center rounded-md border border-rule text-sm font-semibold text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
                     >
                       Download
                     </a>
+                  ) : null}
+                  {user && !hasPaidPerks(user) ? (
+                    <p className="text-xs text-muted">
+                      Free plan: download within {FREE_DOWNLOAD_WINDOW_HOURS} hours of recording.
+                    </p>
                   ) : null}
                   <KeptTakeControls takeId={t.id} canSubmit={!submitted || user?.role === "admin"} isLastOption={kept.length === 1 && limit !== null && takes.length >= limit} />
                 </div>
@@ -144,6 +156,14 @@ export default async function HomePage() {
                 Submitted: take {submitted.takeNumber}
                 {limit !== null ? ` of ${limit}` : ""}. One entry per day, every tier.
               </p>
+              {submitted.hasAudio && canDownloadTake({ user, takeCreatedAt: submitted.createdAt }) ? (
+                <a
+                  href={`/api/takes/${submitted.id}/audio?download=1`}
+                  className="flex min-h-11 items-center justify-center rounded-md border border-rule text-sm font-semibold text-muted hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current"
+                >
+                  Download your submitted take
+                </a>
+              ) : null}
               <SharePanel
                 takeId={submitted.id}
                 cardText={formatShareText({

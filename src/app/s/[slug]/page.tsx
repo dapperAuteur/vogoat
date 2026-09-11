@@ -48,7 +48,7 @@ export default async function SharePage({ params }: Params) {
           {view.audioAvailable ? (
             <>
               {/* The script below is the transcript of this recording. */}
-              <audio controls preload="none" src={`/api/share/${view.slug}/audio`} className="w-full" />
+              <audio controls preload="none" controlsList="nodownload" src={`/api/share/${view.slug}/audio`} className="w-full" />
             </>
           ) : (
             <p className="rounded-sm bg-paper p-3 text-center text-sm text-muted">

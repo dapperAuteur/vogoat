@@ -145,7 +145,7 @@ export const GUIDES: Guide[] = [
       "Cash App payments are matched by hand, usually the same day. Card payments flip your plan within a minute of Stripe confirming.",
       "Refresh the page if your new plan takes a moment to show up.",
     ],
-    note: "Paying buys the practice room, unlimited takes a day, take downloads, and the founder badge. It never buys a second entry into the daily. One submission a day, every tier.",
+    note: "Paying buys the practice room, unlimited takes a day, take downloads any time (free plans get 24 hours), and the founder badge. It never buys a second entry into the daily. One submission a day, every tier.",
   },
   {
     slug: "privacy",
@@ -157,6 +157,7 @@ export const GUIDES: Guide[] = [
       "Tap Discard and the audio is deleted from your device. It never leaves it.",
       "Discarding still stores the count of the attempt, which is how 3 takes a day is counted on the free plan.",
       "Tap Keep and that one file uploads. It is yours, and no one else can play it.",
+      "You can download a kept take within 24 hours of recording it on the free plan, or any time on a paid plan.",
       "Deleting a kept take deletes the audio file itself, not only the row that points at it.",
       "Kept audio is deleted 30 days after the take, on every plan. The plate, the run, and the share card all stay.",
       "Nothing analyses your voice. The creature comes from the recipe, never from your recording, and your audio is never training data.",

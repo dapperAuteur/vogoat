@@ -108,9 +108,9 @@ number goes on the share card ("take 1/3" is the flex).
 
 | | Daily takes | Submissions/day | Audio retention | Practice mode | Extras |
 |---|---|---|---|---|---|
-| **Free** | 3 | 1 | 30 days | — | Guild + streaks + share cards forever (audio expires, the creature doesn't) |
-| **Lifetime** (one-time purchase) | unlimited | 1 | 30 days | ✓ | Take downloads · founder badge in menagerie |
-| **Subscription** (monthly) | unlimited | 1 | 30 days | ✓ | Take downloads |
+| **Free** | 3 | 1 | 30 days | — | Guild + streaks + share cards forever (audio expires, the creature doesn't) · take downloads within 24 h of recording |
+| **Lifetime** (one-time purchase) | unlimited | 1 | 30 days | ✓ | Take downloads any time · founder badge in the Guild |
+| **Subscription** (monthly) | unlimited | 1 | 30 days | ✓ | Take downloads any time |
 | **Admin** (`ADMIN_EMAIL`) | unlimited | 1 | 30 days | ✓ | Authoring console: dailies, script triage, creatures, reports, runway alerts · **The Workshop (§9)** |
 
 **Practice mode** (paid): spin *any* of the 11,664 recipes on demand, record freely, nothing
@@ -355,6 +355,10 @@ Workshop") · sponsor-a-day · McStay affiliate/partnership (after the post-buil
 
 ## 17. Remaining open items (none block the build)
 
+> **2026-09-10 update, later (BAM):** free plans may download a take within 24 hours of
+> recording it; paid plans and admin download any time before the 30-day deletion. Admin gets
+> the paid perks (practice room, downloads) regardless of plan.
+>
 > **2026-09-10 update (BAM):** audio retention is **30 days on every plan**, paid and admin
 > included. Money no longer buys retention; downloads are how a paid player keeps a copy.
 >

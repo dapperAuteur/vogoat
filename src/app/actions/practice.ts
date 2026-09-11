@@ -30,6 +30,7 @@ export async function savePracticeTakeAction(formData: FormData): Promise<Action
   const result = await savePracticeTake(db, store, {
     userId: user.id,
     plan: user.plan as "free",
+    role: user.role,
     recipeId,
     bytes: new Uint8Array(await audio.arrayBuffer()),
     mime: audio.type || "audio/webm",

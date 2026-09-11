@@ -17,9 +17,9 @@ export type PracticeTakeView = { id: string; recipeId: number; creatureName: str
 export async function savePracticeTake(
   db: Db,
   store: TakeAudioStore,
-  args: { userId: string; plan: Plan; recipeId: number; bytes: Uint8Array; mime: string; durationMs: number },
+  args: { userId: string; plan: Plan; role?: string; recipeId: number; bytes: Uint8Array; mime: string; durationMs: number },
 ): Promise<ActionResult<{ id: string }>> {
-  if (args.plan === "free") return err("paid_only", "Saving practice takes comes with lifetime and subscription plans.");
+  if (args.plan === "free" && args.role !== "admin") return err("paid_only", "Saving practice takes comes with lifetime and subscription plans.");
   if (!Number.isInteger(args.recipeId) || args.recipeId < 1 || args.recipeId > RECIPE_COUNT) return err("bad_input", "Unknown recipe.");
   const baseMime = args.mime.split(";")[0].trim().toLowerCase();
   if (!AUDIO_MIME_PREFIXES.includes(baseMime)) return err("bad_mime", "That audio format is not supported.");

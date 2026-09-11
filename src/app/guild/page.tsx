@@ -9,6 +9,7 @@ import { isFounder } from "@/lib/billing/core";
 import { getMarketingConsent } from "@/lib/campaigns/core";
 import { getGuild } from "@/lib/menagerie";
 import { requireUser } from "@/lib/session";
+import { canDownloadTake } from "@/lib/takes/download-policy";
 
 export const metadata: Metadata = { title: "The Guild" };
 export const dynamic = "force-dynamic";
@@ -86,7 +87,13 @@ export default async function GuildPage() {
                   {entry.isToday ? " · today" : submitted ? "" : " · missed"}
                 </span>
                 {submitted && entry.takeId && entry.hasAudio ? (
-                  <audio controls preload="none" src={`/api/takes/${entry.takeId}/audio`} className="h-8 w-full" />
+                  <audio
+                    controls
+                    preload="none"
+                    src={`/api/takes/${entry.takeId}/audio`}
+                    controlsList={entry.takeCreatedAt && canDownloadTake({ user, takeCreatedAt: entry.takeCreatedAt }) ? undefined : "nodownload"}
+                    className="h-8 w-full"
+                  />
                 ) : null}
                 {submitted && !entry.hasAudio ? (
                   <span className="text-[9px] text-muted">audio expired</span>
