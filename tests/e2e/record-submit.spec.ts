@@ -32,6 +32,16 @@ test("free player records, keeps and submits a take, and the plate lands in the 
   await expect(kept).toBeVisible();
   await expect(kept.getByText("Take 1")).toBeVisible();
 
+  // Kept audio is converted to MP3 on the device before its one upload; the stored file must be
+  // a real MP3, not a webm with a new name.
+  const href = await kept.getByRole("link", { name: "Download", exact: true }).getAttribute("href");
+  const audio = await page.request.get(href as string);
+  expect(audio.headers()["content-type"]).toBe("audio/mpeg");
+  expect(audio.headers()["content-disposition"]).toContain(".mp3");
+  const bytes = await audio.body();
+  expect(bytes[0]).toBe(0xff);
+  expect(bytes[1] & 0xe0).toBe(0xe0);
+
   await kept.getByRole("button", { name: "Submit as today's entry" }).click();
   await expect(page.getByText(/Submitted: take 1 of 3\. One entry per day, every tier\./)).toBeVisible();
 

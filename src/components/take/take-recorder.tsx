@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { discardTakeAction, keepTakeAction, registerTakeAction } from "@/app/actions/takes";
 import { capture } from "@/lib/analytics/capture";
 import { EVENTS } from "@/lib/analytics/events";
+import { convertRecordingToMp3 } from "@/lib/audio/to-mp3";
 
 const MAX_MS = 30_000;
 
@@ -144,17 +145,19 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
   async function keep() {
     if (!review || !review.takeId) return;
     setPhase("saving");
+    // Converted to MP3 on this device, then uploaded once: still the only moment audio leaves (invariant 2).
+    const { file, format } = await convertRecordingToMp3(review.blob);
     const form = new FormData();
     form.set("takeId", review.takeId);
     form.set("durationMs", String(Math.round(review.durationMs)));
-    form.set("audio", new File([review.blob], "take", { type: review.blob.type || "audio/webm" }));
+    form.set("audio", new File([file], "take", { type: file.type || "audio/webm" }));
     const result = await keepTakeAction(form);
     if (!result.ok) {
       setError(result.error);
       setPhase("review");
       return;
     }
-    capture(EVENTS.takeKept, { duration_ms: Math.round(review.durationMs) });
+    capture(EVENTS.takeKept, { duration_ms: Math.round(review.durationMs), format });
     URL.revokeObjectURL(review.url);
     setReview(null);
     setPhase("idle");
