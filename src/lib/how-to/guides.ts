@@ -156,7 +156,7 @@ export const GUIDES: Guide[] = [
       "Recording happens inside your browser. Nothing reaches VO GOAT while you are recording.",
       "Tap Discard and the audio is deleted from your device. It never leaves it.",
       "Discarding still stores the count of the attempt, which is how 3 takes a day is counted on the free plan.",
-      "Tap Keep and that one file uploads. It is yours, and no one else can play it.",
+      "Tap Keep and your browser turns the take into an MP3 right on your device, then that one file uploads. It is yours, and no one else can play it.",
       "You can download a kept take within 24 hours of recording it on the free plan, or any time on a paid plan.",
       "Deleting a kept take deletes the audio file itself, not only the row that points at it.",
       "Kept audio is deleted 30 days after the take, on every plan. The plate, the run, and the share card all stay.",

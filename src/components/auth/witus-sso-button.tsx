@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 import { signInWithWitus } from "@/lib/auth-client";
 import {
   SILENT_SSO_TIMEOUT_MS,
@@ -80,6 +82,7 @@ export function WitusSsoButton({ silentCheckUrl }: { silentCheckUrl: string | nu
         disabled={isPending}
         onClick={() => {
           setIsPending(true);
+          capture(EVENTS.signinStarted, { method: "witus", continue_as: identity !== null });
           // THE LOOP GUARD, written BEFORE the redirect and never after the return. Without it a
           // visitor whose IdP session has gone stale gets: probe says "Continue as X" → click →
           // the IdP cannot finish → back to /sign-in → probe says "Continue as X" → forever. With

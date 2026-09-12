@@ -1,10 +1,10 @@
 import { Analytics } from "@vercel/analytics/next";
-import { AnalyticsProvider } from "@/components/analytics-provider";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { VoicePromise } from "@/components/voice-promise";
 import type { Metadata, Viewport } from "next";
 import { Geist, Instrument_Serif } from "next/font/google";
+import { PostHogProvider } from "@/lib/analytics/posthog-provider";
 import { env } from "@/lib/env";
 import "./globals.css";
 
@@ -49,7 +49,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <VoicePromise />
         </div>
         <SiteFooter />
-        <AnalyticsProvider />
+        {/* PostHog on the ecosystem standard (gemini/witus plans/26): keyless-safe, no cookies, first-party proxy. */}
+        <PostHogProvider apiKey={env.NEXT_PUBLIC_POSTHOG_KEY ?? null} apiHost="/ingest" />
         {/* Cookieless pageview counts; sends nothing until Web Analytics is enabled on the project. */}
         <Analytics />
       </body>

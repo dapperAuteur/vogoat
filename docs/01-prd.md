@@ -312,8 +312,11 @@ of `accounts.witus.online` · **Vercel Blob (private)** for audio with tokenized
 `noreply@vogoat.witus.online` · Turnstile · PostHog + Vercel Analytics.
 
 Recording notes: MediaRecorder yields `audio/webm` (Opus) on Chrome/Firefox and `audio/mp4`
-(AAC) on Safari — store as recorded, play via `<audio>`, normalize later only if compilation
-features need it. Storage math: ~1MB/take, all audio expires at 30 days on every plan, so
+(AAC) on Safari, and no browser records MP3. **Update (BAM, 2026-09-12): kept takes and saved
+practice takes are stored as MP3**, converted on the device at Keep (44.1 kHz mono, 128 kbps,
+about 1 MB a minute) so downloads play anywhere; a browser that cannot convert stores its
+recording as recorded. Play via `<audio>`. The conversion never runs on discarded takes, so
+invariant 2 is untouched. Storage math: ~1MB/take, all audio expires at 30 days on every plan, so
 storage is bounded at ~(daily kept takes × 30) MB steady-state, practice takes included.
 
 ## 14. Attribution and outreach
