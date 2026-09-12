@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { savePracticeTakeAction } from "@/app/actions/practice";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 
 const MAX_MS = 30_000;
 
@@ -96,6 +98,7 @@ export function PracticeRecorder({ recipeId, canSave }: { recipeId: number; canS
                   setError(result.error);
                   return;
                 }
+                capture(EVENTS.practiceTakeSaved);
                 URL.revokeObjectURL(url);
                 setUrl(null);
                 setBlob(null);

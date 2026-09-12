@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { getDb } from "@/db/client";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { lifetimeSoldCount } from "@/lib/billing/core";
 import { annualUnlocked, PRICES } from "@/lib/billing/prices";
 import { getStripe } from "@/lib/billing/stripe";
@@ -76,6 +78,7 @@ export async function startCheckoutAction(formData: FormData): Promise<void> {
             ],
           });
     url = checkout.url;
+    trackServerEvent(EVENTS.checkoutStarted, { kind, signed_in: Boolean(user) });
   } catch (error: unknown) {
     console.error("[billing] checkout failed:", error instanceof Error ? error.constructor.name : "unknown");
     redirect("/upgrade?status=error");

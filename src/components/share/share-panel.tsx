@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { createShareAction, revokeShareAction } from "@/app/actions/share";
-import { track } from "@/lib/analytics";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 
 type Props = {
   takeId: string;
@@ -25,6 +26,7 @@ export function SharePanel({ takeId, cardText, siteUrl, slug: initialSlug }: Pro
     try {
       await navigator.clipboard.writeText(text);
       setCopied(kind);
+      capture(kind === "card" ? EVENTS.shareCardCopied : EVENTS.shareLinkCopied);
     } catch {
       setError("Could not reach the clipboard; select and copy the text below.");
     }
@@ -36,9 +38,8 @@ export function SharePanel({ takeId, cardText, siteUrl, slug: initialSlug }: Pro
     const result = await createShareAction(takeId);
     if (result.ok) {
       setSlug(result.data.slug);
-      track("share_created");
-    }
-    else setError(result.error);
+      capture(EVENTS.shareLinkCreated);
+    } else setError(result.error);
     setBusy(false);
   }
 
@@ -46,8 +47,10 @@ export function SharePanel({ takeId, cardText, siteUrl, slug: initialSlug }: Pro
     setBusy(true);
     setError(null);
     const result = await revokeShareAction(takeId);
-    if (result.ok) setSlug(null);
-    else setError(result.error);
+    if (result.ok) {
+      setSlug(null);
+      capture(EVENTS.shareLinkRevoked);
+    } else setError(result.error);
     setBusy(false);
   }
 

@@ -2,10 +2,12 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/db/client";
 import { take } from "@/db/schema";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { getTakeAudioStore } from "@/lib/blob-store";
 import { logAppError } from "@/lib/errors/log";
 import { getSession, type SessionUser } from "@/lib/session";
-import { canDownloadTake } from "@/lib/takes/download-policy";
+import { canDownloadTake, hasPaidPerks } from "@/lib/takes/download-policy";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +41,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/takes/[i
     "x-robots-tag": "noindex",
   };
   if (wantsDownload) {
+    trackServerEvent(EVENTS.takeDownloaded, { kind: "daily", paid: hasPaidPerks(session.user as SessionUser) });
     const ext = (row.mime ?? "audio/webm").includes("mp4") ? "m4a" : "webm";
     headers["content-disposition"] = `attachment; filename="vo-goat-take-${row.takeNumber}.${ext}"`;
   }

@@ -2,6 +2,8 @@ import { and, desc, eq } from "drizzle-orm";
 import type { Db } from "@/db/client";
 import { cashappClaim, user } from "@/db/schema";
 import { err, ok, type ActionResult } from "@/lib/action-result";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { applyLifetimePurchase } from "./core";
 import { PRICES } from "./prices";
 
@@ -58,6 +60,7 @@ export async function resolveClaim(
       stripeCustomerId: null,
     });
     if (applied === "no_user") return err("not_found", "The account no longer exists.");
+    if (applied === "applied") trackServerEvent(EVENTS.purchaseCompleted, { kind: "lifetime", method: "cashapp", had_account: true });
   }
   await db
     .update(cashappClaim)

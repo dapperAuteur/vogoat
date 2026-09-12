@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { silentSsoRecoveryPath } from "@/lib/silent-sso";
 
 /**
@@ -17,7 +19,10 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/auth/oau
   // is the half that works in a browser with no usable sessionStorage. Deliberately narrow: a real
   // fault (token exchange, issuer mismatch) still surfaces the way it does today.
   const recovery = silentSsoRecoveryPath(request.nextUrl);
-  if (recovery) return NextResponse.redirect(new URL(recovery, request.url), 303);
+  if (recovery) {
+    trackServerEvent(EVENTS.signinFailed, { method: "witus" });
+    return NextResponse.redirect(new URL(recovery, request.url), 303);
+  }
 
   const url = new URL(`/api/auth/callback/${encodeURIComponent(providerId)}`, request.url);
   url.search = request.nextUrl.search;
