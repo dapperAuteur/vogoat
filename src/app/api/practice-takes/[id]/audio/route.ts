@@ -2,6 +2,8 @@ import { and, eq } from "drizzle-orm";
 import { NextResponse, type NextRequest } from "next/server";
 import { getDb } from "@/db/client";
 import { practiceTake } from "@/db/schema";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { getTakeAudioStore } from "@/lib/blob-store";
 import { logAppError } from "@/lib/errors/log";
 import { getSession, type SessionUser } from "@/lib/session";
@@ -31,6 +33,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/practice
   if (!bytes) return NextResponse.json({ ok: false, error: "gone", code: "gone" }, { status: 410 });
   const headers: Record<string, string> = { "content-type": row.mime ?? "audio/webm", "cache-control": "private, no-store", "x-robots-tag": "noindex" };
   if (wantsDownload) {
+    trackServerEvent(EVENTS.takeDownloaded, { kind: "practice", paid: true });
     headers["content-disposition"] = `attachment; filename="vo-goat-practice-${row.recipeId}.${(row.mime ?? "webm").includes("mp4") ? "m4a" : "webm"}"`;
   }
   return new NextResponse(Buffer.from(bytes), { headers });

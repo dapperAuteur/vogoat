@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { discardTakeAction, keepTakeAction, registerTakeAction } from "@/app/actions/takes";
-import { track } from "@/lib/analytics";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 
 const MAX_MS = 30_000;
 
@@ -72,6 +73,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
     setError(null);
     setPhase("starting");
     takeIdRef.current = null;
+    let takeNumber: number | null = null;
     if (isSignedIn) {
       const registered = await registerTakeAction(dailyId);
       if (!registered.ok) {
@@ -81,7 +83,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
         return;
       }
       takeIdRef.current = registered.data.takeId;
-      track("take_registered", { takeNumber: registered.data.takeNumber });
+      takeNumber = registered.data.takeNumber;
     }
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -110,6 +112,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
         if (elapsed >= MAX_MS && recorderRef.current?.state === "recording") recorderRef.current.stop();
       }, 200);
       setPhase("recording");
+      capture(EVENTS.takeStarted, { signed_in: isSignedIn, ...(takeNumber !== null ? { take_number: takeNumber } : {}) });
     } catch (cause: unknown) {
       cleanupStream();
       setPhase("idle");
@@ -129,6 +132,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
   function discardLocal() {
     // The attempt stays counted (PRD: counts are server-tracked; audio never left the device);
     // the server row is marked discarded so the record is honest.
+    capture(EVENTS.takeDiscarded, { stage: "review", signed_in: isSignedIn });
     if (review?.takeId) void discardTakeAction(review.takeId).catch(() => undefined);
     if (review) URL.revokeObjectURL(review.url);
     setReview(null);
@@ -150,7 +154,7 @@ export function TakeRecorder({ dailyId, isSignedIn, attemptCount, limit, keptCou
       setPhase("review");
       return;
     }
-    track("take_kept", { durationMs: Math.round(review.durationMs) });
+    capture(EVENTS.takeKept, { duration_ms: Math.round(review.durationMs) });
     URL.revokeObjectURL(review.url);
     setReview(null);
     setPhase("idle");

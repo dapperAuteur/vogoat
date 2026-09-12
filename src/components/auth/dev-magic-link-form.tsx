@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 import { authClient } from "@/lib/auth-client";
 
 /** Development only: the sign-in link is printed to the dev server's console by the mailer. */
@@ -14,6 +16,7 @@ export function DevMagicLinkForm() {
       onSubmit={(event) => {
         event.preventDefault();
         setStatus("sending");
+        capture(EVENTS.signinStarted, { method: "magic_link" });
         void authClient.signIn
           .magicLink({ email, name: email.split("@")[0], callbackURL: "/" })
           .then((result) => setStatus(result.error ? "error" : "sent"))

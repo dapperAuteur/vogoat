@@ -12,6 +12,7 @@ export default function VoiceDataPage() {
     ["Audio stays on your device until you keep a take.", "Recording happens in your browser. Discarded takes are deleted from your device and are never uploaded; only the count of attempts is stored (that is how the free plan's 3 takes a day works)."],
     ["No voice-print analysis. No biometric identification.", "Nothing listens to your audio to figure out who you are, how you feel, or anything else. The creature comes from the recipe, never from analyzing your voice."],
     ["Your audio is never AI training data.", "Not ours, not anyone's. Ever."],
+    ["We count clicks, never voices.", "We count what people use, like a take kept or a card copied, so we know what to fix. The counts go to PostHog through our own domain and Vercel counts page views. No cookies, no ad trackers, no session recording, and your audio, your name, and your email are never part of it."],
     ["Deletion deletes.", "Deleting a take removes the audio file itself, not just the row that points at it. Revoking a share link kills that link for good."],
     ["Every recording is deleted after 30 days, on every plan, and deletion removes the file itself.", "Your creatures, streaks, and share cards are yours forever; only the audio goes. Free plans can download a take within 24 hours of recording it; paid plans can download any time before the 30-day deletion."],
     ["Sharing is a link you hand out, never a feed.", "Shared pages are unguessable, unlisted, revocable, and carry a report button."],

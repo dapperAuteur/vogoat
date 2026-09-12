@@ -3,6 +3,8 @@
 import Script from "next/script";
 import { useState } from "react";
 import { reportShareAction } from "@/app/actions/share";
+import { capture } from "@/lib/analytics/capture";
+import { EVENTS } from "@/lib/analytics/events";
 import { REPORT_REASONS } from "@/lib/share/core";
 
 /** On every shared page (PRD §11). BAM triages reports in the admin console. */
@@ -38,7 +40,10 @@ export function ReportForm({ slug }: { slug: string }) {
         setStatus("sending");
         const form = new FormData(event.currentTarget);
         form.set("slug", slug);
-        void reportShareAction(form).then((r) => setStatus(r.ok ? "sent" : "error"));
+        void reportShareAction(form).then((r) => {
+          if (r.ok) capture(EVENTS.reportSubmitted);
+          setStatus(r.ok ? "sent" : "error");
+        });
       }}
     >
       <label htmlFor="report-reason" className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">

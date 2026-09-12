@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import { getDb } from "@/db/client";
+import { EVENTS } from "@/lib/analytics/events";
+import { trackServerEvent } from "@/lib/analytics/server";
 import { applyLifetimePurchase, applySubscriptionActive, applySubscriptionLapsed, recordPendingPurchase } from "@/lib/billing/core";
 import { eq } from "drizzle-orm";
 import { user } from "@/db/schema";
@@ -39,31 +41,39 @@ export async function POST(request: Request) {
         // it until one appears (claimed on that account's next request).
         const [existing] = await db.select({ id: user.id }).from(user).where(eq(user.email, payerEmail));
         if (existing) {
-          await applyLifetimePurchase(db, {
+          const result = await applyLifetimePurchase(db, {
             userId: existing.id,
             checkoutId: s.id,
             amountCents: s.amount_total ?? 0,
             currency: s.currency ?? "usd",
             stripeCustomerId: typeof s.customer === "string" ? s.customer : null,
           });
+          // Only a first delivery counts; Stripe's routine retries come back "duplicate".
+          if (result === "applied") trackServerEvent(EVENTS.purchaseCompleted, { kind: "lifetime", method: "stripe", had_account: true });
         } else {
-          await recordPendingPurchase(db, {
+          const result = await recordPendingPurchase(db, {
             email: payerEmail,
             checkoutId: s.id,
             amountCents: s.amount_total ?? 0,
             currency: s.currency ?? "usd",
           });
+          if (result === "stored") trackServerEvent(EVENTS.purchaseCompleted, { kind: "lifetime", method: "stripe", had_account: false });
         }
       } else if (userId && s.mode === "payment") {
-        await applyLifetimePurchase(db, {
+        const result = await applyLifetimePurchase(db, {
           userId,
           checkoutId: s.id,
           amountCents: s.amount_total ?? 0,
           currency: s.currency ?? "usd",
           stripeCustomerId: typeof s.customer === "string" ? s.customer : null,
         });
+        if (result === "applied") trackServerEvent(EVENTS.purchaseCompleted, { kind: "lifetime", method: "stripe", had_account: true });
       } else if (userId && s.mode === "subscription" && typeof s.customer === "string") {
-        await applySubscriptionActive(db, { userId, stripeCustomerId: s.customer });
+        // Activation is idempotent and cannot tell a retry from a first delivery, so a rare
+        // Stripe retry can count one subscription twice.
+        if (await applySubscriptionActive(db, { userId, stripeCustomerId: s.customer })) {
+          trackServerEvent(EVENTS.purchaseCompleted, { kind: s.metadata?.kind === "annual" ? "annual" : "monthly", method: "stripe", had_account: true });
+        }
       }
     } else if (event.type === "customer.subscription.deleted") {
       const sub = event.data.object;

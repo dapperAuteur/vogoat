@@ -15,7 +15,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | 7 | Admin console: daily authoring queue, script triage, runway alert | Done: `/admin` hub, dailies, scripts, creatures, workshop, cashapp, errors, roadmap |
 | 8 | The Workshop (admin-only daily literary device) | Done: shuffled no-repeat cycle over 251 devices, archive, script-candidate loop-closer |
 | 9 | Paid tiers: Stripe checkout (lifetime $103.29 / $100 Cash App QR, monthly $10.60, annual gated at 100 founders), plan sync + lapse policy, practice room, downloads, founder badge | Code done; Stripe keys are set on the project. **Not yet exercised end to end** (test purchase + webhook + a lapse) |
-| 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done: rate limits, PostHog wired (key set), `/voice-data`, `/about` with the method video, OG + favicon, robots + sitemap. **Remaining: Turnstile keys are not set.** The Playwright + axe sweep now runs (16 specs, zero serious violations); two known issues are filed in `plans/bugs/` |
+| 10 | Launch pass: Turnstile, rate limits, PostHog measures, policy + method pages, a11y sweep | Mostly done: rate limits, PostHog on the ecosystem standard (collects once the key reaches a production build, operator task 14), `/voice-data`, `/about` with the method video, OG + favicon, robots + sitemap. **Remaining: Turnstile keys are not set.** The Playwright + axe sweep now runs (16 specs, zero serious violations); two known issues are filed in `plans/bugs/` |
 
 ## Shipped after the original plan (BAM requests, 2026-09-01 to 09-10)
 
@@ -41,6 +41,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | Every recording deleted after 30 days on every plan (was free only), practice takes included | Done 2026-09-10 |
 | Audio playback and downloads fixed (storage reads declare private access); storage failures now logged | Done 2026-09-10 |
 | Downloads: free plans within 24 hours of recording, paid plans and admin any time; admin gets the paid perks | Done 2026-09-10 |
+| Analytics on the ecosystem PostHog standard: no cookies, no autocapture or recording, app-tagged typed funnel events, plus profile-free server counts for sign-in, sign-up, checkout, purchase, and downloads | Code done 2026-09-12; **collects nothing until the key is on the project and the app is rebuilt** (operator task 14) |
 
 ## Backlog (not v1)
 

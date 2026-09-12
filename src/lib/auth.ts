@@ -5,6 +5,8 @@ import { genericOAuth } from "better-auth/plugins";
 import { magicLink } from "better-auth/plugins/magic-link";
 import { getDb } from "@/db/client";
 import { isAdminEmail } from "./admin";
+import { EVENTS } from "./analytics/events";
+import { trackServerEvent } from "./analytics/server";
 import { env, hasDevMagicLink, hasWitusSso, WITUS_OIDC_DISCOVERY_URL } from "./env";
 import { sendEmail } from "./mailer";
 
@@ -77,6 +79,18 @@ async function createAuth() {
           before: async (user) => ({
             data: { ...user, role: isAdminEmail(user.email, env.ADMIN_EMAIL) ? "admin" : "player" },
           }),
+          // Counts only: no id or email is sent (src/lib/analytics/server.ts).
+          after: async () => {
+            trackServerEvent(EVENTS.signupCompleted);
+          },
+        },
+      },
+      session: {
+        create: {
+          // One new session per successful sign-in, SSO and the dev magic link alike.
+          after: async () => {
+            trackServerEvent(EVENTS.signinSucceeded);
+          },
         },
       },
     },
