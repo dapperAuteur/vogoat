@@ -7,6 +7,7 @@ import { trackServerEvent } from "@/lib/analytics/server";
 import { getTakeAudioStore } from "@/lib/blob-store";
 import { logAppError } from "@/lib/errors/log";
 import { getSession, type SessionUser } from "@/lib/session";
+import { audioFileExtension } from "@/lib/takes/audio-format";
 import { canDownloadTake, hasPaidPerks } from "@/lib/takes/download-policy";
 
 export const dynamic = "force-dynamic";
@@ -42,8 +43,7 @@ export async function GET(request: NextRequest, ctx: RouteContext<"/api/takes/[i
   };
   if (wantsDownload) {
     trackServerEvent(EVENTS.takeDownloaded, { kind: "daily", paid: hasPaidPerks(session.user as SessionUser) });
-    const ext = (row.mime ?? "audio/webm").includes("mp4") ? "m4a" : "webm";
-    headers["content-disposition"] = `attachment; filename="vo-goat-take-${row.takeNumber}.${ext}"`;
+    headers["content-disposition"] = `attachment; filename="vo-goat-take-${row.takeNumber}.${audioFileExtension(row.mime)}"`;
   }
   return new NextResponse(Buffer.from(bytes), { headers });
 }

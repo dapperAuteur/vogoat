@@ -42,6 +42,7 @@ export const EVENTS = {
   purchaseCompleted: "purchase_completed",
   /** A recording actually started. `signed_in` false is anonymous rehearsal. */
   takeStarted: "take_started",
+  /** `format` is "mp3", or "original" when this browser could not convert (the fallback rate). */
   takeKept: "take_kept",
   /** `stage` is "review" (never uploaded) or "kept" (uploaded, then deleted). */
   takeDiscarded: "take_discarded",

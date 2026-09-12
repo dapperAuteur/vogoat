@@ -42,6 +42,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | Audio playback and downloads fixed (storage reads declare private access); storage failures now logged | Done 2026-09-10 |
 | Downloads: free plans within 24 hours of recording, paid plans and admin any time; admin gets the paid perks | Done 2026-09-10 |
 | Analytics on the ecosystem PostHog standard: no cookies, no autocapture or recording, app-tagged typed funnel events, plus profile-free server counts for sign-in, sign-up, checkout, purchase, and downloads | Code done 2026-09-12; **collects nothing until the key is on the project and the app is rebuilt** (operator task 14) |
+| Takes saved and downloaded as MP3: converted on the device at Keep (daily and practice), original recording as the fallback | Code done 2026-09-12; existing webm/m4a takes keep their format until the 30-day deletion |
 
 ## Backlog (not v1)
 

@@ -22,6 +22,7 @@
     "db:seed:dev": "ALLOW_DEV_SEED=1 node --import tsx scripts/seed-dev.ts"
   },
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "@electric-sql/pglite": "^0.3.15",
     "@neondatabase/serverless": "^1.0.2",
     "@vercel/analytics": "^2.0.1",

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { savePracticeTakeAction } from "@/app/actions/practice";
 import { capture } from "@/lib/analytics/capture";
 import { EVENTS } from "@/lib/analytics/events";
+import { convertRecordingToMp3 } from "@/lib/audio/to-mp3";
 
 const MAX_MS = 30_000;
 
@@ -84,27 +85,28 @@ export function PracticeRecorder({ recipeId, canSave }: { recipeId: number; canS
           <button
             type="button"
             disabled={saving}
-            onClick={() => {
+            onClick={async () => {
               if (!blob) return;
               setSaving(true);
               setError(null);
+              // Converted to MP3 on this device first; saving is still the only upload.
+              const { file, format } = await convertRecordingToMp3(blob);
               const form = new FormData();
               form.set("recipeId", String(recipeId));
               form.set("durationMs", String(Math.round(startedMsRef.current)));
-              form.set("audio", new File([blob], "practice", { type: blob.type || "audio/webm" }));
-              void savePracticeTakeAction(form).then((result) => {
-                setSaving(false);
-                if (!result.ok) {
-                  setError(result.error);
-                  return;
-                }
-                capture(EVENTS.practiceTakeSaved);
-                URL.revokeObjectURL(url);
-                setUrl(null);
-                setBlob(null);
-                setPhase("idle");
-                router.refresh();
-              });
+              form.set("audio", new File([file], "practice", { type: file.type || "audio/webm" }));
+              const result = await savePracticeTakeAction(form);
+              setSaving(false);
+              if (!result.ok) {
+                setError(result.error);
+                return;
+              }
+              capture(EVENTS.practiceTakeSaved, { format });
+              URL.revokeObjectURL(url);
+              setUrl(null);
+              setBlob(null);
+              setPhase("idle");
+              router.refresh();
             }}
             className="min-h-12 rounded-md bg-moss font-semibold text-on-moss focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current disabled:opacity-50"
           >
