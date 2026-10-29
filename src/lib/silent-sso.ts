@@ -1,5 +1,5 @@
 /**
- * "Continue as <name>" — the silent ecosystem-SSO check, plus global sign-out.
+ * "Continue as <name>" — the silent ecosystem-SSO check, plus the "sign out of WitUS everywhere" URL.
  *
  * THE PROBLEM. /sign-in makes you press a button and bounce to accounts.witus.online even when
  * another tab already has you signed in to a WitUS app. BAM chose OPTION B on 2026-08-30: render
@@ -164,10 +164,10 @@ export function silentSsoEndpointFromDiscovery(
  * The IdP's RP-initiated logout endpoint, `<basePath>/oauth2/endsession` — the
  * `end_session_endpoint` the discovery document advertises.
  *
- * BAM chose GLOBAL sign-out on 2026-08-30: signing out of one WitUS app signs you out of all of
- * them. Ending only VO GOAT's session leaves the IdP session alive, so with "Continue as …" live,
- * signing out and coming back would offer to sign you straight back in — which reads as a broken
- * sign-out.
+ * Used only by "Sign out of WitUS everywhere". Plain "Sign out" ends just VO GOAT's session and
+ * leaves the IdP session alive (BAM, 2026-10-29, witus task 128 option (b)), so coming back to
+ * /sign-in may offer "Continue as …"; that is expected. The everywhere control ends the IdP
+ * session too. See src/lib/sign-out.ts.
  */
 export function endSessionEndpointFromDiscovery(
   discoveryUrl: string | null | undefined,

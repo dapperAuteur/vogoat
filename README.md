@@ -73,10 +73,13 @@ whether this browser already has a WitUS session. If it answers, the button rela
 and never a credential. A blocked, failed or timed-out check is completely invisible — which
 is the normal outcome in Safari and Firefox, where the IdP's cookie is third-party.
 
-**Sign-out is global** (BAM, 2026-08-30): it destroys the VO GOAT session first, then ends the
-shared session at `accounts.witus.online`, so you are signed out of every WitUS app. The IdP
-returns you to the VO GOAT home page. Without `WITUS_OIDC_CLIENT_ID` both features stay dark
-and sign-out is local-only, landing on `/goodbye`.
+**Sign out vs. sign out of WitUS everywhere** (BAM, 2026-10-29): **Sign out** ends only the
+VO GOAT session and lands on `/goodbye`; the WitUS session and other WitUS apps stay signed in.
+**Sign out of WitUS everywhere** (shown under the header when SSO is configured) destroys the
+VO GOAT session first, then ends the shared session at `accounts.witus.online`, which returns
+you to the VO GOAT home page. Other WitUS apps stay signed in until you sign out of them; the
+help text next to the control says so. Without `WITUS_OIDC_CLIENT_ID` "Continue as" and the
+"everywhere" control stay dark and only the local Sign out appears.
 
 Environment variables are documented in [`.env.example`](.env.example). Deploy, Neon, the
 WitUS OIDC client, Blob, Stripe, Mailgun, Turnstile and PostHog are operator steps in

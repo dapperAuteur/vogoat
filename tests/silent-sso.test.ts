@@ -16,7 +16,8 @@ import {
 } from "@/lib/silent-sso";
 
 /**
- * The silent ecosystem-SSO check ("Continue as <name>") and global sign-out.
+ * The silent ecosystem-SSO check ("Continue as <name>") and the "sign out of WitUS everywhere" URL.
+ * Sign-out behaviour itself is pinned in tests/sign-out.test.ts.
  *
  * Pinned in order of what each would cost if it broke:
  *   1. THE DARK GATE. With no OIDC client, VO GOAT must not touch accounts.witus.online at all and
@@ -207,31 +208,9 @@ describe("endpoints derive from the discovery URL, and only from it", () => {
   });
 });
 
-describe("global sign-out", () => {
-  it("destroys the local session BEFORE handing off to the IdP", () => {
-    const src = stripComments(read("src/components/auth/sign-out-button.tsx"));
-    const signOut = src.indexOf("authClient");
-    const handoff = src.indexOf("window.location.assign(\n");
-    expect(signOut).toBeGreaterThan(-1);
-    expect(handoff).toBeGreaterThan(signOut);
-  });
-
-  it("sends the trailing-slash post_logout_redirect_uri better-auth exact-matches", () => {
-    const src = stripComments(read("src/components/auth/sign-out-button.tsx"));
-    expect(src).toContain("`${window.location.origin}/`");
-    expect(src).toContain("post_logout_redirect_uri=${encodeURIComponent(back)}");
-    // `&`, not `?`: the server already appended client_id.
-    expect(src).toContain("`${endSessionUrl}&post_logout_redirect_uri=");
-  });
-
+describe("the end-session URL", () => {
   it("bakes the REQUIRED client_id into the URL on the server", () => {
     const env = stripComments(read("src/lib/env.ts"));
     expect(env).toContain("client_id=${encodeURIComponent(env.WITUS_OIDC_CLIENT_ID as string)}");
-  });
-
-  it("keeps the /goodbye landing when there is no shared session to end", () => {
-    const src = stripComments(read("src/components/auth/sign-out-button.tsx"));
-    expect(src).toContain('window.location.assign("/goodbye")');
-    expect(src).toContain('endSessionUrl ? "Sign out of WitUS" : "Sign out"');
   });
 });

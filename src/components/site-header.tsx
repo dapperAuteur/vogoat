@@ -5,7 +5,7 @@ import { ANNUAL_UNLOCK_AT, PRICES } from "@/lib/billing/prices";
 import { witusEndSessionEndpoint } from "@/lib/env";
 import { getSession, type SessionUser } from "@/lib/session";
 import { hasPaidPerks } from "@/lib/takes/download-policy";
-import { SignOutButton } from "./auth/sign-out-button";
+import { SignOutButton, SignOutEverywhereButton } from "./auth/sign-out-button";
 
 /**
  * The one header, sticky on every page (BAM, 2026-09-02: the menu and the upgrade call must
@@ -77,8 +77,8 @@ export async function SiteHeader() {
                   Admin
                 </Link>
               ) : null}
-              {/* Global sign-out: the IdP endpoint keeps "sign out of every WitUS app" working. */}
-              <SignOutButton endSessionUrl={witusEndSessionEndpoint} />
+              {/* "Sign out" leaves only VO GOAT (BAM, 2026-10-29, witus task 128 option (b)). */}
+              <SignOutButton />
             </>
           ) : (
             <Link href="/sign-in" className="flex min-h-11 items-center rounded-md border border-ink px-3 text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current">
@@ -87,6 +87,13 @@ export async function SiteHeader() {
           )}
         </div>
       </nav>
+      {user && witusEndSessionEndpoint ? (
+        // The second sign-out, next to the first: ends the WitUS session too. Resolved on the
+        // server; null when VO GOAT is not a registered OIDC client, and then it never renders.
+        <div className="mx-auto w-full max-w-md px-5 pb-1">
+          <SignOutEverywhereButton endSessionUrl={witusEndSessionEndpoint} />
+        </div>
+      ) : null}
     </header>
   );
 }

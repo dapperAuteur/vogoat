@@ -126,9 +126,10 @@ export const witusSilentSsoEndpoint: string | null = hasWitusSso
   : null;
 
 /**
- * Where sign-out ends the SHARED WitUS session (BAM, 2026-08-30: signing out of one WitUS app
- * signs you out of all of them). Dark under exactly the same condition as the probe: with no
- * registered OIDC client there is no shared session to end and sign-out stays purely local.
+ * Where "Sign out of WitUS everywhere" ends the SHARED WitUS session. Plain "Sign out" never uses
+ * it: it ends only the VO GOAT session (BAM, 2026-10-29, witus task 128 option (b)). Null under
+ * exactly the same condition as the probe: with no registered OIDC client there is no shared
+ * session to end, and the "everywhere" control does not render.
  */
 export const witusEndSessionEndpoint: string | null = (() => {
   if (!hasWitusSso) return null;
@@ -137,7 +138,7 @@ export const witusEndSessionEndpoint: string | null = (() => {
   // client_id IS REQUIRED, not optional. better-auth's endSession endpoint rejects a
   // post_logout_redirect_uri with invalid_request unless the request carries a verifiable
   // id_token_hint or an explicit client_id, and we have no id_token client-side. Baked in HERE,
-  // on the server, because the sign-out button is a client component and must never read raw env.
+  // on the server, because the sign-out control is a client component and must never read raw env.
   return `${base}?client_id=${encodeURIComponent(env.WITUS_OIDC_CLIENT_ID as string)}`;
 })();
 /** Development-only sign-in when SSO is not provisioned (BAM, 2026-08-31). Never in production. */

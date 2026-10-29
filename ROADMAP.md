@@ -27,7 +27,7 @@ with WitUS, record, keep, submit, plate fills, Guild, share).
 | Public archive: `/archive` and `/day/<date>`, indexable, script shown, per-day OG image | Done |
 | Collection renamed Menagerie to **Guild** (`/menagerie` 308s to `/guild`) | Done |
 | SEO/meta polish (canonical, OG/Twitter, JSON-LD) and Stripe promotion codes at checkout | Done |
-| Ecosystem SSO: Continue as a known name, global sign-out, `/goodbye` come-back page | Done |
+| Ecosystem SSO: Continue as a known name, `/goodbye` come-back page; Sign out leaves VO GOAT only, plus "Sign out of WitUS everywhere" (2026-10-29) | Done |
 | Sticky header with the menu, the founder price banner, and the voice-promise banner | Done |
 | Buy a lifetime seat with no account; the next sign-in with that email claims it | Done |
 | Annual hidden until 100 founders; monthly clickable for signed-out and free accounts | Done |

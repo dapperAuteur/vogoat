@@ -49,7 +49,7 @@ export const GUIDES: Guide[] = [
       "Tap Sign in with WitUS. The same account works across the whole WitUS ecosystem.",
       "If the button already reads Continue as your name, WitUS recognises this browser. Tapping it still runs the full sign-in.",
       "You land back on today's specimen with your name in the header.",
-      "To leave, tap Sign out. That ends your session in every WitUS app, not only this one.",
+      "To leave, tap Sign out. That signs you out of VO GOAT only; your other WitUS apps stay signed in. Sign out of WitUS everywhere also ends your WitUS session.",
     ],
     note: "No account needed to see the recipe, read the line, or rehearse. Keeping takes, submitting, streaks, the Guild, and sharing all need one.",
   },

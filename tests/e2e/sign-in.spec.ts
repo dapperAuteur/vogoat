@@ -21,7 +21,7 @@ test("magic-link sign-in lands a session and the header switches to the account"
 
   const header = page.getByRole("banner"); // the sticky site header (layout-level, outside #main)
   await expect(header.getByRole("link", { name: "Guild" })).toBeVisible();
-  await expect(header.getByRole("button", { name: "Sign out" })).toBeVisible();
+  await expect(header.getByRole("button", { name: "Sign out", exact: true })).toBeVisible();
   await expect(header.getByRole("link", { name: "Sign in" })).toHaveCount(0);
   // A signed-in visitor's takes are counted; the rehearsal wording is gone.
   await expect(page.getByRole("button", { name: /Record a take · Take 1 of 3/ })).toBeVisible();
