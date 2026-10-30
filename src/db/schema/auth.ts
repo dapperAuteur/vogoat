@@ -44,9 +44,11 @@ export const account = pgTable("account", {
     .references(() => user.id, { onDelete: "cascade" }),
   accountId: text("account_id").notNull(),
   providerId: text("provider_id").notNull(),
-  // better-auth 1.7 core field: the token issuer for OAuth/OIDC accounts (required by the model;
-  // the adapter refuses to query when a model field is missing from the schema).
-  issuer: text("issuer").notNull(),
+  // Added for better-auth 1.7.0-1.7.2, which required it. 1.7.3 dropped the field and no longer
+  // writes it, so NOT NULL would reject every new sign-up and account link on 1.7.3+. Nullable
+  // per better-auth's 1.7 upgrade guide ("Account identity keeps the provider key"); dropping
+  // the column is optional later cleanup.
+  issuer: text("issuer"),
   accessToken: text("access_token"),
   refreshToken: text("refresh_token"),
   idToken: text("id_token"),
