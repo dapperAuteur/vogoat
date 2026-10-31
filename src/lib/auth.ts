@@ -65,6 +65,16 @@ async function createAuth() {
                   // /api/auth/callback/:id instead, so the authorize/token redirect_uri is
                   // pinned to the registered form and a route 307s it to the core handler.
                   redirectURI: `${env.BETTER_AUTH_URL}/api/auth/oauth2/callback/witus`,
+                  // "Sign out" ends ONLY this app's session (witus task 128 option (b)).
+                  // better-auth 1.7 made RP-initiated logout the default: without this flag,
+                  // signOut() answers with the IdP's end_session_endpoint + id_token_hint and the
+                  // client follows it, which strands the person on accounts.witus.online and ends
+                  // the shared WitUS session. "Sign out of WitUS everywhere" does its own handoff
+                  // (signOutEverywhere() in src/lib/sign-out.ts: authClient.signOut(), then a full
+                  // navigation to the end-session URL with client_id and post_logout_redirect_uri),
+                  // so it never relied on this.
+                  // Pinned by tests/sign-out-local-only.test.ts.
+                  disableProviderLogout: true,
                 },
               ],
             }),
