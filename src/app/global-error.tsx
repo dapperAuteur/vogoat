@@ -22,6 +22,12 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
             The whole page failed to load and the error has been reported automatically.
             {error.digest ? ` Reference: ${error.digest}.` : ""}
           </p>
+          {/* The root layout and its header failed, so this minimal shell carries its own links. */}
+          <p style={{ margin: "12px 0", fontSize: 14 }}>
+            <a href="/sign-in" style={{ color: "inherit" }}>
+              Sign in
+            </a>
+          </p>
           <button
             type="button"
             onClick={reset}
